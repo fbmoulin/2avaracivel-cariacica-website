@@ -63,9 +63,9 @@ class ChatbotService:
             logging.error(f"Error getting chatbot response: {e}")
             return "Desculpe, ocorreu um erro. Tente novamente ou entre em contato conosco diretamente."
     
-    @RetryManager.with_retry(max_attempts=3, backoff_factor=1.5, initial_delay=1.0)
+    @RetryManager.with_retry(max_attempts=2, backoff_factor=1.2, initial_delay=0.5)
     def get_openai_response(self, user_message):
-        """Get response from OpenAI API with retry logic and error handling"""
+        """Get response from OpenAI API optimized for production deployment"""
         try:
             start_time = time.time()
             
@@ -76,31 +76,31 @@ class ChatbotService:
                 messages=[
                     {
                         "role": "system",
-                        "content": """Você é um assistente virtual da 2ª Vara Cível de Cariacica. 
-                        Responda de forma educada, profissional e precisa sobre:
-                        - Horário de funcionamento: 12h às 18h, segunda a sexta
-                        - Endereço: Rua Expedito Garcia, s/n, Centro, Cariacica - ES
-                        - Telefone: (27) 3246-8200
-                        - Email: 2varacivel.cariacica@tjes.jus.br
-                        - Serviços: consulta processual, agendamento, audiências, certidões, mediação
-                        - Sempre mantenha um tom respeitoso e oficial
-                        - Se não souber algo específico, direcione para contato direto
-                        - Respostas devem ser concisas e úteis"""
+                        "content": """Assistente da 2ª Vara Cível de Cariacica. Responda concisamente:
+Horário: 12h-18h, seg-sex | Endereço: R. Expedito Garcia, s/n, Centro, Cariacica-ES
+Tel: (27) 3246-8200 | Email: 2varacivel.cariacica@tjes.jus.br
+Serviços: consulta processual, agendamento, audiências, certidões, mediação"""
                     },
-                    {"role": "user", "content": user_message}
+                    {"role": "user", "content": user_message[:400]}  # Limit input for efficiency
                 ],
-                max_tokens=200,
-                temperature=0.7,
-                timeout=30  # 30 second timeout
+                max_tokens=150,  # Reduced for faster deployment
+                temperature=0.6,
+                timeout=20,      # Optimized timeout for production
+                stream=False     # Ensure deployment compatibility
             )
             
             response_time = time.time() - start_time
             logging.info(f"OpenAI API response time: {response_time:.2f}s")
             
-            return response.choices[0].message.content.strip()
+            # Validate response
+            if response.choices and response.choices[0].message.content:
+                return response.choices[0].message.content.strip()
+            else:
+                logging.warning("Empty OpenAI response, using fallback")
+                return self.get_fallback_response(user_message)
             
         except Exception as e:
-            logging.error(f"OpenAI API error: {e}")
+            logging.error(f"OpenAI deployment error: {e}")
             return self.get_fallback_response(user_message)
     
     def get_fallback_response(self, user_message):
