@@ -1,28 +1,48 @@
 """
 Database service layer for 2ª Vara Cível de Cariacica
-Optimized for performance and data integrity
+Optimized for performance and data integrity with robust error handling
 """
 from sqlalchemy import text, func
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError, DisconnectionError, TimeoutError
 from flask import current_app
 from app_factory import db
 from models import Contact, NewsItem, ProcessConsultation, ChatMessage
+from services.integration_service import RetryManager
 from datetime import datetime, timedelta
 import logging
+import time
 
 
 class DatabaseService:
     """Centralized database operations service"""
     
     @staticmethod
+    @RetryManager.with_retry(max_attempts=3, backoff_factor=2.0, initial_delay=0.5)
     def safe_commit():
-        """Safely commit database transaction with rollback on error"""
+        """Safely commit database transaction with rollback on error and retry logic"""
         try:
             db.session.commit()
             return True, None
+        except (DisconnectionError, TimeoutError) as e:
+            db.session.rollback()
+            current_app.logger.warning(f"Database connection issue, retrying: {e}")
+            # Force reconnection
+            db.engine.dispose()
+            raise e  # Trigger retry
         except Exception as e:
             db.session.rollback()
             current_app.logger.error(f"Database commit failed: {e}")
+            return False, str(e)
+    
+    @staticmethod
+    def check_connection():
+        """Check database connection health"""
+        try:
+            # Simple connectivity test
+            db.session.execute(text('SELECT 1'))
+            return True, "Connection healthy"
+        except Exception as e:
+            current_app.logger.error(f"Database connection check failed: {e}")
             return False, str(e)
     
     @staticmethod

@@ -2,6 +2,8 @@ import os
 import json
 import logging
 from openai import OpenAI
+from services.integration_service import RetryManager, with_integration
+import time
 
 class ChatbotService:
     """Service for handling chatbot interactions"""
@@ -61,9 +63,12 @@ class ChatbotService:
             logging.error(f"Error getting chatbot response: {e}")
             return "Desculpe, ocorreu um erro. Tente novamente ou entre em contato conosco diretamente."
     
+    @RetryManager.with_retry(max_attempts=3, backoff_factor=1.5, initial_delay=1.0)
     def get_openai_response(self, user_message):
-        """Get response from OpenAI API"""
+        """Get response from OpenAI API with retry logic and error handling"""
         try:
+            start_time = time.time()
+            
             # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
             # do not change this unless explicitly requested by the user
             response = self.openai_client.chat.completions.create(
@@ -85,8 +90,12 @@ class ChatbotService:
                     {"role": "user", "content": user_message}
                 ],
                 max_tokens=200,
-                temperature=0.7
+                temperature=0.7,
+                timeout=30  # 30 second timeout
             )
+            
+            response_time = time.time() - start_time
+            logging.info(f"OpenAI API response time: {response_time:.2f}s")
             
             return response.choices[0].message.content.strip()
             
