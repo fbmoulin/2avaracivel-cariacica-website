@@ -92,12 +92,20 @@ def setup_logging(app):
 
 def register_blueprints(app):
     """Register application blueprints"""
-    from routes import main_bp, services_bp, chatbot_bp, admin_bp
-    
-    app.register_blueprint(main_bp)
-    app.register_blueprint(services_bp)
-    app.register_blueprint(chatbot_bp)
-    app.register_blueprint(admin_bp)
+    try:
+        from routes_optimized import main_bp, services_bp, chatbot_bp, admin_bp
+        
+        app.register_blueprint(main_bp)
+        app.register_blueprint(services_bp)
+        app.register_blueprint(chatbot_bp)
+        app.register_blueprint(admin_bp)
+    except ImportError:
+        # Fallback to original routes if optimized not available
+        from routes import main_bp, services_bp, chatbot_bp
+        
+        app.register_blueprint(main_bp)
+        app.register_blueprint(services_bp)
+        app.register_blueprint(chatbot_bp)
 
 
 def setup_error_handlers(app):
@@ -105,23 +113,35 @@ def setup_error_handlers(app):
     @app.errorhandler(404)
     def not_found_error(error):
         app.logger.warning(f'404 error: {error}')
-        return render_template('errors/404.html'), 404
+        try:
+            return render_template('errors/404.html'), 404
+        except:
+            return render_template('404.html'), 404
     
     @app.errorhandler(500)
     def internal_error(error):
         app.logger.error(f'500 error: {error}')
         db.session.rollback()
-        return render_template('errors/500.html'), 500
+        try:
+            return render_template('errors/500.html'), 500
+        except:
+            return render_template('500.html'), 500
     
     @app.errorhandler(403)
     def forbidden_error(error):
         app.logger.warning(f'403 error: {error}')
-        return render_template('errors/403.html'), 403
+        try:
+            return render_template('errors/403.html'), 403
+        except:
+            return "403 - Forbidden", 403
     
     @app.errorhandler(429)
     def ratelimit_handler(e):
         app.logger.warning(f'Rate limit exceeded: {e}')
-        return render_template('errors/429.html'), 429
+        try:
+            return render_template('errors/429.html'), 429
+        except:
+            return "429 - Too Many Requests", 429
 
 
 def setup_monitoring(app):
@@ -135,9 +155,9 @@ def setup_monitoring(app):
     
     # Health check endpoint
     @app.route('/health')
-    @limiter.exempt
     def health_check():
         """Simple health check endpoint"""
+        from datetime import datetime
         return {'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()}
 
 
