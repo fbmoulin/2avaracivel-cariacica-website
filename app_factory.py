@@ -14,6 +14,7 @@ from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 from config import get_config
 from services.integration_service import setup_integration_services, integration_service
+from utils.request_middleware import RequestMiddleware
 
 
 class Base(DeclarativeBase):
@@ -67,6 +68,10 @@ def create_app(config_name=None):
     
     # Initialize integration services
     setup_integration_services()
+    
+    # Setup request middleware
+    request_middleware = RequestMiddleware()
+    request_middleware.init_app(app)
     
     # Setup graceful shutdown handler
     import atexit

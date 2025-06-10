@@ -10,6 +10,7 @@ from services.chatbot import ChatbotService
 from services.database_service import DatabaseService
 from services.cache_service import CacheService, cache_faq_data, cache_services_data, cache_news_data
 from utils.security import sanitize_input, validate_email
+from utils.request_middleware import monitor_performance, validate_request_data, cache_response
 from app_factory import limiter, cache
 import logging
 import os
@@ -216,17 +217,15 @@ def process_consultation():
     return render_template('services/process_consultation.html')
 
 
-# Chatbot routes with enhanced rate limiting
+# Chatbot routes with enhanced rate limiting and monitoring
 @chatbot_bp.route('/api/message', methods=['POST'])
 @limiter.limit("30 per minute")
-def chatbot_message():
-    """Handle chatbot messages with rate limiting and session tracking"""
+@monitor_performance
+@validate_request_data(required_fields=['message'])
+def chatbot_message(validated_data):
+    """Handle chatbot messages with rate limiting, session tracking, and robust error handling"""
     try:
-        data = request.get_json()
-        if not data or 'message' not in data:
-            return jsonify({'error': 'Mensagem é obrigatória'}), 400
-        
-        user_message = sanitize_input(data['message'].strip())
+        user_message = sanitize_input(validated_data['message'].strip())
         if not user_message:
             return jsonify({'error': 'Mensagem não pode estar vazia'}), 400
         
@@ -236,28 +235,42 @@ def chatbot_message():
             session_id = str(uuid.uuid4())
             session['chatbot_session'] = session_id
         
-        # Get response from chatbot
-        response = chatbot_service.get_response(user_message)
+        # Get response from chatbot with error handling
+        try:
+            response = chatbot_service.get_response(user_message)
+        except Exception as e:
+            logging.error(f"Chatbot service error: {e}")
+            response = "Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes ou entre em contato diretamente conosco."
         
-        # Save interaction to database
-        chat, error = DatabaseService.create_chat_message(
-            user_message, response, session_id
-        )
-        
-        if error:
-            logging.warning(f"Failed to save chat message: {error}")
+        # Save interaction to database with retry logic
+        try:
+            chat, error = DatabaseService.create_chat_message(
+                user_message, response, session_id
+            )
+            if error:
+                logging.warning(f"Failed to save chat message: {error}")
+        except Exception as e:
+            logging.error(f"Database error saving chat: {e}")
+            # Continue without failing the request
         
         # Invalidate chatbot stats cache
-        cache.delete('admin:chatbot_stats')
+        try:
+            cache.delete('admin:chatbot_stats')
+        except Exception as e:
+            logging.warning(f"Cache invalidation failed: {e}")
         
         return jsonify({
             'response': response,
-            'session_id': session_id
+            'session_id': session_id,
+            'timestamp': datetime.now().isoformat()
         })
         
     except Exception as e:
-        logging.error(f"Chatbot error: {e}")
-        return jsonify({'error': 'Erro interno do servidor'}), 500
+        logging.error(f"Unexpected chatbot error: {e}")
+        return jsonify({
+            'error': 'Erro interno do servidor',
+            'message': 'Ocorreu um erro inesperado. Tente novamente mais tarde.'
+        }), 500
 
 
 # Admin routes with authentication and caching

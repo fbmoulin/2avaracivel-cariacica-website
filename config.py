@@ -15,9 +15,12 @@ class Config:
     SQLALCHEMY_ENGINE_OPTIONS = {
         'pool_recycle': 3600,
         'pool_pre_ping': True,
-        'pool_timeout': 20,
-        'max_overflow': 20,
-        'pool_size': 10
+        'pool_timeout': 30,
+        'max_overflow': 30,
+        'pool_size': 15,
+        'pool_reset_on_return': 'commit',
+        'echo_pool': False,
+        'isolation_level': 'READ_COMMITTED'
     }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
@@ -79,12 +82,15 @@ class ProductionConfig(Config):
     
     # Production database optimizations
     SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_recycle': 3600,
+        'pool_recycle': 1800,
         'pool_pre_ping': True,
-        'pool_timeout': 30,
-        'max_overflow': 50,
-        'pool_size': 20,
-        'echo': False
+        'pool_timeout': 45,
+        'max_overflow': 60,
+        'pool_size': 25,
+        'pool_reset_on_return': 'commit',
+        'echo': False,
+        'isolation_level': 'READ_COMMITTED',
+        'pool_reset_on_return': 'rollback'
     }
     
     # Redis for production caching and rate limiting
