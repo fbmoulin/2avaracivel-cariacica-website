@@ -1,0 +1,317 @@
+{% extends "base.html" %}
+
+{% block title %}FAQ - Perguntas Frequentes - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block description %}Encontre respostas para as perguntas mais frequentes sobre os serviços da 2ª Vara Cível de Cariacica.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Perguntas Frequentes</h1>
+            <p class="lead">Encontre respostas para as dúvidas mais comuns sobre os serviços da 2ª Vara Cível de Cariacica.</p>
+            
+            <!-- Search box -->
+            <div class="mb-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="faq-search" placeholder="Buscar pergunta...">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            
+            {% if faq_data %}
+                {% for categoria, perguntas in faq_data.items() %}
+                <section class="mb-5 faq-category">
+                    <h2 class="mb-4">{{ categoria }}</h2>
+                    <div class="accordion" id="accordion{{ loop.index }}">
+                        {% for pergunta in perguntas %}
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="heading{{ loop.index0 }}_{{ loop.index }}">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse{{ loop.index0 }}_{{ loop.index }}" aria-expanded="false" 
+                                        aria-controls="collapse{{ loop.index0 }}_{{ loop.index }}">
+                                    {{ pergunta.pergunta }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ loop.index0 }}_{{ loop.index }}" class="accordion-collapse collapse" 
+                                 aria-labelledby="heading{{ loop.index0 }}_{{ loop.index }}" data-bs-parent="#accordion{{ loop.index0 }}">
+                                <div class="accordion-body">
+                                    {{ pergunta.resposta }}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                {% endfor %}
+            {% else %}
+                <!-- Default FAQ content if no data loaded -->
+                <section class="mb-5 faq-category">
+                    <h2 class="mb-4">Horário e Funcionamento</h2>
+                    <div class="accordion" id="accordionHorario">
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingHorario1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseHorario1" aria-expanded="false" aria-controls="collapseHorario1">
+                                    Qual o horário de funcionamento da 2ª Vara Cível?
+                                </button>
+                            </h2>
+                            <div id="collapseHorario1" class="accordion-collapse collapse" aria-labelledby="headingHorario1" 
+                                 data-bs-parent="#accordionHorario">
+                                <div class="accordion-body">
+                                    A 2ª Vara Cível de Cariacica funciona das 12h às 18h, de segunda a sexta-feira.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingHorario2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseHorario2" aria-expanded="false" aria-controls="collapseHorario2">
+                                    A vara funciona aos sábados?
+                                </button>
+                            </h2>
+                            <div id="collapseHorario2" class="accordion-collapse collapse" aria-labelledby="headingHorario2" 
+                                 data-bs-parent="#accordionHorario">
+                                <div class="accordion-body">
+                                    Não, a vara funciona apenas em dias úteis, de segunda a sexta-feira.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingHorario3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseHorario3" aria-expanded="false" aria-controls="collapseHorario3">
+                                    Onde fica localizada a 2ª Vara Cível?
+                                </button>
+                            </h2>
+                            <div id="collapseHorario3" class="accordion-collapse collapse" aria-labelledby="headingHorario3" 
+                                 data-bs-parent="#accordionHorario">
+                                <div class="accordion-body">
+                                    A 2ª Vara Cível de Cariacica está localizada na Rua Expedito Garcia, s/n, Centro, Cariacica - ES.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-5 faq-category">
+                    <h2 class="mb-4">Processos e Consultas</h2>
+                    <div class="accordion" id="accordionProcessos">
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingProcessos1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseProcessos1" aria-expanded="false" aria-controls="collapseProcessos1">
+                                    Como consultar um processo?
+                                </button>
+                            </h2>
+                            <div id="collapseProcessos1" class="accordion-collapse collapse" aria-labelledby="headingProcessos1" 
+                                 data-bs-parent="#accordionProcessos">
+                                <div class="accordion-body">
+                                    Você pode consultar seu processo através do número CNJ no portal do TJES ou em nossa seção de consulta processual.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingProcessos2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseProcessos2" aria-expanded="false" aria-controls="collapseProcessos2">
+                                    Preciso de advogado para todas as ações?
+                                </button>
+                            </h2>
+                            <div id="collapseProcessos2" class="accordion-collapse collapse" aria-labelledby="headingProcessos2" 
+                                 data-bs-parent="#accordionProcessos">
+                                <div class="accordion-body">
+                                    Não. Para ações de até 20 salários mínimos, você pode ingressar sem advogado. Acima desse valor, a representação por advogado é obrigatória.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="mb-5 faq-category">
+                    <h2 class="mb-4">Audiências</h2>
+                    <div class="accordion" id="accordionAudiencias">
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingAudiencias1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseAudiencias1" aria-expanded="false" aria-controls="collapseAudiencias1">
+                                    Como participar de audiência virtual?
+                                </button>
+                            </h2>
+                            <div id="collapseAudiencias1" class="accordion-collapse collapse" aria-labelledby="headingAudiencias1" 
+                                 data-bs-parent="#accordionAudiencias">
+                                <div class="accordion-body">
+                                    Você receberá um link por email para participar via Zoom. Certifique-se de ter boa conexão de internet e ambiente adequado.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item faq-item">
+                            <h2 class="accordion-header" id="headingAudiencias2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#collapseAudiencias2" aria-expanded="false" aria-controls="collapseAudiencias2">
+                                    Posso remarcar uma audiência?
+                                </button>
+                            </h2>
+                            <div id="collapseAudiencias2" class="accordion-collapse collapse" aria-labelledby="headingAudiencias2" 
+                                 data-bs-parent="#accordionAudiencias">
+                                <div class="accordion-body">
+                                    Remarcações devem ser solicitadas com antecedência mínima de 48 horas, através de peticionamento ou contato direto.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+            
+            <!-- Empty state when no results found -->
+            <div id="no-results" class="text-center py-5" style="display: none;">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>Nenhuma pergunta encontrada</h4>
+                <p class="text-muted">Tente usar outros termos de busca ou entre em contato conosco.</p>
+                <a href="{{ url_for('main.contact') }}" class="btn btn-primary">Fale Conosco</a>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-question-circle me-2"></i>Não Encontrou sua Resposta?</h5>
+                </div>
+                <div class="card-body">
+                    <p>Se sua dúvida não foi esclarecida, entre em contato conosco:</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-primary w-100 mb-2">Formulário de Contato</a>
+                    <a href="{{ url_for('services.virtual_desk') }}" class="btn btn-outline-primary w-100">Balcão Virtual</a>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Contato Direto</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Telefone:</strong><br>(27) 3246-8200</p>
+                    <p><strong>Email:</strong><br>2varacivel.cariacica@tjes.jus.br</p>
+                    <p><strong>Horário:</strong><br>Segunda a Sexta, 12h às 18h</p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-robot me-2"></i>Assistente Virtual</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para dúvidas rápidas, utilize nosso assistente virtual disponível no canto inferior direito.</p>
+                    <p class="text-muted"><small>Disponível 24h para respostas imediatas</small></p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar me-2"></i>Agendamento</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para esclarecimentos presenciais, agende seu atendimento:</p>
+                    <a href="{{ url_for('services.scheduling') }}" class="btn btn-outline-primary w-100">Agendar Atendimento</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-link me-2"></i>Links Úteis</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('services.services_index') }}">Nossos Serviços</a></li>
+                        <li><a href="{{ url_for('services.process_consultation') }}">Consulta Processual</a></li>
+                        <li><a href="{{ url_for('services.hearings') }}">Audiências</a></li>
+                        <li><a href="{{ url_for('main.about') }}">Sobre a Vara</a></li>
+                        <li><a href="https://www.tjes.jus.br" target="_blank" rel="noopener">Portal do TJES</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+// FAQ Search functionality
+document.getElementById('faq-search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const faqItems = document.querySelectorAll('.faq-item');
+    const faqCategories = document.querySelectorAll('.faq-category');
+    const noResults = document.getElementById('no-results');
+    let hasResults = false;
+
+    faqItems.forEach(function(item) {
+        const question = item.querySelector('.accordion-button').textContent.toLowerCase();
+        const answer = item.querySelector('.accordion-body').textContent.toLowerCase();
+        
+        if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+            item.style.display = 'block';
+            hasResults = true;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    // Hide/show categories based on visible items
+    faqCategories.forEach(function(category) {
+        const visibleItems = category.querySelectorAll('.faq-item:not([style*="display: none"])');
+        if (visibleItems.length > 0) {
+            category.style.display = 'block';
+        } else {
+            category.style.display = 'none';
+        }
+    });
+
+    // Show/hide no results message
+    if (hasResults || searchTerm === '') {
+        noResults.style.display = 'none';
+        faqCategories.forEach(function(category) {
+            if (searchTerm === '') {
+                category.style.display = 'block';
+            }
+        });
+        faqItems.forEach(function(item) {
+            if (searchTerm === '') {
+                item.style.display = 'block';
+            }
+        });
+    } else {
+        noResults.style.display = 'block';
+    }
+});
+
+// Expand accordion item if it matches search
+document.getElementById('faq-search').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const visibleItems = document.querySelectorAll('.faq-item:not([style*="display: none"])');
+        if (visibleItems.length === 1) {
+            const button = visibleItems[0].querySelector('.accordion-button');
+            if (button.classList.contains('collapsed')) {
+                button.click();
+            }
+        }
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}
