@@ -1,0 +1,155 @@
+"""
+Application factory for 2ª Vara Cível de Cariacica
+Refactored for scalability and maintainability
+"""
+import os
+import logging
+from logging.handlers import RotatingFileHandler
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_caching import Cache
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+from sqlalchemy.orm import DeclarativeBase
+from werkzeug.middleware.proxy_fix import ProxyFix
+from config import get_config
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+# Initialize extensions
+db = SQLAlchemy(model_class=Base)
+cache = Cache()
+limiter = Limiter(
+    get_remote_address,
+    default_limits=["1000 per hour"]
+)
+
+
+def create_app(config_name=None):
+    """Application factory pattern for better scalability"""
+    app = Flask(__name__)
+    
+    # Load configuration
+    if config_name is None:
+        config_name = os.environ.get('FLASK_ENV', 'development')
+    
+    config_class = get_config()
+    app.config.from_object(config_class)
+    
+    # Initialize extensions
+    db.init_app(app)
+    cache.init_app(app)
+    limiter.init_app(app)
+    
+    # Configure proxy handling for production
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
+    
+    # Setup logging
+    setup_logging(app)
+    
+    # Register blueprints
+    register_blueprints(app)
+    
+    # Setup error handlers
+    setup_error_handlers(app)
+    
+    # Create database tables
+    with app.app_context():
+        import models
+        db.create_all()
+    
+    # Setup monitoring
+    setup_monitoring(app)
+    
+    return app
+
+
+def setup_logging(app):
+    """Configure application logging"""
+    if not app.debug and not app.testing:
+        # File logging for production
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        
+        file_handler = RotatingFileHandler(
+            'logs/court_app.log',
+            maxBytes=app.config.get('LOG_MAX_SIZE', 10240000),
+            backupCount=app.config.get('LOG_BACKUP_COUNT', 10)
+        )
+        
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        
+        file_handler.setLevel(getattr(logging, app.config.get('LOG_LEVEL', 'INFO')))
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(getattr(logging, app.config.get('LOG_LEVEL', 'INFO')))
+        app.logger.info('Court application startup')
+
+
+def register_blueprints(app):
+    """Register application blueprints"""
+    from routes import main_bp, services_bp, chatbot_bp, admin_bp
+    
+    app.register_blueprint(main_bp)
+    app.register_blueprint(services_bp)
+    app.register_blueprint(chatbot_bp)
+    app.register_blueprint(admin_bp)
+
+
+def setup_error_handlers(app):
+    """Setup centralized error handling"""
+    @app.errorhandler(404)
+    def not_found_error(error):
+        app.logger.warning(f'404 error: {error}')
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def internal_error(error):
+        app.logger.error(f'500 error: {error}')
+        db.session.rollback()
+        return render_template('errors/500.html'), 500
+    
+    @app.errorhandler(403)
+    def forbidden_error(error):
+        app.logger.warning(f'403 error: {error}')
+        return render_template('errors/403.html'), 403
+    
+    @app.errorhandler(429)
+    def ratelimit_handler(e):
+        app.logger.warning(f'Rate limit exceeded: {e}')
+        return render_template('errors/429.html'), 429
+
+
+def setup_monitoring(app):
+    """Setup application monitoring"""
+    try:
+        from error_monitor import setup_flask_error_handlers, start_monitoring
+        setup_flask_error_handlers(app)
+        start_monitoring()
+    except ImportError:
+        app.logger.warning('Error monitoring not available')
+    
+    # Health check endpoint
+    @app.route('/health')
+    @limiter.exempt
+    def health_check():
+        """Simple health check endpoint"""
+        return {'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()}
+
+
+# For backwards compatibility
+app = create_app()
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--config', default='development',
+                       help='Configuration to use (development, production, testing)')
+    args = parser.parse_args()
+    
+    app = create_app(args.config)
+    app.run(host='0.0.0.0', port=5000, debug=app.config.get('DEBUG', False))
