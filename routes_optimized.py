@@ -177,7 +177,7 @@ def scheduling():
             {'value': 'hybrid', 'label': 'Híbrida'}
         ]
         
-        return render_template('services/scheduling.html', 
+        return render_template('services/scheduling_new.html', 
                              available_slots=available_slots,
                              hearing_types=hearing_types,
                              hearing_modes=hearing_modes)
@@ -431,3 +431,156 @@ def internal_error(error):
 @main_bp.errorhandler(429)
 def ratelimit_handler(e):
     return render_template('errors/429.html'), 429
+
+
+# Scheduling API endpoints
+@services_bp.route('/api/available-slots')
+@limiter.limit("30 per minute")
+def get_available_slots():
+    """API endpoint to get available time slots"""
+    try:
+        start_date_str = request.args.get('start_date')
+        end_date_str = request.args.get('end_date')
+        hearing_type = request.args.get('hearing_type')
+        
+        if not start_date_str or not end_date_str:
+            return jsonify({'error': 'Start and end dates are required'}), 400
+        
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+        
+        slots = SchedulingService.get_available_slots(start_date, end_date, hearing_type)
+        
+        return jsonify({
+            'success': True,
+            'slots': slots
+        })
+    
+    except ValueError:
+        return jsonify({'error': 'Invalid date format'}), 400
+    except Exception as e:
+        logging.error(f"Error getting available slots: {e}")
+        return jsonify({'error': 'Erro interno do servidor'}), 500
+
+
+@services_bp.route('/api/schedule-hearing', methods=['POST'])
+@limiter.limit("10 per minute")
+@validate_request_data(required_fields=['process_number', 'hearing_type', 'hearing_mode', 
+                                       'slot_id', 'lawyer_name', 'lawyer_email', 'client_name'])
+def schedule_hearing(validated_data):
+    """Schedule a new hearing"""
+    try:
+        slot_id = validated_data.get('slot_id')
+        slot = AvailableTimeSlot.query.get(slot_id)
+        
+        if not slot or not slot.is_bookable:
+            return jsonify({
+                'success': False,
+                'error': 'Horário selecionado não está disponível'
+            }), 400
+        
+        schedule_data = {
+            'process_number': validated_data['process_number'],
+            'hearing_type': validated_data['hearing_type'],
+            'hearing_mode': validated_data['hearing_mode'],
+            'scheduled_date': slot.datetime_start,
+            'duration_minutes': validated_data.get('duration_minutes', 60),
+            'lawyer_name': validated_data['lawyer_name'],
+            'lawyer_email': validated_data['lawyer_email'],
+            'lawyer_phone': validated_data.get('lawyer_phone'),
+            'client_name': validated_data['client_name'],
+            'notes': validated_data.get('notes'),
+            'slot_id': slot_id
+        }
+        
+        hearing, error = SchedulingService.create_hearing_schedule(schedule_data)
+        
+        if error:
+            return jsonify({
+                'success': False,
+                'error': error
+            }), 400
+        
+        session_id = str(uuid.uuid4())
+        session[f'hearing_confirmation_{session_id}'] = hearing.id
+        
+        return jsonify({
+            'success': True,
+            'hearing_id': hearing.id,
+            'confirmation_id': session_id,
+            'scheduled_date': hearing.scheduled_date.strftime('%d/%m/%Y às %H:%M'),
+            'meeting_details': {
+                'meeting_link': hearing.meeting_link,
+                'meeting_id': hearing.meeting_id,
+                'meeting_password': hearing.meeting_password
+            } if hearing.hearing_mode in ['virtual', 'hybrid'] else None
+        })
+    
+    except Exception as e:
+        logging.error(f"Error scheduling hearing: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Erro interno do servidor'
+        }), 500
+
+
+@services_bp.route('/agendamento/confirmacao/<confirmation_id>')
+def hearing_confirmation(confirmation_id):
+    """Display hearing confirmation details"""
+    try:
+        hearing_id = session.get(f'hearing_confirmation_{confirmation_id}')
+        
+        if not hearing_id:
+            flash('Confirmação não encontrada ou expirada', 'error')
+            return redirect(url_for('services.scheduling'))
+        
+        hearing = SchedulingService.get_hearing_schedule(hearing_id)
+        
+        if not hearing:
+            flash('Agendamento não encontrado', 'error')
+            return redirect(url_for('services.scheduling'))
+        
+        return render_template('services/hearing_confirmation.html', hearing=hearing)
+    
+    except Exception as e:
+        logging.error(f"Error displaying confirmation: {e}")
+        flash('Erro ao exibir confirmação', 'error')
+        return redirect(url_for('services.scheduling'))
+
+
+@services_bp.route('/api/calendar-export/<int:hearing_id>')
+def export_to_calendar(hearing_id):
+    """Export hearing to calendar (ICS format)"""
+    try:
+        hearing = SchedulingService.get_hearing_schedule(hearing_id)
+        
+        if not hearing:
+            return jsonify({'error': 'Agendamento não encontrado'}), 404
+        
+        ics_content = f"""BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//2ª Vara Cível Cariacica//Agendamento//PT
+BEGIN:VEVENT
+UID:{hearing.id}@varacivel.cariacica.tjes.jus.br
+DTSTART:{hearing.scheduled_date.strftime('%Y%m%dT%H%M%S')}
+DTEND:{(hearing.scheduled_date + timedelta(minutes=hearing.duration_minutes)).strftime('%Y%m%dT%H%M%S')}
+SUMMARY:Audiência - Processo {hearing.process_number}
+DESCRIPTION:Tipo: {hearing.hearing_type}\\nModo: {hearing.hearing_mode}\\nAdvogado: {hearing.lawyer_name}\\nCliente: {hearing.client_name}
+LOCATION:{hearing.meeting_link if hearing.hearing_mode == 'virtual' else '2ª Vara Cível de Cariacica'}
+STATUS:CONFIRMED
+SEQUENCE:0
+END:VEVENT
+END:VCALENDAR"""
+        
+        from flask import Response
+        return Response(
+            ics_content,
+            mimetype='text/calendar',
+            headers={
+                'Content-Disposition': f'attachment; filename=audiencia_{hearing.process_number}.ics'
+            }
+        )
+    
+    except Exception as e:
+        logging.error(f"Error exporting to calendar: {e}")
+        return jsonify({'error': 'Erro ao exportar para calendário'}), 500
