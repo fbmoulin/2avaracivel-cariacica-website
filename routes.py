@@ -4,6 +4,8 @@ from services.chatbot import ChatbotService
 from models import Contact, ProcessConsultation, db
 from utils.security import sanitize_input, validate_email
 import logging
+import os
+from datetime import datetime
 
 # Create blueprints
 main_bp = Blueprint('main', __name__)
@@ -158,6 +160,70 @@ def chatbot_message():
     except Exception as e:
         logging.error(f"Chatbot error: {e}")
         return jsonify({'error': 'Erro interno do servidor'}), 500
+
+# System monitoring routes
+@main_bp.route('/admin/status')
+def system_status():
+    """System status dashboard - restricted access"""
+    try:
+        # Basic system information
+        system_info = {
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'database_status': 'Connected',
+            'openai_status': 'Active' if chatbot_service.openai_client else 'Inactive',
+            'server_status': 'Running'
+        }
+        
+        # Check if debug files exist
+        debug_files = {
+            'health_check': os.path.exists('health_check_summary.txt'),
+            'error_log': os.path.exists('errors.log'),
+            'error_report': os.path.exists('error_report.txt')
+        }
+        
+        # Get recent logs if available
+        recent_errors = []
+        if os.path.exists('errors.log'):
+            try:
+                with open('errors.log', 'r') as f:
+                    lines = f.readlines()
+                    recent_errors = lines[-10:]  # Last 10 lines
+            except:
+                pass
+        
+        return render_template('admin/status.html', 
+                             system_info=system_info,
+                             debug_files=debug_files,
+                             recent_errors=recent_errors)
+    except Exception as e:
+        logging.error(f"Status dashboard error: {e}")
+        return jsonify({'error': 'Unable to load status'}), 500
+
+@main_bp.route('/admin/health-check')
+def health_check_api():
+    """API endpoint for health check results"""
+    try:
+        if os.path.exists('health_check_summary.txt'):
+            with open('health_check_summary.txt', 'r') as f:
+                content = f.read()
+            return jsonify({'status': 'success', 'content': content})
+        else:
+            return jsonify({'status': 'no_data', 'message': 'No health check data available'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+
+@main_bp.route('/admin/error-report')
+def error_report_api():
+    """API endpoint for error report"""
+    try:
+        if os.path.exists('error_report.txt'):
+            with open('error_report.txt', 'r') as f:
+                content = f.read()
+            return jsonify({'status': 'success', 'content': content})
+        else:
+            return jsonify({'status': 'no_data', 'message': 'No error report available'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
 
 # Error handlers
 @main_bp.errorhandler(404)

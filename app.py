@@ -44,6 +44,14 @@ def create_app():
         import models
         db.create_all()
     
+    # Setup error monitoring
+    try:
+        from error_monitor import setup_flask_error_handlers, start_monitoring
+        setup_flask_error_handlers(app)
+        start_monitoring()
+    except ImportError:
+        pass
+    
     return app
 
 # Create the app instance
