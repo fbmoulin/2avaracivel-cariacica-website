@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Serviços - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block description %}Conheça todos os serviços oferecidos pela 2ª Vara Cível de Cariacica. Consulta processual, agendamento, audiências e muito mais.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Serviços</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-12">
+            <h1>Nossos Serviços</h1>
+            <p class="lead">A 2ª Vara Cível de Cariacica oferece diversos serviços para facilitar o acesso à justiça.</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        {% if services %}
+            {% for service in services %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card service-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-{{ service.icon }} fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">{{ service.nome }}</h5>
+                        <p class="card-text">{{ service.descricao }}</p>
+                        {% if service.detalhes %}
+                        <p class="card-text"><small class="text-muted">{{ service.detalhes }}</small></p>
+                        {% endif %}
+                        <a href="{{ service.url }}" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card service-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Consulta Processual</h5>
+                        <p class="card-text">Consulte o andamento de seus processos através do número CNJ</p>
+                        <a href="{{ url_for('services.process_consultation') }}" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card service-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-calendar fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Agendamento</h5>
+                        <p class="card-text">Agende seu atendimento presencial com antecedência</p>
+                        <a href="{{ url_for('services.scheduling') }}" class="btn btn-primary">Agendar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card service-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Audiências</h5>
+                        <p class="card-text">Informações sobre audiências presenciais e virtuais</p>
+                        <a href="{{ url_for('services.hearings') }}" class="btn btn-primary">Ver Mais</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card service-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-monitor fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Balcão Virtual</h5>
+                        <p class="card-text">Atendimento online para dúvidas e solicitações simples</p>
+                        <a href="{{ url_for('services.virtual_desk') }}" class="btn btn-primary">Acessar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card service-card h-100">
+                    <div class="card-body text-center">
+                        <i class="fas fa-file-text fa-3x text-primary mb-3"></i>
+                        <h5 class="card-title">Certidões</h5>
+                        <p class="card-text">Solicite certidões e outros documentos oficiais</p>
+                        <a href="{{ url_for('services.certificates') }}" class="btn btn-primary">Solicitar</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2>Informações Importantes</h2>
+            <div class="alert alert-info">
+                <h5><i class="fas fa-info-circle me-2"></i>Horário de Atendimento</h5>
+                <p>Nossos serviços presenciais funcionam de segunda a sexta-feira, das 12h às 18h. Os serviços virtuais estão disponíveis 24 horas por dia.</p>
+            </div>
+            
+            <div class="alert alert-warning">
+                <h5><i class="fas fa-exclamation-triangle me-2"></i>Documentação Necessária</h5>
+                <p>Para alguns serviços, é necessário apresentar documentação específica. Consulte os detalhes de cada serviço ou entre em contato conosco para esclarecimentos.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-question-circle me-2"></i>Dúvidas Frequentes</h5>
+                </div>
+                <div class="card-body">
+                    <p>Consulte nossa seção de FAQ para esclarecimentos sobre nossos serviços e procedimentos.</p>
+                    <a href="{{ url_for('main.faq') }}" class="btn btn-outline-primary">Ver FAQ</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Precisa de Ajuda?</h5>
+                </div>
+                <div class="card-body">
+                    <p>Entre em contato conosco para esclarecimentos ou atendimento personalizado.</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary">Fale Conosco</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

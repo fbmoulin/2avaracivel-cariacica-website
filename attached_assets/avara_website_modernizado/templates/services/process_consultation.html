@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+
+{% block title %}Consulta Processual - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block description %}Consulte o andamento do seu processo na 2ª Vara Cível de Cariacica através do número CNJ.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('services.services_index') }}">Serviços</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Consulta Processual</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Consulta Processual</h1>
+            <p class="lead">Consulte o andamento do seu processo na 2ª Vara Cível de Cariacica.</p>
+            
+            <section class="mb-5">
+                <h2>Como Consultar seu Processo</h2>
+                <p>Para consultar o andamento do seu processo, você pode utilizar:</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-search text-primary me-2"></i>Número CNJ</h5>
+                                <p class="card-text">Use o número único do processo no formato CNJ (20 dígitos).</p>
+                                <p class="text-muted"><small>Formato: 0000000-00.0000.0.00.0000</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-globe text-primary me-2"></i>Portal do TJES</h5>
+                                <p class="card-text">Acesse o portal oficial do Tribunal de Justiça do ES.</p>
+                                <a href="https://www.tjes.jus.br" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary">Acessar Portal</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Consulta Rápida</h2>
+                <p>Digite o número do processo para verificar informações básicas:</p>
+                
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="process_number" class="form-label">Número do Processo *</label>
+                                <input type="text" class="form-control form-control-lg" id="process_number" name="process_number" required 
+                                       placeholder="0000000-00.0000.0.00.0000" maxlength="25">
+                                <div class="invalid-feedback">Por favor, informe o número do processo.</div>
+                                <div class="form-text">Digite apenas os números ou use o formato completo com pontos e hífen.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-search me-2"></i>Consultar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Informações que Você Pode Consultar</h2>
+                <p>Através da consulta processual, você pode verificar:</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Situação atual do processo</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Última movimentação</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Próximos atos processuais</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Prazos em andamento</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Partes envolvidas</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Advogados constituídos</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Valor da causa</li>
+                            <li class="list-group-item"><i class="fas fa-check-circle text-success me-2"></i>Data de distribuição</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Entendendo o Número CNJ</h2>
+                <p>O número CNJ é composto por 20 dígitos organizados da seguinte forma:</p>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>Formato do Número CNJ</h5>
+                    <p><strong>NNNNNNN-DD.AAAA.J.TR.OOOO</strong></p>
+                    <ul class="mb-0">
+                        <li><strong>NNNNNNN:</strong> Número sequencial do processo</li>
+                        <li><strong>DD:</strong> Dígito verificador</li>
+                        <li><strong>AAAA:</strong> Ano de início do processo</li>
+                        <li><strong>J:</strong> Segmento do Poder Judiciário (8 = Justiça Estadual)</li>
+                        <li><strong>TR:</strong> Tribunal (08 = TJES)</li>
+                        <li><strong>OOOO:</strong> Órgão julgador</li>
+                    </ul>
+                </div>
+                
+                <h4>Exemplo de Número CNJ</h4>
+                <p><code>5001234-56.2024.8.08.0015</code></p>
+                <ul>
+                    <li>Processo nº 5001234, dígito 56</li>
+                    <li>Iniciado em 2024</li>
+                    <li>Justiça Estadual (8)</li>
+                    <li>Tribunal de Justiça do ES (08)</li>
+                    <li>2ª Vara Cível de Cariacica (0015)</li>
+                </ul>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Outras Formas de Consulta</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-globe text-primary me-2"></i>Portal do TJES</h5>
+                                <p class="card-text">Consulta completa com histórico detalhado e documentos.</p>
+                                <a href="https://www.tjes.jus.br" target="_blank" rel="noopener" class="btn btn-primary">Acessar Portal</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-phone text-primary me-2"></i>Atendimento Presencial</h5>
+                                <p class="card-text">Consulta presencial com atendimento personalizado.</p>
+                                <a href="{{ url_for('services.scheduling') }}" class="btn btn-outline-primary">Agendar Atendimento</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Dúvidas Frequentes sobre Consulta</h2>
+                <div class="accordion" id="consultaAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                Não consigo encontrar meu processo pelo número
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#consultaAccordion">
+                            <div class="accordion-body">
+                                Verifique se o número está correto e no formato CNJ. Se o processo for muito antigo, pode não estar disponível na consulta online. Nesse caso, entre em contato conosco.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingTwo">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                O processo aparece como "segredo de justiça"
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#consultaAccordion">
+                            <div class="accordion-body">
+                                Processos em segredo de justiça só podem ser consultados pelas partes e seus advogados. Para acessar informações, compareça presencialmente com documentos que comprovem sua legitimidade.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingThree">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                Como saber se houve uma nova movimentação?
+                            </button>
+                        </h2>
+                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#consultaAccordion">
+                            <div class="accordion-body">
+                                Você pode configurar alertas no portal do TJES ou consultar periodicamente. Advogados constituídos recebem intimações por meio eletrônico.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingFour">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                Posso consultar processos de outras pessoas?
+                            </button>
+                        </h2>
+                        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#consultaAccordion">
+                            <div class="accordion-body">
+                                Não. Você só pode consultar processos nos quais seja parte, advogado constituído ou tenha interesse jurídico comprovado.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle me-2"></i>Informações Importantes</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Consulta gratuita</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Disponível 24 horas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Informações atualizadas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Acesso seguro</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-shield-alt me-2"></i>Privacidade</h5>
+                </div>
+                <div class="card-body">
+                    <p>Suas consultas são registradas apenas para fins estatísticos e não identificam dados pessoais.</p>
+                    <p class="text-muted"><small>Consultas sigilosas requerem identificação.</small></p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-clock me-2"></i>Atualizações</h5>
+                </div>
+                <div class="card-body">
+                    <p>As informações são atualizadas em tempo real durante o horário de funcionamento da vara.</p>
+                    <p><strong>Horário:</strong><br>Segunda a Sexta, 12h às 18h</p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Precisa de Ajuda?</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para dúvidas sobre consulta processual:</p>
+                    <p><strong>Telefone:</strong><br>(27) 3246-8200</p>
+                    <p><strong>Email:</strong><br>2varacivel.cariacica@tjes.jus.br</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary w-100">Fale Conosco</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-link me-2"></i>Links Úteis</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.tjes.jus.br" target="_blank" rel="noopener">Portal do TJES</a></li>
+                        <li><a href="https://www.cnj.jus.br" target="_blank" rel="noopener">CNJ</a></li>
+                        <li><a href="{{ url_for('main.faq') }}">Perguntas Frequentes</a></li>
+                        <li><a href="{{ url_for('services.services_index') }}">Outros Serviços</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+<script>
+// Format process number input
+document.getElementById('process_number').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length >= 7) {
+        value = value.slice(0, 7) + '-' + value.slice(7);
+    }
+    if (value.length >= 10) {
+        value = value.slice(0, 10) + '.' + value.slice(10);
+    }
+    if (value.length >= 15) {
+        value = value.slice(0, 15) + '.' + value.slice(15);
+    }
+    if (value.length >= 17) {
+        value = value.slice(0, 17) + '.' + value.slice(17);
+    }
+    if (value.length >= 20) {
+        value = value.slice(0, 20) + '.' + value.slice(20);
+    }
+    e.target.value = value;
+});
+</script>
+{% endblock %}
+{% endblock %}
