@@ -158,12 +158,20 @@ def setup_flask_error_handlers(app):
     @app.errorhandler(404)
     def handle_404(error):
         error_monitor.log_error(error, {'error_code': 404})
-        return render_template('404.html'), 404
+        try:
+            from flask import render_template
+            return render_template('404.html'), 404
+        except:
+            return "404 - Page Not Found", 404
     
     @app.errorhandler(500)
     def handle_500(error):
         error_monitor.log_error(error, {'error_code': 500})
-        return render_template('500.html'), 500
+        try:
+            from flask import render_template
+            return render_template('500.html'), 500
+        except:
+            return "500 - Internal Server Error", 500
     
     @app.errorhandler(Exception)
     def handle_exception(error):
@@ -172,7 +180,11 @@ def setup_flask_error_handlers(app):
             return error
         
         error_monitor.log_error(error, {'error_code': 500})
-        return render_template('500.html'), 500
+        try:
+            from flask import render_template
+            return render_template('500.html'), 500
+        except:
+            return "500 - Internal Server Error", 500
 
 def monitor_performance():
     """Monitor application performance metrics"""
