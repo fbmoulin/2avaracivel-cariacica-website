@@ -652,8 +652,12 @@ class FormHandler {
 
 // Initialize form handler when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    window.formHandler = new FormHandler();
+    if (!window.formHandler) {
+        window.formHandler = new FormHandler();
+    }
 });
 
-// Export for global access
-window.FormHandler = FormHandler;
+// Export for global access only if not already defined
+if (!window.FormHandler) {
+    window.FormHandler = FormHandler;
+}
