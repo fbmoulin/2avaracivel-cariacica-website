@@ -8,13 +8,15 @@ from flask_limiter.util import get_remote_address
 from services.content import ContentService
 from services.chatbot import ChatbotService
 from services.database_service import DatabaseService
+from services.scheduling_service import SchedulingService, initialize_scheduling_system
+from models import HearingSchedule, AvailableTimeSlot
 from services.cache_service import CacheService, cache_faq_data, cache_services_data, cache_news_data
 from utils.security import sanitize_input, validate_email
 from utils.request_middleware import monitor_performance, validate_request_data, cache_response
 from app_factory import limiter, cache
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import uuid
 
 
@@ -150,11 +152,43 @@ def hearings():
 
 
 @services_bp.route('/agendamento')
-@CacheService.cached_route(timeout=CacheService.MEDIUM_CACHE)
 @limiter.limit("15 per minute")
 def scheduling():
-    """Scheduling service page"""
-    return render_template('services/scheduling.html')
+    """Advanced scheduling service page with calendar integration"""
+    try:
+        # Initialize scheduling system if needed
+        initialize_scheduling_system()
+        
+        # Get next 30 days of available slots
+        start_date = date.today()
+        end_date = start_date + timedelta(days=30)
+        available_slots = SchedulingService.get_available_slots(start_date, end_date)
+        
+        # Get hearing types and modes
+        hearing_types = [
+            {'value': 'conciliation', 'label': 'Audiência de Conciliação'},
+            {'value': 'instruction', 'label': 'Audiência de Instrução'},
+            {'value': 'judgment', 'label': 'Audiência de Julgamento'}
+        ]
+        
+        hearing_modes = [
+            {'value': 'virtual', 'label': 'Virtual (Online)'},
+            {'value': 'in_person', 'label': 'Presencial'},
+            {'value': 'hybrid', 'label': 'Híbrida'}
+        ]
+        
+        return render_template('services/scheduling.html', 
+                             available_slots=available_slots,
+                             hearing_types=hearing_types,
+                             hearing_modes=hearing_modes)
+    
+    except Exception as e:
+        logging.error(f"Error loading scheduling page: {e}")
+        flash('Erro ao carregar página de agendamento', 'error')
+        return render_template('services/scheduling.html', 
+                             available_slots=[],
+                             hearing_types=[],
+                             hearing_modes=[])
 
 
 @services_bp.route('/balcao-virtual')
