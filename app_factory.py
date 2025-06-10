@@ -15,6 +15,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from config import get_config
 from services.integration_service import setup_integration_services, integration_service
 from utils.request_middleware import RequestMiddleware
+from utils.workflow_optimizer import start_workflow_engine, stop_workflow_engine
 
 
 class Base(DeclarativeBase):
@@ -73,9 +74,13 @@ def create_app(config_name=None):
     request_middleware = RequestMiddleware()
     request_middleware.init_app(app)
     
+    # Start workflow engine
+    start_workflow_engine()
+    
     # Setup graceful shutdown handler
     import atexit
     atexit.register(integration_service.graceful_shutdown)
+    atexit.register(stop_workflow_engine)
     
     return app
 
