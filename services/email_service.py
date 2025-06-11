@@ -25,7 +25,7 @@ class EmailService:
         self.email_user = os.environ.get('EMAIL_USER')
         self.email_password = os.environ.get('EMAIL_PASSWORD')
         self.from_email = os.environ.get('FROM_EMAIL', 'noreply@varacivel.cariacica.tjes.jus.br')
-        self.admin_email = 'fbmoulin@tjes.jus.br'
+        self.admin_email = os.environ.get('ADMIN_EMAIL', 'fbmoulin@tjes.jus.br')
         
     def send_email(self, to_email: str, subject: str, body: str, 
                    attachments: Optional[List[str]] = None, is_html: bool = True) -> bool:
