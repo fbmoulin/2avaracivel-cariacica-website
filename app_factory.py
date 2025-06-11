@@ -47,6 +47,14 @@ def create_app(config_name=None):
     cache.init_app(app)
     limiter.init_app(app)
     
+    # Initialize scheduler service for automated reports
+    try:
+        from services.scheduler_service import scheduler_service
+        scheduler_service.start()
+        app.logger.info("Automated email reporting service started")
+    except Exception as e:
+        app.logger.error(f"Failed to start scheduler service: {e}")
+    
     # Configure proxy handling for production
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     

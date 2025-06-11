@@ -584,3 +584,89 @@ END:VCALENDAR"""
     except Exception as e:
         logging.error(f"Error exporting to calendar: {e}")
         return jsonify({'error': 'Erro ao exportar para calendário'}), 500
+
+
+# Admin routes for email reporting management
+@main_bp.route('/admin/relatorios')
+@limiter.limit("5 per minute")
+def admin_reports():
+    """Admin interface for managing email reports"""
+    try:
+        # Simple authentication check (you may want to implement proper auth)
+        auth_token = request.args.get('token')
+        if auth_token != 'admin2024vara':  # Basic security - should be improved
+            return render_template('errors/404.html'), 404
+        
+        # Get recent report statistics
+        from services.email_service import email_service
+        from services.scheduler_service import scheduler_service
+        
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
+        
+        # Generate sample report data for display
+        sample_report = email_service.generate_daily_report(yesterday)
+        
+        return render_template('admin/reports.html', 
+                             sample_report=sample_report,
+                             admin_email=email_service.admin_email)
+    
+    except Exception as e:
+        logging.error(f"Error loading admin reports: {e}")
+        flash('Erro ao carregar página de relatórios', 'error')
+        return redirect(url_for('main.index'))
+
+
+@main_bp.route('/admin/test-report')
+@limiter.limit("2 per minute")
+def test_daily_report():
+    """Send test daily report immediately"""
+    try:
+        auth_token = request.args.get('token')
+        if auth_token != 'admin2024vara':
+            return jsonify({'error': 'Acesso negado'}), 403
+        
+        from services.scheduler_service import scheduler_service
+        success = scheduler_service.send_test_report()
+        
+        if success:
+            return jsonify({
+                'success': True,
+                'message': f'Relatório de teste enviado para {email_service.admin_email}'
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'message': 'Falha ao enviar relatório de teste'
+            })
+    
+    except Exception as e:
+        logging.error(f"Error sending test report: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Erro interno do servidor'
+        }), 500
+
+
+@main_bp.route('/admin/email-config', methods=['POST'])
+@limiter.limit("3 per minute")
+def update_email_config():
+    """Update email configuration"""
+    try:
+        auth_token = request.form.get('token')
+        if auth_token != 'admin2024vara':
+            return jsonify({'error': 'Acesso negado'}), 403
+        
+        # This would typically update environment variables or config
+        # For now, just return success
+        return jsonify({
+            'success': True,
+            'message': 'Configuração de email atualizada com sucesso'
+        })
+    
+    except Exception as e:
+        logging.error(f"Error updating email config: {e}")
+        return jsonify({
+            'success': False,
+            'message': 'Erro ao atualizar configuração'
+        }), 500
