@@ -587,7 +587,7 @@ END:VCALENDAR"""
 
 
 # Admin routes for email reporting management
-@main_bp.route('/admin/relatorios')
+@admin_bp.route('/relatorios')
 @limiter.limit("5 per minute")
 def admin_reports():
     """Admin interface for managing email reports"""
@@ -617,7 +617,7 @@ def admin_reports():
         return redirect(url_for('main.index'))
 
 
-@main_bp.route('/admin/test-report')
+@admin_bp.route('/test-report')
 @limiter.limit("2 per minute")
 def test_daily_report():
     """Send test daily report immediately"""
@@ -648,7 +648,7 @@ def test_daily_report():
         }), 500
 
 
-@main_bp.route('/admin/email-config', methods=['POST'])
+@admin_bp.route('/email-config', methods=['POST'])
 @limiter.limit("3 per minute")
 def update_email_config():
     """Update email configuration"""

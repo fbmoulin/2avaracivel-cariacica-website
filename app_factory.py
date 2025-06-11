@@ -125,7 +125,10 @@ def register_blueprints(app):
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
         app.register_blueprint(admin_bp)
-    except ImportError:
+        
+        app.logger.info("All blueprints registered successfully")
+    except ImportError as e:
+        app.logger.error(f"Blueprint import error: {e}")
         # Fallback to original routes if optimized not available
         from routes import main_bp, services_bp, chatbot_bp
         
