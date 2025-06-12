@@ -70,6 +70,7 @@
                     </h3>
 
                     <form id="assessor-meeting-form" method="POST" action="/servicos/agendar-assessor">
+                        {{ csrf_token() }}
                         <!-- Personal Information -->
                         <div class="row mb-4">
                             <div class="col-md-6">

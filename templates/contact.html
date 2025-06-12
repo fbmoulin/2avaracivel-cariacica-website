@@ -33,7 +33,7 @@
                 <p>Envie sua mensagem através do formulário abaixo e retornaremos em breve:</p>
                 
                 <form method="POST" class="enhanced-form" id="contactForm" novalidate>
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {{ csrf_token() }}
                 
                     <div class="row">
                         <div class="col-md-6">

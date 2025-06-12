@@ -138,6 +138,7 @@
                 <p>Preencha o formulário abaixo para solicitar seu agendamento:</p>
                 
                 <form method="POST" class="needs-validation" novalidate>
+                {{ csrf_token() }}
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">

@@ -54,6 +54,7 @@
                 <p>Digite o número do processo para verificar informações básicas:</p>
                 
                 <form method="POST" class="needs-validation" novalidate>
+                {{ csrf_token() }}
                     <div class="row">
                         <div class="col-md-8">
                             <div class="mb-3">
