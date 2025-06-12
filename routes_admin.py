@@ -5,6 +5,7 @@ Provides comprehensive dashboard for monitoring system health and performance
 from flask import Blueprint, render_template, jsonify, request
 import logging
 import json
+import os
 from datetime import datetime, timedelta
 
 # Create admin blueprint
