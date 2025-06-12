@@ -48,6 +48,8 @@
     
     <!-- Critical CSS - Inline for faster rendering -->
     <link href="{{ url_for('static', filename='css/critical.css') }}" rel="stylesheet" id="critical-css">
+    <!-- Accessibility CSS -->
+    <link href="{{ url_for('static', filename='css/accessibility.css') }}" rel="stylesheet" id="accessibility-css">
     
     <!-- Non-critical CSS - Defer loading -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">

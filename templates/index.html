@@ -6,14 +6,15 @@
 
 {% block content %}
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section" role="banner" aria-labelledby="hero-title">
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="hero-banner-container-full mb-5">
                     <img src="{{ url_for('static', filename='images/banners/banner_principal.png') }}" 
-                         alt="2ª Vara Cível de Cariacica" 
-                         class="hero-banner-title-full">
+                         alt="Banner oficial da 2ª Vara Cível de Cariacica - Tribunal de Justiça do Espírito Santo" 
+                         class="hero-banner-title-full"
+                         role="img">
                 </div>
             </div>
         </div>
