@@ -155,44 +155,143 @@ class VoiceAccessibilityManager {
     }
 
     createAccessibilityControls() {
+        // Create the main accessibility toggle button
+        const accessibilityToggle = document.createElement('button');
+        accessibilityToggle.id = 'accessibility-toggle';
+        accessibilityToggle.className = 'accessibility-toggle-btn';
+        accessibilityToggle.innerHTML = `
+            <i class="fas fa-universal-access"></i>
+            <span>Acessibilidade</span>
+        `;
+        accessibilityToggle.title = 'Abrir controles de acessibilidade';
+
+        // Create the main controls container
         const controlsContainer = document.createElement('div');
-        controlsContainer.id = 'voice-accessibility-controls';
+        controlsContainer.id = 'accessibility-controls-container';
+        controlsContainer.style.display = 'none';
         controlsContainer.innerHTML = `
-            <div class="accessibility-panel">
-                <button id="toggle-voice" class="accessibility-btn" title="Alternar guia de voz (Alt+V)">
-                    <i class="fas fa-volume-up"></i>
-                    <span>Guia de Voz</span>
-                </button>
-                <button id="voice-listen" class="accessibility-btn" title="Comando de voz (Alt+L)">
-                    <i class="fas fa-microphone"></i>
-                    <span>Escutar</span>
-                </button>
-                <button id="read-page" class="accessibility-btn" title="Ler página (Alt+R)">
-                    <i class="fas fa-book-reader"></i>
-                    <span>Ler Página</span>
-                </button>
-                <button id="voice-help" class="accessibility-btn" title="Ajuda de voz (Alt+H)">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Ajuda</span>
-                </button>
-                <div class="voice-controls">
-                    <label for="speech-rate">Velocidade:</label>
-                    <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="1">
-                    <label for="speech-volume">Volume:</label>
-                    <input type="range" id="speech-volume" min="0" max="1" step="0.1" value="0.8">
+            <div class="accessibility-boxcard">
+                <div class="accessibility-header">
+                    <h6><i class="fas fa-universal-access me-2"></i>Controles de Acessibilidade</h6>
+                    <button id="close-accessibility" class="close-btn" title="Fechar controles">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div id="listening-indicator" class="listening-indicator" style="display: none;">
-                    <i class="fas fa-microphone"></i>
-                    <span>Escutando...</span>
+                
+                <div class="accessibility-content">
+                    <!-- Voice Controls Section -->
+                    <div class="control-section">
+                        <h7><i class="fas fa-volume-up me-2"></i>Controles de Voz</h7>
+                        <div class="controls-grid">
+                            <button id="toggle-voice" class="control-btn" title="Ativar/Desativar guia de voz (Alt+V)">
+                                <i class="fas fa-volume-up"></i>
+                                <span>Guia de Voz</span>
+                            </button>
+                            <button id="voice-listen" class="control-btn" title="Comando de voz (Alt+L)">
+                                <i class="fas fa-microphone"></i>
+                                <span>Escutar</span>
+                            </button>
+                            <button id="read-page" class="control-btn" title="Ler página (Alt+R)">
+                                <i class="fas fa-book-reader"></i>
+                                <span>Ler Página</span>
+                            </button>
+                            <button id="voice-help" class="control-btn" title="Ajuda de voz (Alt+H)">
+                                <i class="fas fa-question-circle"></i>
+                                <span>Ajuda</span>
+                            </button>
+                        </div>
+                        
+                        <div class="voice-settings">
+                            <div class="setting-item">
+                                <label for="speech-rate">Velocidade da Fala:</label>
+                                <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="1">
+                                <span class="range-value">1.0x</span>
+                            </div>
+                            <div class="setting-item">
+                                <label for="speech-volume">Volume:</label>
+                                <input type="range" id="speech-volume" min="0" max="1" step="0.1" value="0.8">
+                                <span class="range-value">80%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Visual Controls Section -->
+                    <div class="control-section">
+                        <h7><i class="fas fa-eye me-2"></i>Controles Visuais</h7>
+                        <div class="controls-grid">
+                            <button id="increase-font" class="control-btn" title="Aumentar tamanho da fonte">
+                                <i class="fas fa-plus"></i>
+                                <span>Fonte +</span>
+                            </button>
+                            <button id="decrease-font" class="control-btn" title="Diminuir tamanho da fonte">
+                                <i class="fas fa-minus"></i>
+                                <span>Fonte -</span>
+                            </button>
+                            <button id="toggle-contrast" class="control-btn" title="Alto contraste">
+                                <i class="fas fa-adjust"></i>
+                                <span>Contraste</span>
+                            </button>
+                            <button id="reset-visual" class="control-btn" title="Restaurar configurações visuais">
+                                <i class="fas fa-undo"></i>
+                                <span>Restaurar</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Controls Section -->
+                    <div class="control-section">
+                        <h7><i class="fas fa-keyboard me-2"></i>Navegação e Atalhos</h7>
+                        <div class="shortcuts-info">
+                            <div class="shortcut-item">
+                                <kbd>Alt + V</kbd>
+                                <span>Ativar/Desativar guia de voz</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Alt + L</kbd>
+                                <span>Comando de voz</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Alt + R</kbd>
+                                <span>Ler conteúdo da página</span>
+                            </div>
+                            <div class="shortcut-item">
+                                <kbd>Alt + H</kbd>
+                                <span>Ajuda de acessibilidade</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Indicators -->
+                    <div class="status-section">
+                        <div id="listening-indicator" class="status-indicator" style="display: none;">
+                            <i class="fas fa-microphone pulse"></i>
+                            <span>Escutando comando de voz...</span>
+                        </div>
+                        <div id="voice-status" class="status-indicator">
+                            <i class="fas fa-volume-mute"></i>
+                            <span>Guia de voz desativado</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
 
+        document.body.appendChild(accessibilityToggle);
         document.body.appendChild(controlsContainer);
         this.setupControlsEventListeners();
     }
 
     setupControlsEventListeners() {
+        // Toggle accessibility panel
+        document.getElementById('accessibility-toggle').addEventListener('click', () => {
+            this.toggleAccessibilityPanel();
+        });
+
+        document.getElementById('close-accessibility').addEventListener('click', () => {
+            this.toggleAccessibilityPanel();
+        });
+
+        // Voice controls
         document.getElementById('toggle-voice').addEventListener('click', () => {
             this.toggleVoiceGuidance();
         });
@@ -209,30 +308,138 @@ class VoiceAccessibilityManager {
             this.provideVoiceHelp();
         });
 
-        document.getElementById('speech-rate').addEventListener('change', (event) => {
-            this.speechRate = parseFloat(event.target.value);
+        // Voice settings with value display
+        document.getElementById('speech-rate').addEventListener('input', (event) => {
+            const value = parseFloat(event.target.value);
+            this.speechRate = value;
+            event.target.nextElementSibling.textContent = `${value.toFixed(1)}x`;
         });
 
-        document.getElementById('speech-volume').addEventListener('change', (event) => {
-            this.speechVolume = parseFloat(event.target.value);
+        document.getElementById('speech-volume').addEventListener('input', (event) => {
+            const value = parseFloat(event.target.value);
+            this.speechVolume = value;
+            event.target.nextElementSibling.textContent = `${Math.round(value * 100)}%`;
         });
+
+        // Visual controls
+        document.getElementById('increase-font').addEventListener('click', () => {
+            this.increaseFontSize();
+        });
+
+        document.getElementById('decrease-font').addEventListener('click', () => {
+            this.decreaseFontSize();
+        });
+
+        document.getElementById('toggle-contrast').addEventListener('click', () => {
+            this.toggleHighContrast();
+        });
+
+        document.getElementById('reset-visual').addEventListener('click', () => {
+            this.resetVisualSettings();
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (event) => {
+            const panel = document.getElementById('accessibility-controls-container');
+            const toggle = document.getElementById('accessibility-toggle');
+            
+            if (panel.style.display === 'block' && 
+                !panel.contains(event.target) && 
+                !toggle.contains(event.target)) {
+                this.toggleAccessibilityPanel();
+            }
+        });
+    }
+
+    toggleAccessibilityPanel() {
+        const panel = document.getElementById('accessibility-controls-container');
+        const isVisible = panel.style.display === 'block';
+        
+        if (isVisible) {
+            panel.style.display = 'none';
+        } else {
+            panel.style.display = 'block';
+        }
     }
 
     toggleVoiceGuidance() {
         this.isEnabled = !this.isEnabled;
         const toggleBtn = document.getElementById('toggle-voice');
+        const statusIndicator = document.getElementById('voice-status');
         
         if (this.isEnabled) {
             toggleBtn.classList.add('active');
+            statusIndicator.innerHTML = `
+                <i class="fas fa-volume-up"></i>
+                <span>Guia de voz ativado</span>
+            `;
+            statusIndicator.classList.add('active');
             this.speak('Guia de voz ativado. Use Alt + H para obter ajuda sobre comandos de voz.');
             this.announcePageInformation();
         } else {
             toggleBtn.classList.remove('active');
+            statusIndicator.innerHTML = `
+                <i class="fas fa-volume-mute"></i>
+                <span>Guia de voz desativado</span>
+            `;
+            statusIndicator.classList.remove('active');
             this.speak('Guia de voz desativado.');
         }
 
         // Store preference
         localStorage.setItem('voiceGuidanceEnabled', this.isEnabled);
+    }
+
+    increaseFontSize() {
+        const currentSize = parseFloat(getComputedStyle(document.body).fontSize);
+        const newSize = Math.min(currentSize + 2, 24); // Max 24px
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('fontSize', newSize);
+        
+        if (this.isEnabled) {
+            this.speak(`Tamanho da fonte aumentado para ${newSize} pixels`);
+        }
+    }
+
+    decreaseFontSize() {
+        const currentSize = parseFloat(getComputedStyle(document.body).fontSize);
+        const newSize = Math.max(currentSize - 2, 12); // Min 12px
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('fontSize', newSize);
+        
+        if (this.isEnabled) {
+            this.speak(`Tamanho da fonte diminuído para ${newSize} pixels`);
+        }
+    }
+
+    toggleHighContrast() {
+        const body = document.body;
+        const isHighContrast = body.classList.contains('high-contrast');
+        
+        if (isHighContrast) {
+            body.classList.remove('high-contrast');
+            localStorage.setItem('highContrast', 'false');
+            if (this.isEnabled) {
+                this.speak('Alto contraste desativado');
+            }
+        } else {
+            body.classList.add('high-contrast');
+            localStorage.setItem('highContrast', 'true');
+            if (this.isEnabled) {
+                this.speak('Alto contraste ativado');
+            }
+        }
+    }
+
+    resetVisualSettings() {
+        document.body.style.fontSize = '';
+        document.body.classList.remove('high-contrast');
+        localStorage.removeItem('fontSize');
+        localStorage.removeItem('highContrast');
+        
+        if (this.isEnabled) {
+            this.speak('Configurações visuais restauradas ao padrão');
+        }
     }
 
     speak(text, options = {}) {
