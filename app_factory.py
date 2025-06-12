@@ -43,6 +43,7 @@ def create_app(config_name=None):
     app.config.from_object(config_class)
     
     # Initialize extensions
+    from models import db
     db.init_app(app)
     cache.init_app(app)
     limiter.init_app(app)
