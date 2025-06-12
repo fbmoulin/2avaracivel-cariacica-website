@@ -329,6 +329,31 @@
             100% { box-shadow: 0 6px 12px rgba(30, 64, 175, 0.5), 0 0 20px rgba(139, 92, 246, 0.3); }
         }
         
+        /* Logo do navbar */
+        .navbar-logo {
+            max-height: 60px !important;
+            width: auto !important;
+            object-fit: contain !important;
+            filter: brightness(1.1) contrast(1.1) !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .navbar-logo:hover {
+            filter: brightness(1.2) contrast(1.2) drop-shadow(0 4px 8px rgba(255, 255, 255, 0.3)) !important;
+            transform: scale(1.05) !important;
+        }
+        
+        .navbar-brand {
+            padding: 0.5rem 0 !important;
+        }
+        
+        /* Ajuste da altura do navbar para acomodar o logo */
+        .navbar {
+            padding-top: 1rem !important;
+            padding-bottom: 1rem !important;
+            min-height: 80px !important;
+        }
+        
         /* Tipografia geral */
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif !important;
@@ -352,8 +377,9 @@
         <div class="container">
             <nav class="navbar navbar-expand-lg navbar-dark">
                 <a class="navbar-brand" href="{{ url_for('main.index') }}">
-                    <i class="fas fa-balance-scale me-2"></i>
-                    2ª Vara Cível de Cariacica
+                    <img src="{{ url_for('static', filename='images/banners/banner_principal.png') }}" 
+                         alt="2ª Vara Cível de Cariacica" 
+                         class="navbar-logo">
                 </a>
                 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
