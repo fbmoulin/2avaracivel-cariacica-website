@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Notícias - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block description %}Acompanhe as últimas notícias e atualizações da 2ª Vara Cível de Cariacica.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Notícias</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Notícias e Atualizações</h1>
+            <p class="lead">Acompanhe as últimas notícias, comunicados e atualizações da 2ª Vara Cível de Cariacica.</p>
+            
+            {% if news %}
+                <div class="row">
+                    {% for item in news %}
+                    <div class="col-12 mb-4">
+                        <article class="card news-article">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="badge bg-primary">{{ item.published_at }}</span>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Publicado em {{ item.published_at }}
+                                    </small>
+                                </div>
+                                
+                                <h2 class="card-title h4">
+                                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#newsModal{{ item.id }}">
+                                        {{ item.title }}
+                                    </a>
+                                </h2>
+                                
+                                <p class="card-text">{{ item.summary }}</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newsModal{{ item.id }}">
+                                        <i class="fas fa-eye me-2"></i>Ler Mais
+                                    </button>
+                                    <div class="news-meta">
+                                        <span class="text-muted">
+                                            <i class="fas fa-tag me-1"></i>Comunicado Oficial
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    
+                    <!-- Modal for each news item -->
+                    <div class="modal fade" id="newsModal{{ item.id }}" tabindex="-1" aria-labelledby="newsModalLabel{{ item.id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="newsModalLabel{{ item.id }}">{{ item.title }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-2"></i>Publicado em {{ item.published_at }}
+                                        </small>
+                                    </div>
+                                    <div class="news-content">
+                                        {% if item.content %}
+                                            {{ item.content | safe }}
+                                        {% else %}
+                                            {{ item.summary }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Pagination (if needed in the future) -->
+                <nav aria-label="Navegação de notícias" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <span class="page-link">Anterior</span>
+                        </li>
+                        <li class="page-item active">
+                            <span class="page-link">1</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">Próximo</span>
+                        </li>
+                    </ul>
+                </nav>
+                
+            {% else %}
+                <!-- Empty state -->
+                <div class="text-center py-5">
+                    <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                    <h3>Nenhuma notícia disponível</h3>
+                    <p class="text-muted">No momento não há notícias para exibir. Volte em breve para conferir as atualizações.</p>
+                    <a href="{{ url_for('main.index') }}" class="btn btn-primary">Voltar ao Início</a>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-bell me-2"></i>Últimas Atualizações</h5>
+                </div>
+                <div class="card-body">
+                    <p>Mantenha-se informado sobre:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Alterações no funcionamento</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Novos serviços</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Comunicados importantes</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Mudanças processuais</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-rss me-2"></i>Acompanhe Nossas Notícias</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para não perder nenhuma atualização importante:</p>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('main.contact') }}"><i class="fas fa-envelope me-2"></i>Cadastre-se para receber por email</a></li>
+                        <li><a href="https://www.tjes.jus.br" target="_blank" rel="noopener"><i class="fas fa-external-link-alt me-2"></i>Portal do TJES</a></li>
+                        <li><a href="{{ url_for('main.faq') }}"><i class="fas fa-question-circle me-2"></i>FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar me-2"></i>Próximos Eventos</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Não há eventos programados no momento.</p>
+                    <small class="text-muted">Fique atento às próximas atualizações sobre mutirões, plantões especiais e outras atividades.</small>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-link me-2"></i>Links Relacionados</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><a href="https://www.tjes.jus.br" target="_blank" rel="noopener">Portal do TJES</a></li>
+                        <li><a href="https://www.cnj.jus.br" target="_blank" rel="noopener">CNJ - Conselho Nacional de Justiça</a></li>
+                        <li><a href="{{ url_for('main.about') }}">Institucional</a></li>
+                        <li><a href="{{ url_for('services.services_index') }}">Nossos Serviços</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Contato para Imprensa</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para informações à imprensa:</p>
+                    <p><strong>Email:</strong><br>2varacivel.cariacica@tjes.jus.br</p>
+                    <p><strong>Telefone:</strong><br>(27) 3246-8200</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

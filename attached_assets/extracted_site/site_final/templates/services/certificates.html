@@ -1,0 +1,406 @@
+{% extends "base.html" %}
+
+{% block title %}Certidões - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block description %}Solicite certidões e documentos oficiais da 2ª Vara Cível de Cariacica. Processo simples e seguro.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('services.services_index') }}">Serviços</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Certidões</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Certidões e Documentos</h1>
+            <p class="lead">Solicite certidões processuais e outros documentos oficiais da 2ª Vara Cível de Cariacica.</p>
+            
+            <section class="mb-5">
+                <h2>Tipos de Certidões Disponíveis</h2>
+                <p>A 2ª Vara Cível de Cariacica emite os seguintes tipos de certidões e documentos:</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-certificate text-primary me-2"></i>Certidão de Objeto e Pé</h5>
+                                <p class="card-text">Resumo do processo, partes envolvidas e situação atual.</p>
+                                <p class="text-muted"><small>Prazo: 2 a 3 dias úteis</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-file-alt text-primary me-2"></i>Certidão de Inteiro Teor</h5>
+                                <p class="card-text">Cópia completa de peças processuais específicas.</p>
+                                <p class="text-muted"><small>Prazo: 3 a 5 dias úteis</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-gavel text-primary me-2"></i>Certidão de Trânsito em Julgado</h5>
+                                <p class="card-text">Comprova que a decisão não cabe mais recurso.</p>
+                                <p class="text-muted"><small>Prazo: 2 a 3 dias úteis</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-clock text-primary me-2"></i>Certidão de Contagem de Prazo</h5>
+                                <p class="card-text">Informa prazos processuais e suas respectivas datas.</p>
+                                <p class="text-muted"><small>Prazo: 1 a 2 dias úteis</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-search text-primary me-2"></i>Certidão de Busca</h5>
+                                <p class="card-text">Busca de processos por nome das partes ou período.</p>
+                                <p class="text-muted"><small>Prazo: 3 a 5 dias úteis</small></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-copy text-primary me-2"></i>Cópia Autenticada</h5>
+                                <p class="card-text">Cópia de documentos com autenticação oficial.</p>
+                                <p class="text-muted"><small>Prazo: 1 a 2 dias úteis</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Quem Pode Solicitar</h2>
+                <p>As certidões podem ser solicitadas por:</p>
+                <ul>
+                    <li><strong>Partes do processo:</strong> Autor, réu e terceiros intervenientes</li>
+                    <li><strong>Advogados constituídos:</strong> Com procuração válida nos autos</li>
+                    <li><strong>Representantes legais:</strong> Tutores, curadores, pais de menores</li>
+                    <li><strong>Terceiros interessados:</strong> Mediante justificação de interesse jurídico</li>
+                    <li><strong>Órgãos públicos:</strong> Para fins específicos previstos em lei</li>
+                </ul>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>Importante</h5>
+                    <p class="mb-0">Para processos que tramitam em segredo de justiça, apenas as partes e seus advogados podem solicitar certidões, salvo autorização judicial expressa.</p>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Documentos Necessários</h2>
+                <p>Para solicitar certidões, você deve apresentar:</p>
+                
+                <h4>Para Partes do Processo</h4>
+                <ul>
+                    <li>Documento de identidade com foto (original)</li>
+                    <li>CPF (original ou cópia)</li>
+                    <li>Comprovante de que é parte no processo</li>
+                </ul>
+                
+                <h4>Para Advogados</h4>
+                <ul>
+                    <li>Carteira da OAB (original)</li>
+                    <li>Documento de identidade com foto</li>
+                    <li>Procuração (se não constar nos autos)</li>
+                </ul>
+                
+                <h4>Para Terceiros</h4>
+                <ul>
+                    <li>Documento de identidade com foto (original)</li>
+                    <li>CPF (original ou cópia)</li>
+                    <li>Justificação do interesse jurídico</li>
+                    <li>Documentos que comprovem o interesse</li>
+                </ul>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Formulário de Solicitação</h2>
+                <p>Preencha o formulário abaixo para solicitar sua certidão:</p>
+                
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="nome_solicitante" class="form-label">Nome do Solicitante *</label>
+                                <input type="text" class="form-control" id="nome_solicitante" name="nome_solicitante" required>
+                                <div class="invalid-feedback">Por favor, informe seu nome completo.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                                <div class="invalid-feedback">Por favor, informe um email válido.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="telefone" class="form-label">Telefone *</label>
+                                <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                                <div class="invalid-feedback">Por favor, informe seu telefone.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="cpf" class="form-label">CPF *</label>
+                                <input type="text" class="form-control" id="cpf" name="cpf" required>
+                                <div class="invalid-feedback">Por favor, informe seu CPF.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="qualidade" class="form-label">Qualidade no Processo *</label>
+                        <select class="form-select" id="qualidade" name="qualidade" required>
+                            <option value="">Selecione sua qualidade</option>
+                            <option value="autor">Autor</option>
+                            <option value="reu">Réu</option>
+                            <option value="advogado">Advogado</option>
+                            <option value="terceiro">Terceiro Interessado</option>
+                            <option value="representante">Representante Legal</option>
+                            <option value="orgao_publico">Órgão Público</option>
+                        </select>
+                        <div class="invalid-feedback">Por favor, selecione sua qualidade no processo.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="numero_processo" class="form-label">Número do Processo *</label>
+                        <input type="text" class="form-control" id="numero_processo" name="numero_processo" required placeholder="0000000-00.0000.0.00.0000">
+                        <div class="invalid-feedback">Por favor, informe o número do processo.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tipo_certidao" class="form-label">Tipo de Certidão *</label>
+                        <select class="form-select" id="tipo_certidao" name="tipo_certidao" required>
+                            <option value="">Selecione o tipo de certidão</option>
+                            <option value="objeto_pe">Certidão de Objeto e Pé</option>
+                            <option value="inteiro_teor">Certidão de Inteiro Teor</option>
+                            <option value="transito_julgado">Certidão de Trânsito em Julgado</option>
+                            <option value="contagem_prazo">Certidão de Contagem de Prazo</option>
+                            <option value="busca">Certidão de Busca</option>
+                            <option value="copia_autenticada">Cópia Autenticada</option>
+                            <option value="outro">Outro (especificar)</option>
+                        </select>
+                        <div class="invalid-feedback">Por favor, selecione o tipo de certidão.</div>
+                    </div>
+                    
+                    <div class="mb-3" id="especificacao_div" style="display: none;">
+                        <label for="especificacao" class="form-label">Especificação da Certidão</label>
+                        <textarea class="form-control" id="especificacao" name="especificacao" rows="3" placeholder="Especifique exatamente o que necessita na certidão..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="finalidade" class="form-label">Finalidade da Certidão *</label>
+                        <textarea class="form-control" id="finalidade" name="finalidade" rows="2" required placeholder="Para que será utilizada a certidão..."></textarea>
+                        <div class="invalid-feedback">Por favor, informe a finalidade da certidão.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="forma_entrega" class="form-label">Forma de Entrega *</label>
+                        <select class="form-select" id="forma_entrega" name="forma_entrega" required>
+                            <option value="">Selecione a forma de entrega</option>
+                            <option value="retirada_presencial">Retirada Presencial</option>
+                            <option value="email">Envio por Email (quando possível)</option>
+                            <option value="correios">Envio pelos Correios (mediante pagamento)</option>
+                        </select>
+                        <div class="invalid-feedback">Por favor, selecione a forma de entrega.</div>
+                    </div>
+                    
+                    <div class="mb-3" id="endereco_div" style="display: none;">
+                        <label for="endereco" class="form-label">Endereço para Entrega</label>
+                        <textarea class="form-control" id="endereco" name="endereco" rows="3" placeholder="Informe o endereço completo para envio..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="urgente" name="urgente">
+                            <label class="form-check-label" for="urgente">
+                                Solicitação urgente (sujeita a análise e justificação)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="observacoes" class="form-label">Observações</label>
+                        <textarea class="form-control" id="observacoes" name="observacoes" rows="3" placeholder="Informações adicionais..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termos" name="termos" required>
+                            <label class="form-check-label" for="termos">
+                                Declaro que as informações fornecidas são verdadeiras e concordo com os termos de uso *
+                            </label>
+                            <div class="invalid-feedback">Você deve concordar com os termos.</div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-file-text me-2"></i>Solicitar Certidão
+                    </button>
+                </form>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Taxas e Custos</h2>
+                <p>As certidões estão sujeitas às seguintes taxas:</p>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Certidão</th>
+                                <th>Taxa</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Certidão de Objeto e Pé</td>
+                                <td>Gratuita</td>
+                                <td>Para as partes do processo</td>
+                            </tr>
+                            <tr>
+                                <td>Certidão de Inteiro Teor</td>
+                                <td>Conforme tabela do TJ</td>
+                                <td>Valor por página</td>
+                            </tr>
+                            <tr>
+                                <td>Certidão de Busca</td>
+                                <td>Conforme tabela do TJ</td>
+                                <td>Por período pesquisado</td>
+                            </tr>
+                            <tr>
+                                <td>Cópia Autenticada</td>
+                                <td>Conforme tabela do TJ</td>
+                                <td>Por documento</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-warning">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Atenção</h5>
+                    <p class="mb-0">As taxas devem ser pagas antes da retirada das certidões. Consulte os valores atualizados na tabela oficial do TJES.</p>
+                </div>
+            </section>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-clock me-2"></i>Prazos de Entrega</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Certidões simples:</strong><br>1 a 3 dias úteis</p>
+                    <p><strong>Certidões complexas:</strong><br>3 a 5 dias úteis</p>
+                    <p><strong>Certidões urgentes:</strong><br>24 a 48 horas (sujeita à análise)</p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-hand-holding-usd me-2"></i>Isenções</h5>
+                </div>
+                <div class="card-body">
+                    <p>São isentos de taxas:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Beneficiários da assistência judiciária</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Fazenda Pública</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Ministério Público</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Defensoria Pública</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-map-marker-alt me-2"></i>Retirada Presencial</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Local:</strong><br>Rua Expedito Garcia, s/n<br>Centro, Cariacica - ES</p>
+                    <p><strong>Horário:</strong><br>Segunda a Sexta, 12h às 18h</p>
+                    <p><strong>Setor:</strong><br>Protocolo/Cartório</p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Contato</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para dúvidas sobre certidões:</p>
+                    <p><strong>Telefone:</strong><br>(27) 3246-8200</p>
+                    <p><strong>Email:</strong><br>2varacivel.cariacica@tjes.jus.br</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle me-2"></i>Dicas Importantes</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Verifique o número do processo</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Especifique claramente o que precisa</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Traga documentos originais</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Consulte taxas atualizadas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+<script>
+document.getElementById('tipo_certidao').addEventListener('change', function() {
+    var especificacaoDiv = document.getElementById('especificacao_div');
+    if (this.value === 'outro') {
+        especificacaoDiv.style.display = 'block';
+        document.getElementById('especificacao').required = true;
+    } else {
+        especificacaoDiv.style.display = 'none';
+        document.getElementById('especificacao').required = false;
+    }
+});
+
+document.getElementById('forma_entrega').addEventListener('change', function() {
+    var enderecoDiv = document.getElementById('endereco_div');
+    if (this.value === 'correios') {
+        enderecoDiv.style.display = 'block';
+        document.getElementById('endereco').required = true;
+    } else {
+        enderecoDiv.style.display = 'none';
+        document.getElementById('endereco').required = false;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

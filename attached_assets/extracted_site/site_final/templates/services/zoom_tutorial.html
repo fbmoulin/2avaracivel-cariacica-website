@@ -1,0 +1,498 @@
+{% extends "base.html" %}
+
+{% block title %}Tutorial: Configuração de Áudio do Zoom - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block head %}
+<meta name="description" content="Tutorial completo para configurar áudio no Zoom para audiências virtuais da 2ª Vara Cível de Cariacica. Guia passo a passo com acessibilidade completa.">
+<meta name="keywords" content="zoom, áudio, configuração, audiência virtual, tribunal, cariacica">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/tutorial-visuals.css') }}">
+<link rel="preload" href="{{ url_for('static', filename='images/zoom_tutorial_gif/tutorial_zoom_audio_pt.gif') }}" as="image">
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumbs para navegação consistente -->
+<nav aria-label="Navegação estrutural" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Início</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('services') }}">Serviços</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Tutorial do Zoom</li>
+    </ol>
+</nav>
+
+<div class="tutorial-container" role="main" aria-label="Tutorial de configuração de áudio do Zoom">
+    <!-- Tutorial Header -->
+    <header class="tutorial-header">
+        <h1 class="tutorial-title">Como Configurar o Áudio no Zoom</h1>
+        <p class="tutorial-subtitle">
+            Tutorial completo para garantir a melhor qualidade de áudio em suas audiências virtuais na 2ª Vara Cível de Cariacica
+        </p>
+        
+        <!-- Accessibility Controls -->
+        <div class="accessibility-controls" role="region" aria-label="Controles de acessibilidade">
+            <button id="high-contrast-btn" class="accessibility-btn" aria-pressed="false">
+                <i class="fas fa-adjust" aria-hidden="true"></i>
+                <span>Alto Contraste</span>
+            </button>
+            <button id="large-text-btn" class="accessibility-btn" aria-pressed="false">
+                <i class="fas fa-text-height" aria-hidden="true"></i>
+                <span>Texto Grande</span>
+            </button>
+            <button id="screen-reader-btn" class="accessibility-btn" aria-pressed="false">
+                <i class="fas fa-assistive-listening-systems" aria-hidden="true"></i>
+                <span>Leitor de Tela</span>
+            </button>
+            <button id="audio-description-btn" class="accessibility-btn" aria-pressed="false">
+                <i class="fas fa-volume-up" aria-hidden="true"></i>
+                <span>Áudio Descrição</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Tutorial Navigation Tabs -->
+    <nav class="tutorial-tabs" role="tablist" aria-label="Opções de visualização do tutorial">
+        <button class="tutorial-tab active" data-view="animation" role="tab" aria-selected="true" aria-controls="animation-view" id="animation-tab">
+            <i class="fas fa-play-circle" aria-hidden="true"></i>
+            Ver Animação
+        </button>
+        <button class="tutorial-tab" data-view="step-by-step" role="tab" aria-selected="false" aria-controls="step-by-step-view" id="step-by-step-tab">
+            <i class="fas fa-list-ol" aria-hidden="true"></i>
+            Passo a Passo
+        </button>
+    </nav>
+
+    <!-- Tutorial Content -->
+    <main class="tutorial-content">
+        <!-- Animation View -->
+        <section id="animation-view" class="content-section active" role="tabpanel" aria-labelledby="animation-tab">
+            <div class="gif-container">
+                <img src="{{ url_for('static', filename='images/zoom_tutorial_gif/tutorial_zoom_audio_pt.gif') }}" 
+                     alt="Animação mostrando os 3 passos para configurar áudio no Zoom: acessar configurações, selecionar áudio e testar dispositivos" 
+                     class="tutorial-gif"
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}';">
+                
+                <!-- GIF Controls -->
+                <div class="gif-controls" role="group" aria-label="Controles da animação">
+                    <button id="gif-play-pause" class="gif-control-btn" aria-label="Pausar animação">
+                        <i class="fas fa-pause" aria-hidden="true"></i>
+                        <span>Pausar</span>
+                    </button>
+                    <button id="gif-restart" class="gif-control-btn" aria-label="Reiniciar animação">
+                        <i class="fas fa-redo" aria-hidden="true"></i>
+                        <span>Reiniciar</span>
+                    </button>
+                    <button id="gif-speed" class="gif-control-btn" data-speed="normal" aria-label="Alterar velocidade">
+                        <i class="fas fa-tachometer-alt" aria-hidden="true"></i>
+                        <span>Normal</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="animation-description">
+                <h2>Resumo da Configuração</h2>
+                <p>A animação acima mostra o processo completo de configuração de áudio no Zoom em três etapas simples:</p>
+                <ol>
+                    <li><strong>Acesse as Configurações:</strong> Clique no ícone de engrenagem no canto superior direito</li>
+                    <li><strong>Selecione Áudio:</strong> Na janela de configurações, clique na aba "Áudio"</li>
+                    <li><strong>Teste seus Dispositivos:</strong> Use os botões de teste para verificar microfone e alto-falantes</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Step-by-Step View -->
+        <section id="step-by-step-view" class="content-section" role="tabpanel" aria-labelledby="step-by-step-tab">
+            <div class="step-by-step-container">
+                <!-- Step 1 -->
+                <article class="tutorial-step" id="step-1">
+                    <div class="step-number" aria-hidden="true">1</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Acessar as Configurações do Zoom</h3>
+                        <p class="step-description">
+                            Primeiro, você precisa abrir as configurações do Zoom. Procure pelo ícone de engrenagem 
+                            (configurações) no canto superior direito da tela principal do Zoom e clique nele.
+                        </p>
+                        <div class="step-tips">
+                            <h4>Dicas importantes:</h4>
+                            <ul>
+                                <li>Certifique-se de que o Zoom está aberto e funcionando</li>
+                                <li>O ícone de configurações parece uma pequena engrenagem</li>
+                                <li>Se não encontrar o ícone, tente mover o mouse pela tela</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="step-image-container">
+                        <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}" 
+                             alt="Tela principal do Zoom mostrando o ícone de configurações (engrenagem) destacado no canto superior direito com uma seta vermelha apontando para ele"
+                             class="step-image"
+                             loading="lazy"
+                             tabindex="0"
+                             role="button"
+                             aria-label="Ampliar imagem do passo 1">
+                    </div>
+                </article>
+
+                <!-- Step 2 -->
+                <article class="tutorial-step" id="step-2">
+                    <div class="step-number" aria-hidden="true">2</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Navegar para Configurações de Áudio</h3>
+                        <p class="step-description">
+                            Após clicar nas configurações, uma nova janela será aberta. Nesta janela, você verá 
+                            várias abas no lado esquerdo. Clique na aba "Áudio" para acessar as configurações 
+                            específicas de som.
+                        </p>
+                        <div class="step-tips">
+                            <h4>O que você verá:</h4>
+                            <ul>
+                                <li>Uma lista de opções no lado esquerdo da janela</li>
+                                <li>A aba "Áudio" destacada quando selecionada</li>
+                                <li>Configurações de microfone e alto-falantes na área principal</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="step-image-container">
+                        <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_2_pt.png') }}" 
+                             alt="Janela de configurações do Zoom com a aba Áudio selecionada no menu lateral esquerdo, mostrando opções de microfone e alto-falantes na área principal"
+                             class="step-image"
+                             loading="lazy"
+                             tabindex="0"
+                             role="button"
+                             aria-label="Ampliar imagem do passo 2">
+                    </div>
+                </article>
+
+                <!-- Step 3 -->
+                <article class="tutorial-step" id="step-3">
+                    <div class="step-number" aria-hidden="true">3</div>
+                    <div class="step-content">
+                        <h3 class="step-title">Testar e Ajustar Configurações de Áudio</h3>
+                        <p class="step-description">
+                            Agora é hora de testar seu áudio! Na seção de configurações de áudio, você encontrará 
+                            botões para testar tanto o microfone quanto os alto-falantes. Use esses botões para 
+                            garantir que tudo está funcionando corretamente.
+                        </p>
+                        <div class="step-tips">
+                            <h4>Como testar:</h4>
+                            <ul>
+                                <li><strong>Microfone:</strong> Clique em "Testar Mic" e fale - você deve ver o indicador de nível se mover</li>
+                                <li><strong>Alto-falantes:</strong> Clique em "Testar Alto-falante" e você deve ouvir um som de teste</li>
+                                <li><strong>Ajustes:</strong> Use os menus suspensos para selecionar diferentes dispositivos se necessário</li>
+                            </ul>
+                        </div>
+                        <div class="troubleshooting">
+                            <h4>Problemas comuns:</h4>
+                            <ul>
+                                <li>Se não ouvir nada, verifique se o volume do computador não está mudo</li>
+                                <li>Se o microfone não funcionar, verifique se ele está conectado e permitido pelo sistema</li>
+                                <li>Experimente diferentes dispositivos nos menus suspensos</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="step-image-container">
+                        <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_3_pt.png') }}" 
+                             alt="Seção de teste de áudio do Zoom mostrando botões para testar microfone e alto-falantes com indicadores de nível e barras de volume"
+                             class="step-image"
+                             loading="lazy"
+                             tabindex="0"
+                             role="button"
+                             aria-label="Ampliar imagem do passo 3">
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" role="region" aria-label="Perguntas frequentes">
+        <h2 class="faq-title">Perguntas Frequentes</h2>
+        
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1">
+                <span>Não consigo encontrar o ícone de configurações. O que fazer?</span>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="faq-answer" id="faq-answer-1" aria-labelledby="faq-question-1">
+                <p>Se o ícone de configurações não está visível, tente estas soluções:</p>
+                <ul>
+                    <li>Mova o mouse pela tela - às vezes os controles ficam ocultos</li>
+                    <li>Pressione a tecla Alt para mostrar a barra de menu</li>
+                    <li>Clique com o botão direito na tela do Zoom e procure por "Configurações"</li>
+                    <li>Use o atalho Alt+S (Windows) ou Cmd+, (Mac)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2">
+                <span>Meu microfone não está funcionando. Como resolver?</span>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="faq-answer" id="faq-answer-2" aria-labelledby="faq-question-2">
+                <p>Para resolver problemas com o microfone:</p>
+                <ul>
+                    <li>Verifique se o microfone está conectado corretamente</li>
+                    <li>Nas configurações de áudio, selecione o microfone correto no menu suspenso</li>
+                    <li>Verifique se o Zoom tem permissão para acessar o microfone</li>
+                    <li>Teste o microfone em outros programas para confirmar que funciona</li>
+                    <li>Reinicie o Zoom e tente novamente</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3">
+                <span>Não estou ouvindo nada. Como verificar os alto-falantes?</span>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="faq-answer" id="faq-answer-3" aria-labelledby="faq-question-3">
+                <p>Para resolver problemas de áudio:</p>
+                <ul>
+                    <li>Verifique se o volume do computador não está no mínimo ou mudo</li>
+                    <li>Nas configurações de áudio, selecione o alto-falante correto</li>
+                    <li>Teste outros aplicativos para verificar se o som funciona</li>
+                    <li>Verifique se fones de ouvido estão conectados (se aplicável)</li>
+                    <li>Use o botão "Testar Alto-falante" nas configurações do Zoom</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4">
+                <span>Durante a audiência, o áudio está com eco. Como resolver?</span>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="faq-answer" id="faq-answer-4" aria-labelledby="faq-question-4">
+                <p>Para eliminar o eco durante a audiência:</p>
+                <ul>
+                    <li>Use fones de ouvido ou headset em vez dos alto-falantes do computador</li>
+                    <li>Mantenha-se mudo quando não estiver falando</li>
+                    <li>Certifique-se de que apenas uma pessoa está com o microfone aberto por vez</li>
+                    <li>Nas configurações avançadas de áudio, ative a "Supressão de eco"</li>
+                    <li>Evite ter duas pessoas na mesma sala com microfones abertos</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5">
+                <span>Como melhorar a qualidade do áudio para a audiência?</span>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="faq-answer" id="faq-answer-5" aria-labelledby="faq-question-5">
+                <p>Para garantir a melhor qualidade de áudio:</p>
+                <ul>
+                    <li>Use um ambiente silencioso, sem ruídos de fundo</li>
+                    <li>Prefira fones de ouvido com microfone dedicado</li>
+                    <li>Fale de forma clara e em ritmo normal</li>
+                    <li>Mantenha uma distância adequada do microfone (cerca de 15-20 cm)</li>
+                    <li>Teste tudo antes da audiência começar</li>
+                    <li>Tenha uma conexão de internet estável</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+        <a href="{{ url_for('services') }}" class="action-btn secondary">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            <span>Voltar para Serviços</span>
+        </a>
+        <button class="action-btn" id="print-tutorial">
+            <i class="fas fa-print" aria-hidden="true"></i>
+            <span>Versão para Impressão</span>
+        </button>
+        <a href="{{ url_for('contact') }}" class="action-btn">
+            <i class="fas fa-headset" aria-hidden="true"></i>
+            <span>Precisa de Ajuda?</span>
+        </a>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+            <img src="" alt="" class="modal-image" id="modal-image">
+            <button class="modal-close" id="modal-close" aria-label="Fechar imagem ampliada">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen Reader Live Region -->
+    <div id="aria-live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+</div>
+
+<!-- Print Header and Footer (visible only when printing) -->
+<header class="print-header">
+    <h1>Tutorial de Configuração de Áudio do Zoom</h1>
+    <p>2ª Vara Cível de Cariacica - Tribunal de Justiça do Espírito Santo</p>
+</header>
+
+<footer class="print-footer">
+    <p>Este material foi produzido pela 2ª Vara Cível de Cariacica. Para mais informações, visite nosso site.</p>
+    <p>© {{ now.year }} - Todos os direitos reservados - Desenvolvido por Lex Intelligentia</p>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tutorial-accessibility.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tutorial-toggle.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize accessibility features
+        const accessibilityManager = new TutorialAccessibility();
+        
+        // Initialize tab switching
+        const tabs = document.querySelectorAll('.tutorial-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const view = this.getAttribute('data-view');
+                
+                // Update tab states
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                
+                // Update content visibility
+                const sections = document.querySelectorAll('.content-section');
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`${view}-view`).classList.add('active');
+                
+                // Announce to screen readers
+                document.getElementById('aria-live-announcer').textContent = 
+                    view === 'animation' ? 'Mostrando animação do tutorial' : 'Mostrando tutorial passo a passo';
+            });
+        });
+        
+        // Initialize FAQ accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                
+                this.setAttribute('aria-expanded', !isExpanded);
+                answer.classList.toggle('active');
+                
+                // Announce to screen readers
+                document.getElementById('aria-live-announcer').textContent = 
+                    isExpanded ? 'Resposta recolhida' : 'Resposta expandida';
+            });
+        });
+        
+        // Initialize image modal
+        const stepImages = document.querySelectorAll('.step-image');
+        const modal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const modalClose = document.getElementById('modal-close');
+        
+        stepImages.forEach(image => {
+            image.addEventListener('click', function() {
+                modalImage.src = this.src;
+                modalImage.alt = this.alt;
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                modalClose.focus();
+                document.body.style.overflow = 'hidden';
+                
+                // Announce to screen readers
+                document.getElementById('aria-live-announcer').textContent = 'Imagem ampliada aberta. Pressione Escape para fechar.';
+            });
+            
+            // Keyboard accessibility
+            image.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+        
+        modalClose.addEventListener('click', function() {
+            closeModal();
+        });
+        
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = 'auto';
+            
+            // Return focus to the image that opened the modal
+            const activeImage = document.querySelector('.step-image:focus') || stepImages[0];
+            if (activeImage) {
+                activeImage.focus();
+            }
+            
+            // Announce to screen readers
+            document.getElementById('aria-live-announcer').textContent = 'Imagem ampliada fechada';
+        }
+        
+        // Print functionality
+        const printButton = document.getElementById('print-tutorial');
+        printButton.addEventListener('click', function() {
+            window.print();
+        });
+        
+        // GIF controls
+        const gifPlayPause = document.getElementById('gif-play-pause');
+        const gifRestart = document.getElementById('gif-restart');
+        const gifSpeed = document.getElementById('gif-speed');
+        const tutorialGif = document.querySelector('.tutorial-gif');
+        
+        if (gifPlayPause && tutorialGif) {
+            let gifPaused = false;
+            let originalSrc = tutorialGif.src;
+            
+            gifPlayPause.addEventListener('click', function() {
+                if (gifPaused) {
+                    // Resume GIF
+                    tutorialGif.src = originalSrc;
+                    gifPlayPause.innerHTML = '<i class="fas fa-pause" aria-hidden="true"></i><span>Pausar</span>';
+                    gifPlayPause.setAttribute('aria-label', 'Pausar animação');
+                    document.getElementById('aria-live-announcer').textContent = 'Animação retomada';
+                } else {
+                    // Pause GIF by replacing with static image
+                    tutorialGif.src = "{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}";
+                    gifPlayPause.innerHTML = '<i class="fas fa-play" aria-hidden="true"></i><span>Reproduzir</span>';
+                    gifPlayPause.setAttribute('aria-label', 'Reproduzir animação');
+                    document.getElementById('aria-live-announcer').textContent = 'Animação pausada';
+                }
+                gifPaused = !gifPaused;
+            });
+            
+            gifRestart.addEventListener('click', function() {
+                // Restart GIF by reloading it
+                const currentSrc = tutorialGif.src;
+                tutorialGif.src = '';
+                setTimeout(() => {
+                    tutorialGif.src = originalSrc;
+                }, 10);
+                
+                // Reset play/pause button
+                gifPaused = false;
+                gifPlayPause.innerHTML = '<i class="fas fa-pause" aria-hidden="true"></i><span>Pausar</span>';
+                gifPlayPause.setAttribute('aria-label', 'Pausar animação');
+                
+                document.getElementById('aria-live-announcer').textContent = 'Animação reiniciada';
+            });
+        }
+    });
+</script>
+{% endblock %}

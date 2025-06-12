@@ -1,0 +1,207 @@
+/* 
+ * Accessibility Fixes - 2ª Vara Cível de Cariacica
+ * Addresses color contrast issues for WCAG AA compliance
+ */
+
+/* Fix low contrast text elements */
+p.small {
+    color: #334155 !important; /* Darker gray for better contrast */
+    font-weight: 500 !important;
+}
+
+p.small.mb-2,
+p.small.mb-1,
+p.small.text-muted,
+p.small.text-muted.mb-1 {
+    color: #475569 !important; /* Even darker for better contrast */
+    font-weight: 500 !important;
+}
+
+h6.mb-3,
+h6.mb-2 {
+    color: #1e293b !important; /* Dark color for headings */
+    font-weight: 600 !important;
+}
+
+p.mb-1 {
+    color: #334155 !important;
+    font-weight: 500 !important;
+}
+
+p.lex-logo.mb-2 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+/* Footer text improvements */
+.footer-modern p,
+.footer-modern .small {
+    color: #e2e8f0 !important; /* Light color on dark background */
+    font-weight: 400 !important;
+}
+
+/* Card text improvements */
+.card-text.text-muted {
+    color: #475569 !important;
+}
+
+/* Form label improvements */
+.form-label {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+/* Navigation improvements */
+.nav-link {
+    color: #1e293b !important;
+    font-weight: 500 !important;
+}
+
+/* Button text improvements */
+.btn {
+    font-weight: 600 !important;
+}
+
+/* Alert improvements */
+.alert {
+    border-width: 2px !important;
+}
+
+.alert-info {
+    background-color: #e0f2fe !important;
+    border-color: #0288d1 !important;
+    color: #01579b !important;
+}
+
+.alert-warning {
+    background-color: #fff8e1 !important;
+    border-color: #ffa000 !important;
+    color: #e65100 !important;
+}
+
+.alert-danger {
+    background-color: #ffebee !important;
+    border-color: #d32f2f !important;
+    color: #b71c1c !important;
+}
+
+.alert-success {
+    background-color: #e8f5e9 !important;
+    border-color: #388e3c !important;
+    color: #1b5e20 !important;
+}
+
+/* High contrast mode for accessibility tools */
+.high-contrast {
+    filter: contrast(150%);
+}
+
+.high-contrast p,
+.high-contrast .small,
+.high-contrast h6 {
+    color: #000000 !important;
+    font-weight: bold !important;
+}
+
+/* Ensure minimum font sizes for readability */
+.small {
+    font-size: 0.9rem !important;
+    min-font-size: 14px !important;
+}
+
+/* Link improvements */
+a {
+    color: #1565c0 !important;
+    font-weight: 500 !important;
+}
+
+a:hover {
+    color: #0d47a1 !important;
+    text-decoration: underline !important;
+}
+
+/* Table improvements */
+.table {
+    color: #1e293b !important;
+}
+
+.table th {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}
+
+/* Breadcrumb improvements */
+.breadcrumb-item a {
+    color: #1565c0 !important;
+    font-weight: 500 !important;
+}
+
+.breadcrumb-item.active {
+    color: #334155 !important;
+    font-weight: 500 !important;
+}
+
+/* Map container text fixes */
+.map-container h5 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+.map-container p {
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+
+/* Generic text improvements for better contrast */
+h1, h2, h3, h4, h5, h6 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+p {
+    color: #374151 !important;
+    font-weight: 400 !important;
+}
+
+/* Footer specific fixes */
+.footer-modern * {
+    color: #e5e7eb !important;
+}
+
+.footer-modern .text-muted {
+    color: #d1d5db !important;
+}
+
+/* Ensure all small text is readable */
+small, .small {
+    color: #4b5563 !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+}
+
+/* Card improvements */
+.card-body p,
+.card-text {
+    color: #374151 !important;
+    font-weight: 400 !important;
+}
+
+/* List improvements */
+li {
+    color: #374151 !important;
+}
+
+/* Ensure white backgrounds for readability */
+.card,
+.alert,
+.form-control,
+.form-select {
+    background-color: #ffffff !important;
+}
+
+/* Text on light backgrounds */
+.bg-light,
+.bg-light *,
+.text-light {
+    color: #1f2937 !important;
+}

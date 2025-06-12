@@ -1,0 +1,44 @@
+[
+  {
+    "nome": "Consulta Processual",
+    "descricao": "Consulte o andamento de seus processos através do número CNJ",
+    "icon": "search",
+    "url": "/servicos/consulta-processual",
+    "detalhes": "Serviço disponível 24h para consulta do andamento processual através do portal do TJES ou em nossa seção específica."
+  },
+  {
+    "nome": "Agendamento de Atendimento",
+    "descricao": "Agende seu atendimento presencial com antecedência",
+    "icon": "calendar",
+    "url": "/servicos/agendamento",
+    "detalhes": "Evite filas e agende seu atendimento presencial para esclarecimentos, protocolo de documentos ou orientações."
+  },
+  {
+    "nome": "Audiências",
+    "descricao": "Informações sobre audiências presenciais e virtuais",
+    "icon": "users",
+    "url": "/servicos/audiencias",
+    "detalhes": "Participe de audiências presenciais ou virtuais. Receba todas as orientações necessárias para sua participação."
+  },
+  {
+    "nome": "Balcão Virtual",
+    "descricao": "Atendimento online para dúvidas e solicitações simples",
+    "icon": "monitor",
+    "url": "/servicos/balcao-virtual",
+    "detalhes": "Atendimento online para esclarecimentos, orientações e solicitações que não necessitam comparecimento presencial."
+  },
+  {
+    "nome": "Certidões e Documentos",
+    "descricao": "Solicite certidões e outros documentos oficiais",
+    "icon": "file-text",
+    "url": "/servicos/certidoes",
+    "detalhes": "Solicite certidões processuais, de objeto e pé, inteiro teor e outros documentos oficiais."
+  },
+  {
+    "nome": "Mediação e Conciliação",
+    "descricao": "Resolva conflitos de forma consensual e gratuita",
+    "icon": "handshake",
+    "url": "/servicos/mediacao",
+    "detalhes": "Serviços gratuitos de mediação e conciliação para resolução consensual de conflitos de forma mais rápida e eficaz."
+  }
+]

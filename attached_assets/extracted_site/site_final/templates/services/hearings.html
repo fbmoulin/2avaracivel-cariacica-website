@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Audiências - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block description %}Informações sobre audiências presenciais e virtuais da 2ª Vara Cível de Cariacica. Saiba como participar e se preparar.{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('services.services_index') }}">Serviços</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Audiências</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Audiências</h1>
+            <p class="lead">Informações sobre audiências presenciais e virtuais na 2ª Vara Cível de Cariacica.</p>
+            
+            <section class="mb-5">
+                <h2>Tipos de Audiência</h2>
+                <p>A 2ª Vara Cível de Cariacica realiza diferentes tipos de audiências, conforme a natureza do processo:</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-handshake text-primary me-2"></i>Audiência de Conciliação</h5>
+                                <p class="card-text">Realizada para tentar um acordo entre as partes antes do prosseguimento do processo.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-gavel text-primary me-2"></i>Audiência de Instrução</h5>
+                                <p class="card-text">Para coleta de provas, oitiva de testemunhas e debates entre as partes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-comments text-primary me-2"></i>Audiência de Mediação</h5>
+                                <p class="card-text">Conduzida por mediador para facilitar o diálogo e a solução consensual.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-clipboard-list text-primary me-2"></i>Audiência de Julgamento</h5>
+                                <p class="card-text">Para prolação de sentença em processos que exigem julgamento oral.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Audiências Virtuais</h2>
+                <p>As audiências virtuais são realizadas através da plataforma Zoom, proporcionando maior comodidade e segurança para todos os participantes.</p>
+                
+                <h4>Como Participar de Audiências Virtuais</h4>
+                <ol>
+                    <li><strong>Recebimento do Link:</strong> Você receberá o link de acesso por email com antecedência mínima de 48 horas</li>
+                    <li><strong>Teste de Conexão:</strong> Teste sua conexão de internet e o funcionamento do Zoom antes da audiência</li>
+                    <li><strong>Ambiente Adequado:</strong> Escolha um local silencioso e bem iluminado</li>
+                    <li><strong>Documentos:</strong> Tenha os documentos necessários digitalizados e organizados</li>
+                    <li><strong>Identificação:</strong> Esteja preparado para se identificar no início da audiência</li>
+                </ol>
+                
+                <div class="alert alert-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>Requisitos Técnicos</h5>
+                    <ul class="mb-0">
+                        <li>Conexão de internet estável (mínimo 2 Mbps)</li>
+                        <li>Dispositivo com câmera e microfone (computador, tablet ou smartphone)</li>
+                        <li>Aplicativo Zoom instalado (gratuito)</li>
+                        <li>Ambiente silencioso e bem iluminado</li>
+                    </ul>
+                </div>
+
+                <div class="mt-4">
+                    <h4>Tutorial: Configuração de Áudio no Zoom</h4>
+                    <p>Siga este tutorial visual para configurar corretamente o áudio durante a audiência virtual:</p>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}" 
+                                     class="card-img-top" alt="Passo 1 - Configuração de Áudio" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6 class="card-title">Passo 1: Acesso às Configurações</h6>
+                                    <p class="card-text small">Clique no ícone de configurações de áudio no Zoom.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_2_pt.png') }}" 
+                                     class="card-img-top" alt="Passo 2 - Teste de Microfone" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6 class="card-title">Passo 2: Teste do Microfone</h6>
+                                    <p class="card-text small">Teste se o microfone está funcionando corretamente.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_3_pt.png') }}" 
+                                     class="card-img-top" alt="Passo 3 - Configuração Final" style="height: 200px; object-fit: cover;">
+                                <div class="card-body">
+                                    <h6 class="card-title">Passo 3: Configuração Final</h6>
+                                    <p class="card-text small">Finalize as configurações de áudio para a audiência.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <h6>Tutorial Animado Completo</h6>
+                        <img src="{{ url_for('static', filename='images/zoom_tutorial_gif/tutorial_zoom_audio_pt.gif') }}" 
+                             class="img-fluid rounded shadow" alt="Tutorial Animado - Configuração de Áudio no Zoom"
+                             style="max-height: 300px;">
+                        <p class="small mt-2 text-muted">Tutorial passo a passo em formato animado para configuração de áudio</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>Tutorial Alternativo (English Version)</h6>
+                        <p class="small text-muted">Para usuários que preferem a interface em inglês:</p>
+                        <div class="row">
+                            <div class="col-md-4 mb-2">
+                                <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1.png') }}" 
+                                     class="img-fluid rounded shadow-sm" alt="Step 1 - Audio Configuration"
+                                     style="height: 120px; width: 100%; object-fit: cover;">
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_2.png') }}" 
+                                     class="img-fluid rounded shadow-sm" alt="Step 2 - Microphone Test"
+                                     style="height: 120px; width: 100%; object-fit: cover;">
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_3.png') }}" 
+                                     class="img-fluid rounded shadow-sm" alt="Step 3 - Final Configuration"
+                                     style="height: 120px; width: 100%; object-fit: cover;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Audiências Presenciais</h2>
+                <p>As audiências presenciais são realizadas nas dependências da 2ª Vara Cível de Cariacica, seguindo todos os protocolos de segurança.</p>
+                
+                <h4>Preparação para Audiência Presencial</h4>
+                <ul>
+                    <li>Chegue com antecedência mínima de 15 minutos</li>
+                    <li>Traga documento de identidade original</li>
+                    <li>Leve todos os documentos originais e cópias</li>
+                    <li>Use trajes adequados para o ambiente judicial</li>
+                    <li>Desligue ou silencie aparelhos eletrônicos</li>
+                </ul>
+                
+                <div class="alert alert-warning">
+                    <h5><i class="fas fa-exclamation-triangle me-2"></i>Importante</h5>
+                    <p class="mb-0">Caso não possa comparecer à audiência, comunique imediatamente através dos nossos canais de atendimento para solicitar remarcação. A ausência injustificada pode acarretar em revelia ou outras consequências processuais.</p>
+                </div>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Direitos dos Participantes</h2>
+                <p>Durante as audiências, todos os participantes têm direito a:</p>
+                <ul>
+                    <li>Ser tratado com respeito e dignidade</li>
+                    <li>Apresentar sua versão dos fatos</li>
+                    <li>Ser assistido por advogado (quando necessário)</li>
+                    <li>Solicitar esclarecimentos sobre o procedimento</li>
+                    <li>Ter suas declarações registradas em ata</li>
+                    <li>Receber cópia da ata da audiência</li>
+                </ul>
+            </section>
+            
+            <section class="mb-5">
+                <h2>Remarcação de Audiências</h2>
+                <p>Para solicitar remarcação de audiência:</p>
+                <ul>
+                    <li>Faça a solicitação com antecedência mínima de 48 horas</li>
+                    <li>Apresente justificativa válida</li>
+                    <li>Utilize os canais oficiais de atendimento</li>
+                    <li>Aguarde confirmação da nova data</li>
+                </ul>
+                
+                <p><strong>Motivos aceitos para remarcação:</strong></p>
+                <ul>
+                    <li>Problemas de saúde devidamente comprovados</li>
+                    <li>Compromissos profissionais inadiáveis</li>
+                    <li>Problemas técnicos (para audiências virtuais)</li>
+                    <li>Outras situações excepcionais</li>
+                </ul>
+            </section>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar me-2"></i>Horários de Audiência</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Terça-feira:</strong><br>14h às 17h</p>
+                    <p><strong>Quinta-feira:</strong><br>14h às 17h</p>
+                    <p class="text-muted"><small>Horários podem variar conforme a agenda do juiz</small></p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-video me-2"></i>Audiências Virtuais</h5>
+                </div>
+                <div class="card-body">
+                    <p>Baixe o Zoom gratuitamente:</p>
+                    <a href="https://zoom.us/download" target="_blank" rel="noopener" class="btn btn-primary w-100 mb-2">
+                        <i class="fas fa-download me-2"></i>Download Zoom
+                    </a>
+                    <p class="text-muted"><small>Disponível para Windows, Mac, iOS e Android</small></p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-map-marker-alt me-2"></i>Localização</h5>
+                </div>
+                <div class="card-body">
+                    <p>Rua Expedito Garcia, s/n<br>
+                    Centro, Cariacica - ES</p>
+                    <p><strong>Sala de Audiências:</strong><br>Térreo - Porta 02</p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-phone me-2"></i>Contato</h5>
+                </div>
+                <div class="card-body">
+                    <p>Para esclarecimentos sobre audiências:</p>
+                    <p><strong>Telefone:</strong><br>(27) 3246-8200</p>
+                    <p><strong>Email:</strong><br>2varacivel.cariacica@tjes.jus.br</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-outline-primary w-100">Fale Conosco</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-question-circle me-2"></i>Dúvidas</h5>
+                </div>
+                <div class="card-body">
+                    <p>Consulte nossa seção de FAQ para mais informações sobre audiências.</p>
+                    <a href="{{ url_for('main.faq') }}" class="btn btn-outline-primary w-100">Ver FAQ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
