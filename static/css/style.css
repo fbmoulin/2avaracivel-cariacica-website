@@ -109,6 +109,101 @@ p {
     line-height: 1.6 !important;
 }
 
+/* Enhanced link contrast and accessibility */
+a {
+    color: var(--primary-color);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+    transition: all 0.2s ease;
+}
+
+a:hover,
+a:focus {
+    color: var(--primary-dark);
+    text-decoration-thickness: 2px;
+    text-shadow: 0 1px 2px rgba(30, 64, 175, 0.2);
+}
+
+a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* Button text contrast improvements */
+.btn {
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    color: white !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color);
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    color: white !important;
+    background-color: var(--primary-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Badge contrast improvements */
+.badge {
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.badge-primary {
+    background-color: var(--primary-color);
+    color: white;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.badge-secondary {
+    background-color: var(--text-secondary);
+    color: white;
+}
+
+/* Alert text contrast */
+.alert {
+    border-radius: 8px;
+    border: 1px solid;
+    font-weight: 500;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    border-color: #1976d2;
+    color: #0d47a1;
+}
+
+.alert-warning {
+    background-color: #fff3e0;
+    border-color: #f57c00;
+    color: #e65100;
+}
+
+.alert-danger {
+    background-color: #ffebee;
+    border-color: #d32f2f;
+    color: #b71c1c;
+}
+
+.alert-success {
+    background-color: #e8f5e8;
+    border-color: #388e3c;
+    color: #1b5e20;
+}
+
 /* Subtle geometric background pattern */
 body::before {
     content: '';
@@ -625,17 +720,28 @@ img.loaded {
     font-size: 1.1rem;
 }
 
-/* Forms */
+/* Enhanced Forms with better contrast */
 .form-control {
     border: 2px solid var(--border-color);
     border-radius: 6px;
     padding: 0.75rem 1rem;
     transition: var(--transition);
+    color: var(--text-primary);
+    background-color: white;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted);
+    font-weight: 400;
 }
 
 .form-control:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+    color: var(--text-primary);
+    background-color: white;
 }
 
 .form-select {
@@ -643,11 +749,15 @@ img.loaded {
     border-radius: 6px;
     padding: 0.75rem 1rem;
     transition: var(--transition);
+    color: var(--text-primary);
+    background-color: white;
+    font-size: 1rem;
 }
 
 .form-select:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 0.2rem rgba(30, 64, 175, 0.25);
+    color: var(--text-primary);
 }
 
 .form-label {

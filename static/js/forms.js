@@ -3,7 +3,7 @@
  * Enhanced form functionality with better UX and accessibility
  */
 
-class FormHandler {
+window.FormHandler = window.FormHandler || class FormHandler {
     constructor() {
         this.init();
     }
