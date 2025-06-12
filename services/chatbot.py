@@ -17,17 +17,36 @@ class ChatbotService:
         self.predefined_responses = self.load_predefined_responses()
     
     def setup_openai(self):
-        """Initialize OpenAI client if API key is available"""
+        """Initialize OpenAI client with robust error handling"""
         api_key = os.environ.get("OPENAI_API_KEY")
-        if api_key:
+        if api_key and api_key.strip():
             try:
-                self.openai_client = OpenAI(api_key=api_key)
-                logging.info("OpenAI client initialized successfully")
+                self.openai_client = OpenAI(
+                    api_key=api_key,
+                    timeout=30.0,
+                    max_retries=3
+                )
+                # Test connection
+                self._test_openai_connection()
+                logging.info("OpenAI client initialized and tested successfully")
             except Exception as e:
                 logging.error(f"Failed to initialize OpenAI client: {e}")
                 self.openai_client = None
         else:
-            logging.info("OpenAI API key not found, using predefined responses")
+            logging.info("OpenAI API key not available, using predefined responses")
+    
+    def _test_openai_connection(self):
+        """Test OpenAI connection with minimal request"""
+        if self.openai_client:
+            try:
+                self.openai_client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[{"role": "user", "content": "test"}],
+                    max_tokens=1
+                )
+            except Exception as e:
+                logging.warning(f"OpenAI connection test failed: {e}")
+                raise
     
     def load_predefined_responses(self):
         """Load predefined responses for common questions"""
@@ -115,8 +134,14 @@ class ChatbotService:
         return best_match if best_score > 0 else None
     
     def get_response(self, user_message, session_id=None):
-        """Get chatbot response for user message"""
+        """Get chatbot response with comprehensive error handling"""
+        if not user_message or not user_message.strip():
+            return "Por favor, digite sua pergunta para que eu possa ajudá-lo."
+        
         try:
+            # Sanitize input
+            user_message = user_message.strip()[:500]  # Limit message length
+            
             # Check for meeting scheduling requests first
             meeting_response = self.handle_meeting_requests(user_message)
             if meeting_response:
@@ -129,14 +154,19 @@ class ChatbotService:
             
             # Use OpenAI if available
             if self.openai_client:
-                return self.get_openai_response(user_message)
+                try:
+                    return self.get_openai_response(user_message)
+                except Exception as openai_error:
+                    logging.error(f"OpenAI API error: {openai_error}")
+                    # Fall back to default response if OpenAI fails
+                    return self.get_default_response()
             
-            # Default response
+            # Default response when no OpenAI
             return self.get_default_response()
             
         except Exception as e:
-            logging.error(f"Error getting chatbot response: {e}")
-            return "Desculpe, ocorreu um erro. Tente novamente ou entre em contato conosco diretamente."
+            logging.error(f"Critical error in chatbot response: {e}")
+            return "Desculpe, ocorreu um erro temporário. Por favor, tente novamente ou entre em contato pelo telefone (27) 3246-8200."
     
     @RetryManager.with_retry(max_attempts=2, backoff_factor=1.2, initial_delay=0.5)
     def get_openai_response(self, user_message):

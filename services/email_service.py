@@ -34,16 +34,22 @@ class EmailService:
         self.admin_email = self.admin_emails[0]  # Primary email for compatibility
         
     def send_email(self, to_email: str, subject: str, body: str, 
-                   attachments: Optional[List[str]] = None, is_html: bool = True) -> bool:
-        """Send email with optional attachments"""
-        try:
-            msg = MIMEMultipart()
-            msg['From'] = self.from_email
-            msg['To'] = to_email
-            msg['Subject'] = subject
+                   attachments: Optional[List[str]] = None, is_html: bool = True, 
+                   max_retries: int = 3) -> bool:
+        """Send email with robust error handling and retry mechanism"""
+        if not self.email_user or not self.email_password:
+            logging.warning("Email credentials not configured, skipping email send")
+            return False
             
-            # Add body
-            msg.attach(MIMEText(body, 'html' if is_html else 'plain', 'utf-8'))
+        for attempt in range(max_retries):
+            try:
+                msg = MIMEMultipart()
+                msg['From'] = self.from_email
+                msg['To'] = to_email
+                msg['Subject'] = subject
+                
+                # Add body with encoding safety
+                msg.attach(MIMEText(body, 'html' if is_html else 'plain', 'utf-8'))
             
             # Add attachments if any
             if attachments:

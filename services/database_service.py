@@ -36,11 +36,29 @@ class DatabaseService:
     
     @staticmethod
     def check_connection():
-        """Check database connection health"""
+        """Check database connection health with recovery"""
         try:
-            # Simple connectivity test
-            db.session.execute(text('SELECT 1'))
+            # Test basic connectivity
+            result = db.session.execute(text('SELECT 1'))
+            result.fetchone()
+            
+            # Test transaction capability
+            db.session.execute(text('BEGIN'))
+            db.session.execute(text('ROLLBACK'))
+            
             return True, "Connection healthy"
+        except (DisconnectionError, TimeoutError) as e:
+            current_app.logger.warning(f"Database connection lost, attempting recovery: {e}")
+            try:
+                # Force connection pool refresh
+                db.engine.dispose()
+                db.session.remove()
+                # Test recovery
+                db.session.execute(text('SELECT 1'))
+                return True, "Connection recovered"
+            except Exception as recovery_error:
+                current_app.logger.error(f"Database recovery failed: {recovery_error}")
+                return False, f"Recovery failed: {recovery_error}"
         except Exception as e:
             current_app.logger.error(f"Database connection check failed: {e}")
             return False, str(e)

@@ -84,17 +84,30 @@ class CircuitBreaker:
                 self.state.failure_count = max(0, self.state.failure_count - 1)
     
     def _on_failure(self):
-        """Handle failed call"""
+        """Handle failed call with progressive degradation"""
         self.state.failure_count += 1
         self.state.consecutive_successes = 0
         self.state.last_failure_time = datetime.now()
         
         if self.state.failure_count >= self.failure_threshold:
             self.state.status = ServiceStatus.DOWN
+            logging.error(f"Circuit breaker OPEN - service marked as DOWN after {self.state.failure_count} failures")
         elif self.state.failure_count >= self.failure_threshold // 2:
             self.state.status = ServiceStatus.FAILING
+            logging.warning(f"Circuit breaker DEGRADING - service marked as FAILING after {self.state.failure_count} failures")
         else:
             self.state.status = ServiceStatus.DEGRADED
+            logging.info(f"Circuit breaker DEGRADED - service experiencing issues ({self.state.failure_count} failures)")
+    
+    def get_status(self) -> Dict[str, Any]:
+        """Get current circuit breaker status"""
+        return {
+            'status': self.state.status.value,
+            'failure_count': self.state.failure_count,
+            'consecutive_successes': self.state.consecutive_successes,
+            'last_failure': self.state.last_failure_time.isoformat() if self.state.last_failure_time else None,
+            'can_attempt': self._should_attempt_call()
+        }
 
 
 class RetryManager:

@@ -32,17 +32,24 @@ class CacheService:
         }
     
     def _initialize_cache_backend(self):
-        """Initialize appropriate cache backend"""
+        """Initialize cache backend with robust fallback"""
         try:
             # Try Redis first for production
             import redis
             redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
-            client = redis.from_url(redis_url, decode_responses=True)
+            client = redis.from_url(
+                redis_url, 
+                decode_responses=True,
+                socket_connect_timeout=5,
+                socket_timeout=5,
+                retry_on_timeout=True,
+                health_check_interval=30
+            )
             client.ping()  # Test connection
-            self.logger.info("Redis cache backend initialized")
+            self.logger.info("Redis cache backend initialized successfully")
             return RedisCache(client)
         except Exception as e:
-            # Fallback to memory cache
+            # Fallback to memory cache with logging
             self.logger.info(f"Redis not available ({e}), using memory cache backend")
             return MemoryCache()
     
