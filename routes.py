@@ -1,11 +1,12 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from services.content import ContentService
 from services.chatbot import ChatbotService
-from models import Contact, ProcessConsultation, db
+from models import Contact, ProcessConsultation, AssessorMeeting, db
 from utils.security import sanitize_input, validate_email
 import logging
 import os
-from datetime import datetime
+from datetime import datetime, date
+import uuid
 
 # Initialize services with error handling
 try:
@@ -171,6 +172,103 @@ def process_consultation():
             flash('Erro ao realizar consulta. Tente novamente mais tarde.', 'error')
     
     return render_template('services/process_consultation.html')
+
+# Assessor meeting routes
+@services_bp.route('/agendamento-assessor')
+def agendamento_assessor():
+    """Assessor meeting scheduling page"""
+    return render_template('services/agendamento_assessor.html')
+
+@services_bp.route('/agendar-assessor', methods=['POST'])
+def agendar_assessor():
+    """Handle assessor meeting scheduling form submission"""
+    try:
+        # Get form data
+        full_name = sanitize_input(request.form.get('full_name', ''))
+        document = sanitize_input(request.form.get('document', ''))
+        email = sanitize_input(request.form.get('email', ''))
+        phone = sanitize_input(request.form.get('phone', ''))
+        process_number = sanitize_input(request.form.get('process_number', ''))
+        meeting_type = sanitize_input(request.form.get('meeting_type', ''))
+        meeting_subject = sanitize_input(request.form.get('meeting_subject', ''))
+        preferred_date_str = request.form.get('preferred_date', '')
+        preferred_time = sanitize_input(request.form.get('preferred_time', ''))
+        alternative_times = sanitize_input(request.form.get('alternative_times', ''))
+        
+        # Validate required fields
+        if not all([full_name, document, email, phone, meeting_type, meeting_subject, preferred_date_str, preferred_time]):
+            flash('Por favor, preencha todos os campos obrigatórios.', 'error')
+            return redirect(url_for('services.agendamento_assessor'))
+        
+        # Validate email
+        if not validate_email(email):
+            flash('Por favor, insira um email válido.', 'error')
+            return redirect(url_for('services.agendamento_assessor'))
+        
+        # Parse date
+        try:
+            preferred_date = datetime.strptime(preferred_date_str, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Data inválida. Por favor, selecione uma data válida.', 'error')
+            return redirect(url_for('services.agendamento_assessor'))
+        
+        # Check if date is not in the past
+        if preferred_date < date.today():
+            flash('Não é possível agendar para datas passadas.', 'error')
+            return redirect(url_for('services.agendamento_assessor'))
+        
+        # Generate confirmation token
+        confirmation_token = str(uuid.uuid4())
+        
+        # Create meeting request
+        meeting = AssessorMeeting(
+            full_name=full_name,
+            document=document,
+            email=email,
+            phone=phone,
+            process_number=process_number if process_number else None,
+            meeting_type=meeting_type,
+            meeting_subject=meeting_subject,
+            preferred_date=preferred_date,
+            preferred_time=preferred_time,
+            alternative_times=alternative_times if alternative_times else None,
+            confirmation_token=confirmation_token,
+            status='pending'
+        )
+        
+        # Save to database
+        db.session.add(meeting)
+        db.session.commit()
+        
+        # Success message
+        flash('Solicitação de reunião enviada com sucesso! Entraremos em contato em breve para confirmar o agendamento.', 'success')
+        
+        # Log the meeting request
+        logging.info(f"Assessor meeting request created: {full_name} - {preferred_date} at {preferred_time}")
+        
+        return redirect(url_for('services.confirmacao_assessor', token=confirmation_token))
+        
+    except Exception as e:
+        logging.error(f"Error creating assessor meeting request: {e}")
+        flash('Erro ao processar solicitação. Tente novamente ou entre em contato conosco.', 'error')
+        return redirect(url_for('services.agendamento_assessor'))
+
+@services_bp.route('/confirmacao-assessor/<token>')
+def confirmacao_assessor(token):
+    """Display meeting request confirmation"""
+    try:
+        meeting = AssessorMeeting.query.filter_by(confirmation_token=token).first()
+        
+        if not meeting:
+            flash('Confirmação não encontrada.', 'error')
+            return redirect(url_for('services.agendamento_assessor'))
+        
+        return render_template('services/confirmacao_assessor.html', meeting=meeting)
+        
+    except Exception as e:
+        logging.error(f"Error displaying meeting confirmation: {e}")
+        flash('Erro ao exibir confirmação.', 'error')
+        return redirect(url_for('services.agendamento_assessor'))
 
 # Chatbot routes
 @chatbot_bp.route('/api/message', methods=['POST'])
