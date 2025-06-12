@@ -38,9 +38,16 @@ def create_app():
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
+        
+        # Exempt chatbot endpoints from CSRF protection
+        csrf.exempt(app.view_functions['main.chat'])
+        csrf.exempt(app.view_functions['chatbot.chatbot_message'])
+        
         logging.info("Blueprints registered successfully")
     except ImportError as e:
         logging.error(f"Failed to register blueprints: {e}")
+    except KeyError as e:
+        logging.warning(f"Could not exempt CSRF for some endpoints: {e}")
     
     # Create database tables
     create_all_tables(app)
