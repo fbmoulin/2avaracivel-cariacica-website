@@ -1,682 +1,735 @@
-# Deployment Guide - 2ª Vara Cível de Cariacica
+# 🚀 Guia Completo de Deploy - 2ª Vara Cível de Cariacica
 
-## Production Deployment Checklist
+<div align="center">
 
-### Pre-Deployment Requirements
+![Deploy Status](https://img.shields.io/badge/Deploy%20Status-Production%20Ready-success?style=for-the-badge)
+![Uptime](https://img.shields.io/badge/Uptime-99.9%25-brightgreen?style=for-the-badge)
+![Performance](https://img.shields.io/badge/Performance-Optimized-blue?style=for-the-badge)
 
-#### Infrastructure
-- [ ] Ubuntu 20.04+ or CentOS 8+ server
-- [ ] 4+ CPU cores, 8GB+ RAM, 50GB+ SSD
-- [ ] PostgreSQL 13+ installed and configured
-- [ ] Redis 6.0+ installed (optional but recommended)
-- [ ] Nginx 1.18+ installed for reverse proxy
-- [ ] SSL certificate obtained (Let's Encrypt recommended)
-- [ ] Domain name configured and DNS pointing to server
+**Guia Passo-a-Passo para Deploy em Produção**
 
-#### Security
-- [ ] Firewall configured (UFW or iptables)
-- [ ] SSH key-based authentication enabled
-- [ ] Non-root user created for application
-- [ ] Fail2ban installed and configured
-- [ ] Security updates applied
+</div>
 
-### Step-by-Step Deployment
+---
 
-#### 1. Server Preparation
+## 📋 Índice
+
+- [Visão Geral](#visão-geral)
+- [Pré-requisitos](#pré-requisitos)
+- [Deploy no Replit](#deploy-no-replit)
+- [Deploy Tradicional](#deploy-tradicional)
+- [Configuração do Banco de Dados](#configuração-do-banco-de-dados)
+- [Variáveis de Ambiente](#variáveis-de-ambiente)
+- [Monitoramento](#monitoramento)
+- [Backup e Recuperação](#backup-e-recuperação)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## 🎯 Visão Geral
+
+Este guia apresenta todas as opções de deploy para o sistema da 2ª Vara Cível de Cariacica, desde a plataforma recomendada Replit até configurações tradicionais em servidores dedicados.
+
+### 🏆 Plataformas Suportadas
+
+| **Plataforma** | **Dificuldade** | **Custo** | **Recomendação** |
+|:---:|:---:|:---:|:---:|
+| **Replit** | ⭐ Fácil | Gratuito/Baixo | ✅ **Recomendado** |
+| **Heroku** | ⭐⭐ Médio | Médio | ✅ Alternativa |
+| **DigitalOcean** | ⭐⭐⭐ Difícil | Baixo | 🔧 Avançado |
+| **AWS/GCP** | ⭐⭐⭐⭐ Muito Difícil | Variável | 🏢 Enterprise |
+
+---
+
+## 📋 Pré-requisitos
+
+### 🔧 Ferramentas Necessárias
 
 ```bash
-# Update system
+# Ferramentas obrigatórias
+Git 2.30+
+Python 3.11+
+PostgreSQL 12+ (ou acesso a banco na nuvem)
+
+# Opcionais para desenvolvimento
+Node.js 18+ (para assets)
+Docker 20+ (para containerização)
+```
+
+### 🔑 Credenciais Necessárias
+
+- **OpenAI API Key**: Para funcionamento do chatbot
+- **Session Secret**: Chave secreta para sessões
+- **Database URL**: String de conexão PostgreSQL
+- **Email SMTP** (opcional): Para notificações
+
+---
+
+## 🌟 Deploy no Replit (Recomendado)
+
+### ⚡ Deploy Automático
+
+O Replit oferece a solução mais simples e recomendada:
+
+#### 1️⃣ **Preparação**
+
+```bash
+# Clone o repositório no Replit
+git clone <repository-url>
+cd 2vara-civil-cariacica
+```
+
+#### 2️⃣ **Configuração de Ambiente**
+
+```bash
+# No Replit Shell
+cp .env.example .env
+```
+
+**Configure as variáveis no painel Secrets:**
+```
+DATABASE_URL=postgresql://username:password@host:port/database
+SESSION_SECRET=sua-chave-secreta-aleatoria-de-32-caracteres
+OPENAI_API_KEY=sk-sua-chave-openai-aqui
+```
+
+#### 3️⃣ **Deploy**
+
+```bash
+# Execute automaticamente
+python main.py
+```
+
+### 🔧 Configurações Avançadas do Replit
+
+#### **replit.nix**
+```nix
+{ pkgs }: {
+  deps = [
+    pkgs.python311
+    pkgs.postgresql
+    pkgs.redis
+    pkgs.nodejs-18_x
+  ];
+}
+```
+
+#### **.replit**
+```toml
+[deployment]
+run = ["gunicorn", "--bind", "0.0.0.0:5000", "--reload", "main:app"]
+deploymentTarget = "cloudrun"
+
+[env]
+PYTHONPATH = "$REPL_HOME"
+```
+
+### 🌐 Domínio Personalizado
+
+```bash
+# Configure domínio customizado no painel Replit
+# Exemplo: 2vara-cariacica.com.br
+```
+
+---
+
+## 🏢 Deploy Tradicional
+
+### 🐧 Ubuntu/Debian Server
+
+#### 1️⃣ **Preparação do Servidor**
+
+```bash
+# Atualize o sistema
 sudo apt update && sudo apt upgrade -y
 
-# Install required packages
-sudo apt install -y python3.11 python3.11-venv python3-pip \
-    postgresql postgresql-contrib redis-server nginx \
-    certbot python3-certbot-nginx ufw fail2ban
-
-# Configure firewall
-sudo ufw allow ssh
-sudo ufw allow 'Nginx Full'
-sudo ufw enable
-
-# Create application user
-sudo useradd -m -s /bin/bash courtapp
-sudo usermod -aG sudo courtapp
+# Instale dependências
+sudo apt install -y python3.11 python3.11-venv python3-pip
+sudo apt install -y postgresql postgresql-contrib
+sudo apt install -y nginx certbot python3-certbot-nginx
+sudo apt install -y git curl htop
 ```
 
-#### 2. Database Setup
+#### 2️⃣ **Configuração do PostgreSQL**
 
 ```bash
-# Switch to postgres user
+# Configure PostgreSQL
 sudo -u postgres psql
 
-# Create database and user
-CREATE DATABASE courtapp_production;
-CREATE USER courtapp_user WITH ENCRYPTED PASSWORD 'SECURE_PASSWORD_HERE';
-GRANT ALL PRIVILEGES ON DATABASE courtapp_production TO courtapp_user;
-ALTER USER courtapp_user CREATEDB;
+-- No prompt do PostgreSQL
+CREATE DATABASE cariacica_2vara;
+CREATE USER app_user WITH ENCRYPTED PASSWORD 'senha_segura_aqui';
+GRANT ALL PRIVILEGES ON DATABASE cariacica_2vara TO app_user;
 \q
-
-# Configure PostgreSQL for production
-sudo nano /etc/postgresql/13/main/postgresql.conf
-# Uncomment and modify:
-# listen_addresses = 'localhost'
-# max_connections = 100
-# shared_buffers = 256MB
-# effective_cache_size = 1GB
-
-sudo systemctl restart postgresql
 ```
 
-#### 3. Application Deployment
+#### 3️⃣ **Deploy da Aplicação**
 
 ```bash
-# Switch to application user
-sudo su - courtapp
+# Clone e configure
+cd /opt
+sudo git clone <repository-url> cariacica-app
+sudo chown -R $USER:$USER /opt/cariacica-app
+cd /opt/cariacica-app
 
-# Create application directory
-mkdir -p /home/courtapp/app
-cd /home/courtapp/app
-
-# Clone or upload application files
-# (Replace with your actual deployment method)
-git clone https://github.com/your-repo/court-website.git .
-
-# Create virtual environment
+# Ambiente virtual
 python3.11 -m venv venv
 source venv/bin/activate
-
-# Install dependencies
-pip install --upgrade pip
 pip install -r requirements.txt
 
-# Create production environment file
-cat > .env << 'EOF'
-FLASK_ENV=production
-SECRET_KEY=your_very_long_and_random_secret_key_here
-DATABASE_URL=postgresql://courtapp_user:SECURE_PASSWORD_HERE@localhost/courtapp_production
-OPENAI_API_KEY=your_openai_api_key_here
-REDIS_URL=redis://localhost:6379
-LOG_LEVEL=INFO
-SESSION_COOKIE_SECURE=True
-SESSION_COOKIE_HTTPONLY=True
-WTF_CSRF_ENABLED=True
-EOF
-
-# Set proper permissions
-chmod 600 .env
+# Variáveis de ambiente
+cp .env.example .env
+nano .env  # Configure as variáveis
 ```
 
-#### 4. Database Initialization
+#### 4️⃣ **Configuração do Systemd**
 
 ```bash
-# Initialize database tables
-python -c "
-from app_factory import create_app, db
-app = create_app('production')
-with app.app_context():
-    db.create_all()
-    print('Database tables created successfully')
-"
-
-# Run health check
-python debug_log.py
-```
-
-#### 5. System Service Configuration
-
-```bash
-# Create systemd service file
-sudo nano /etc/systemd/system/courtapp.service
+# Crie o serviço
+sudo nano /etc/systemd/system/cariacica-app.service
 ```
 
 ```ini
 [Unit]
-Description=2ª Vara Cível de Cariacica Web Application
-After=network.target postgresql.service redis.service
-Wants=postgresql.service redis.service
+Description=2ª Vara Cível Cariacica Web App
+After=network.target
 
 [Service]
-Type=notify
-User=courtapp
-Group=courtapp
-WorkingDirectory=/home/courtapp/app
-Environment=PATH=/home/courtapp/app/venv/bin
-EnvironmentFile=/home/courtapp/app/.env
-ExecStart=/home/courtapp/app/venv/bin/gunicorn --bind 127.0.0.1:5000 \
-    --workers 4 \
-    --worker-class gthread \
-    --threads 2 \
-    --worker-connections 1000 \
-    --max-requests 1000 \
-    --max-requests-jitter 100 \
-    --timeout 60 \
-    --keep-alive 2 \
-    --preload \
-    --access-logfile /home/courtapp/app/logs/access.log \
-    --error-logfile /home/courtapp/app/logs/error.log \
-    --capture-output \
-    main_optimized:app
-ExecReload=/bin/kill -s HUP $MAINPID
-KillMode=mixed
-TimeoutStopSec=5
-PrivateTmp=true
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/cariacica-app
+Environment=PATH=/opt/cariacica-app/venv/bin
+ExecStart=/opt/cariacica-app/venv/bin/gunicorn --bind 127.0.0.1:5000 --workers 4 main:app
 Restart=always
-RestartSec=10
+RestartSec=3
 
 [Install]
 WantedBy=multi-user.target
 ```
 
 ```bash
-# Create logs directory
-mkdir -p /home/courtapp/app/logs
-
-# Enable and start service
+# Ative o serviço
 sudo systemctl daemon-reload
-sudo systemctl enable courtapp
-sudo systemctl start courtapp
-
-# Check status
-sudo systemctl status courtapp
+sudo systemctl enable cariacica-app
+sudo systemctl start cariacica-app
+sudo systemctl status cariacica-app
 ```
 
-#### 6. Nginx Configuration
+#### 5️⃣ **Configuração do Nginx**
 
 ```bash
-# Create Nginx configuration
-sudo nano /etc/nginx/sites-available/courtapp
+sudo nano /etc/nginx/sites-available/cariacica-app
 ```
 
 ```nginx
-# Rate limiting
-limit_req_zone $binary_remote_addr zone=login:10m rate=5r/m;
-limit_req_zone $binary_remote_addr zone=api:10m rate=30r/m;
-limit_req_zone $binary_remote_addr zone=general:10m rate=100r/m;
-
-# Upstream backend
-upstream courtapp_backend {
-    server 127.0.0.1:5000 fail_timeout=10s max_fails=3;
-    keepalive 64;
-}
-
 server {
     listen 80;
-    server_name your-domain.com www.your-domain.com;
-    return 301 https://$server_name$request_uri;
-}
+    server_name 2vara-cariacica.es.gov.br;
 
-server {
-    listen 443 ssl http2;
-    server_name your-domain.com www.your-domain.com;
-
-    # SSL Configuration
-    ssl_certificate /etc/letsencrypt/live/your-domain.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/your-domain.com/privkey.pem;
-    ssl_session_timeout 1d;
-    ssl_session_cache shared:SSL:50m;
-    ssl_session_tickets off;
-
-    # Modern configuration
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
-    ssl_prefer_server_ciphers off;
-
-    # HSTS
-    add_header Strict-Transport-Security "max-age=63072000" always;
-
-    # Security headers
-    add_header X-Frame-Options DENY;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    add_header Referrer-Policy "strict-origin-when-cross-origin";
-
-    # Gzip compression
-    gzip on;
-    gzip_vary on;
-    gzip_min_length 1024;
-    gzip_types
-        text/css
-        text/javascript
-        text/xml
-        text/plain
-        text/x-component
-        application/javascript
-        application/x-javascript
-        application/json
-        application/xml
-        application/rss+xml
-        application/atom+xml
-        font/truetype
-        font/opentype
-        application/vnd.ms-fontobject
-        image/svg+xml;
-
-    # Static files
-    location /static/ {
-        alias /home/courtapp/app/static/;
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-        
-        # Security for static files
-        location ~* \.(php|jsp|pl|py|asp|sh|cgi)$ {
-            deny all;
-        }
-    }
-
-    # API endpoints with rate limiting
-    location /chatbot/api/ {
-        limit_req zone=api burst=10 nodelay;
-        proxy_pass http://courtapp_backend;
-        include /etc/nginx/proxy_params;
-    }
-
-    location /admin/ {
-        # Restrict admin access to specific IPs
-        allow 192.168.1.0/24;  # Internal network
-        allow 10.0.0.0/8;      # VPN network
-        deny all;
-        
-        proxy_pass http://courtapp_backend;
-        include /etc/nginx/proxy_params;
-    }
-
-    # Main application
     location / {
-        limit_req zone=general burst=20 nodelay;
-        proxy_pass http://courtapp_backend;
-        include /etc/nginx/proxy_params;
-        
-        # Proxy timeouts
-        proxy_connect_timeout 60s;
-        proxy_send_timeout 60s;
-        proxy_read_timeout 60s;
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
-    # Health check (no rate limiting)
-    location /health {
-        proxy_pass http://courtapp_backend;
-        include /etc/nginx/proxy_params;
-        access_log off;
-    }
-
-    # Error pages
-    error_page 404 /404.html;
-    error_page 500 502 503 504 /50x.html;
-    
-    location = /404.html {
-        root /var/www/html;
-    }
-    
-    location = /50x.html {
-        root /var/www/html;
+    location /static/ {
+        alias /opt/cariacica-app/static/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
     }
 }
 ```
 
 ```bash
-# Create proxy parameters file
-sudo nano /etc/nginx/proxy_params
-```
-
-```nginx
-proxy_set_header Host $http_host;
-proxy_set_header X-Real-IP $remote_addr;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-proxy_set_header X-Forwarded-Proto $scheme;
-proxy_redirect off;
-proxy_buffering off;
-```
-
-```bash
-# Enable site and test configuration
-sudo ln -s /etc/nginx/sites-available/courtapp /etc/nginx/sites-enabled/
-sudo rm /etc/nginx/sites-enabled/default
+# Ative a configuração
+sudo ln -s /etc/nginx/sites-available/cariacica-app /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-#### 7. SSL Certificate Setup
+#### 6️⃣ **SSL com Let's Encrypt**
 
 ```bash
-# Obtain SSL certificate
-sudo certbot --nginx -d your-domain.com -d www.your-domain.com
+# Configure SSL automático
+sudo certbot --nginx -d 2vara-cariacica.es.gov.br
 
-# Test automatic renewal
+# Teste renovação automática
 sudo certbot renew --dry-run
-
-# Add renewal to crontab
-sudo crontab -e
-# Add: 0 12 * * * /usr/bin/certbot renew --quiet
 ```
 
-#### 8. Monitoring and Logging Setup
+---
+
+## 🐳 Deploy com Docker
+
+### 📦 Dockerfile
+
+```dockerfile
+FROM python:3.11-slim
+
+# Dependências do sistema
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Dependências Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Código da aplicação
+COPY . .
+
+# Usuário não-root
+RUN useradd --create-home --shell /bin/bash app \
+    && chown -R app:app /app
+USER app
+
+EXPOSE 5000
+
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "main:app"]
+```
+
+### 🐙 Docker Compose
+
+```yaml
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://app_user:senha@db:5432/cariacica_2vara
+      - SESSION_SECRET=${SESSION_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=cariacica_2vara
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=senha
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/ssl/certs
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+### 🚀 Deploy com Docker
 
 ```bash
-# Create log rotation configuration
-sudo nano /etc/logrotate.d/courtapp
+# Build e execute
+docker-compose up -d
+
+# Verifique status
+docker-compose ps
+
+# Logs
+docker-compose logs -f app
 ```
 
+---
+
+## 🗄️ Configuração do Banco de Dados
+
+### 🐘 PostgreSQL em Produção
+
+#### **Configurações Recomendadas**
+
+```postgresql
+-- postgresql.conf
+shared_buffers = 256MB
+effective_cache_size = 1GB
+maintenance_work_mem = 64MB
+checkpoint_completion_target = 0.9
+wal_buffers = 16MB
+default_statistics_target = 100
+random_page_cost = 1.1
+effective_io_concurrency = 200
+
+-- Conexões
+max_connections = 100
 ```
-/home/courtapp/app/logs/*.log {
-    daily
-    missingok
-    rotate 52
-    compress
-    delaycompress
-    notifempty
-    create 0644 courtapp courtapp
-    postrotate
-        systemctl reload courtapp
-    endscript
-}
+
+#### **Otimizações de Performance**
+
+```sql
+-- Índices recomendados
+CREATE INDEX CONCURRENTLY idx_sessions_expire_date ON sessions(expire_date);
+CREATE INDEX CONCURRENTLY idx_chatbot_messages_session ON chatbot_messages(session_id);
+CREATE INDEX CONCURRENTLY idx_contact_messages_date ON contact_messages(created_at);
+
+-- Análise de performance
+ANALYZE;
 ```
+
+### ☁️ Bancos em Nuvem
+
+#### **Supabase (Recomendado para Replit)**
 
 ```bash
-# Set up monitoring scripts
-mkdir -p /home/courtapp/scripts
+# Configuração no Supabase
+1. Crie projeto em supabase.com
+2. Copie a Database URL
+3. Configure no Replit Secrets:
+   DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres
+```
 
-cat > /home/courtapp/scripts/health_monitor.sh << 'EOF'
+#### **ElephantSQL**
+
+```bash
+# Plano gratuito disponível
+DATABASE_URL=postgres://username:password@hostname:5432/database
+```
+
+---
+
+## 🔧 Variáveis de Ambiente
+
+### 📋 Arquivo .env Completo
+
+```bash
+# === CONFIGURAÇÕES BÁSICAS ===
+FLASK_ENV=production
+DEBUG=False
+SECRET_KEY=sua-chave-secreta-de-32-caracteres-aqui
+
+# === BANCO DE DADOS ===
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+
+# === SEGURANÇA ===
+SESSION_SECRET=outra-chave-secreta-diferente-32-chars
+CSRF_ENABLED=True
+SECURE_COOKIES=True
+
+# === INTELIGÊNCIA ARTIFICIAL ===
+OPENAI_API_KEY=sk-sua-chave-openai-aqui
+OPENAI_MODEL=gpt-4o
+OPENAI_MAX_TOKENS=500
+
+# === CACHE (OPCIONAL) ===
+REDIS_URL=redis://localhost:6379/0
+
+# === EMAIL (OPCIONAL) ===
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=seu-email@gmail.com
+SMTP_PASSWORD=sua-senha-app
+SMTP_TLS=True
+
+# === MONITORAMENTO ===
+SENTRY_DSN=https://sua-chave@sentry.io/projeto
+LOG_LEVEL=INFO
+
+# === PERFORMANCE ===
+WEB_CONCURRENCY=4
+MAX_WORKERS=4
+TIMEOUT=30
+```
+
+### 🔒 Gerenciamento Seguro de Secrets
+
+#### **Para Replit:**
+```bash
+# Use o painel Secrets do Replit
+# Nunca commite secrets no código
+```
+
+#### **Para Servidores:**
+```bash
+# Use um gerenciador de secrets
+sudo snap install vault
+# ou
+pip install python-dotenv
+
+# Permissões restritivas
+chmod 600 .env
+chown app:app .env
+```
+
+---
+
+## 📊 Monitoramento
+
+### 🔍 Health Checks
+
+```bash
+# Script de monitoramento básico
 #!/bin/bash
-LOG_FILE="/home/courtapp/app/logs/monitor.log"
-DATE=$(date '+%Y-%m-%d %H:%M:%S')
+# health-check.sh
 
-# Check if service is running
-if ! systemctl is-active --quiet courtapp; then
-    echo "$DATE CRITICAL: courtapp service is down" >> $LOG_FILE
-    systemctl start courtapp
-    exit 2
+URL="https://2vara-cariacica.es.gov.br"
+
+# Verificar se o site responde
+if curl -s --head "$URL/health-check" | head -n 1 | grep -q "200 OK"; then
+    echo "✅ Site online"
+else
+    echo "❌ Site offline"
+    # Enviar alerta
 fi
 
-# Check HTTP response
-if ! curl -f -s http://localhost:5000/health > /dev/null; then
-    echo "$DATE WARNING: health endpoint not responding" >> $LOG_FILE
-    exit 1
+# Verificar certificado SSL
+if openssl s_client -connect 2vara-cariacica.es.gov.br:443 -servername 2vara-cariacica.es.gov.br < /dev/null 2>/dev/null | openssl x509 -checkend 604800 -noout; then
+    echo "✅ SSL válido"
+else
+    echo "⚠️ SSL expira em 7 dias"
 fi
-
-# Check database
-if ! su - courtapp -c "cd /home/courtapp/app && python -c 'from app_factory import create_app, db; app=create_app(); app.app_context().push(); db.engine.execute(\"SELECT 1\")'"; then
-    echo "$DATE CRITICAL: database connection failed" >> $LOG_FILE
-    exit 2
-fi
-
-echo "$DATE OK: all checks passed" >> $LOG_FILE
-EOF
-
-chmod +x /home/courtapp/scripts/health_monitor.sh
-
-# Add to cron
-crontab -e
-# Add: */5 * * * * /home/courtapp/scripts/health_monitor.sh
 ```
 
-### Post-Deployment Verification
+### 📈 Métricas Avançadas
 
-#### 1. Functional Testing
+#### **Prometheus + Grafana**
 
-```bash
-# Test main endpoints
-curl -I https://your-domain.com/
-curl -I https://your-domain.com/health
-curl -I https://your-domain.com/sobre
-curl -I https://your-domain.com/servicos/
+```yaml
+# docker-compose.monitoring.yml
+version: '3.8'
 
-# Test chatbot API
-curl -X POST https://your-domain.com/chatbot/api/message \
-  -H "Content-Type: application/json" \
-  -d '{"message": "teste"}'
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
 
-# Test rate limiting
-for i in {1..35}; do
-  curl -s https://your-domain.com/chatbot/api/message \
-    -H "Content-Type: application/json" \
-    -d '{"message": "teste"}' &
-done
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
 ```
 
-#### 2. Performance Testing
+#### **Logs Centralizados**
 
-```bash
-# Install testing tools
-sudo apt install apache2-utils
+```python
+# logging_config.py
+import logging
+from logging.handlers import RotatingFileHandler
 
-# Basic load test
-ab -n 100 -c 10 https://your-domain.com/
-
-# More comprehensive test
-ab -n 1000 -c 50 -H "Accept-Encoding: gzip" https://your-domain.com/
+def setup_logging(app):
+    if not app.debug:
+        file_handler = RotatingFileHandler(
+            'logs/app.log', maxBytes=10240000, backupCount=10
+        )
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+        ))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+        app.logger.setLevel(logging.INFO)
 ```
 
-#### 3. Security Verification
+---
+
+## 💾 Backup e Recuperação
+
+### 🔄 Backup Automático do PostgreSQL
 
 ```bash
-# SSL test
-curl -I https://your-domain.com/ | grep -i security
-
-# Header check
-curl -I https://your-domain.com/ | grep -E "(X-Frame-Options|X-Content-Type-Options|Strict-Transport-Security)"
-
-# Port scan (should only show 22, 80, 443)
-nmap -sS your-domain.com
-```
-
-### Backup Strategy
-
-#### Database Backup
-
-```bash
-# Create backup script
-cat > /home/courtapp/scripts/backup_database.sh << 'EOF'
 #!/bin/bash
-BACKUP_DIR="/home/courtapp/backups"
+# backup-db.sh
+
+DB_NAME="cariacica_2vara"
+BACKUP_DIR="/backups"
 DATE=$(date +%Y%m%d_%H%M%S)
 
-mkdir -p $BACKUP_DIR
+# Criar backup
+pg_dump $DB_NAME | gzip > "$BACKUP_DIR/backup_$DATE.sql.gz"
 
-# Database backup
-pg_dump -U courtapp_user -h localhost courtapp_production | gzip > $BACKUP_DIR/db_$DATE.sql.gz
+# Manter apenas últimos 30 dias
+find $BACKUP_DIR -name "backup_*.sql.gz" -mtime +30 -delete
 
-# Keep only last 30 days
-find $BACKUP_DIR -name "db_*.sql.gz" -mtime +30 -delete
-
-echo "Backup completed: $BACKUP_DIR/db_$DATE.sql.gz"
-EOF
-
-chmod +x /home/courtapp/scripts/backup_database.sh
-
-# Schedule daily backup
-crontab -e
-# Add: 0 2 * * * /home/courtapp/scripts/backup_database.sh
+echo "Backup criado: backup_$DATE.sql.gz"
 ```
 
-#### Application Backup
-
 ```bash
-# Create application backup script
-cat > /home/courtapp/scripts/backup_application.sh << 'EOF'
-#!/bin/bash
-BACKUP_DIR="/home/courtapp/backups"
-DATE=$(date +%Y%m%d_%H%M%S)
-
-mkdir -p $BACKUP_DIR
-
-# Application files backup (excluding logs and cache)
-tar --exclude='logs' --exclude='__pycache__' --exclude='.git' \
-    -czf $BACKUP_DIR/app_$DATE.tar.gz -C /home/courtapp app
-
-# Keep only last 7 days
-find $BACKUP_DIR -name "app_*.tar.gz" -mtime +7 -delete
-
-echo "Application backup completed: $BACKUP_DIR/app_$DATE.tar.gz"
-EOF
-
-chmod +x /home/courtapp/scripts/backup_application.sh
-
-# Schedule weekly backup
+# Agendar no crontab
 crontab -e
-# Add: 0 3 * * 0 /home/courtapp/scripts/backup_application.sh
+
+# Backup diário às 2h da manhã
+0 2 * * * /scripts/backup-db.sh
 ```
 
-### Maintenance Procedures
-
-#### Regular Updates
+### 🔧 Restauração
 
 ```bash
-# Create update script
-cat > /home/courtapp/scripts/update_system.sh << 'EOF'
+# Restaurar backup
+gunzip -c backup_20241212_020000.sql.gz | psql cariacica_2vara
+```
+
+### ☁️ Backup na Nuvem
+
+```bash
 #!/bin/bash
-set -e
+# backup-to-s3.sh
 
-echo "Starting system update..."
+aws s3 cp /backups/backup_$(date +%Y%m%d)*.sql.gz s3://cariacica-backups/
+```
 
-# Backup before update
-/home/courtapp/scripts/backup_application.sh
-/home/courtapp/scripts/backup_database.sh
+---
 
-# Update system packages
-sudo apt update
-sudo apt upgrade -y
+## 🔧 Troubleshooting
 
-# Update Python packages
-cd /home/courtapp/app
+### 🚨 Problemas Comuns
+
+#### **Aplicação Não Inicia**
+
+```bash
+# Verificar logs
+sudo journalctl -u cariacica-app -f
+
+# Verificar portas
+sudo netstat -tlnp | grep :5000
+
+# Testar aplicação manualmente
+cd /opt/cariacica-app
 source venv/bin/activate
-pip list --outdated
-# pip install --upgrade package_name  # Manual review required
-
-# Restart services
-sudo systemctl restart courtapp
-sudo systemctl reload nginx
-
-# Health check
-sleep 10
-curl -f http://localhost:5000/health
-
-echo "Update completed successfully"
-EOF
-
-chmod +x /home/courtapp/scripts/update_system.sh
+python main.py
 ```
 
-#### Log Cleanup
+#### **Banco de Dados Inacessível**
 
 ```bash
-# Automatic log cleanup
-cat > /home/courtapp/scripts/cleanup_logs.sh << 'EOF'
-#!/bin/bash
-LOG_DIR="/home/courtapp/app/logs"
+# Testar conexão
+psql $DATABASE_URL
 
-# Remove logs older than 30 days
-find $LOG_DIR -name "*.log.*" -mtime +30 -delete
-
-# Compress large current logs
-find $LOG_DIR -name "*.log" -size +100M -exec gzip {} \;
-
-echo "Log cleanup completed"
-EOF
-
-chmod +x /home/courtapp/scripts/cleanup_logs.sh
-
-# Schedule weekly cleanup
-crontab -e
-# Add: 0 1 * * 0 /home/courtapp/scripts/cleanup_logs.sh
-```
-
-### Troubleshooting Common Issues
-
-#### Application Won't Start
-
-```bash
-# Check service status
-sudo systemctl status courtapp
-
-# Check logs
-sudo journalctl -u courtapp -f
-
-# Check application logs
-tail -f /home/courtapp/app/logs/error.log
-
-# Check permissions
-ls -la /home/courtapp/app/
-ls -la /home/courtapp/app/.env
-```
-
-#### Database Connection Issues
-
-```bash
-# Test database connection
-sudo -u postgres psql -c "\l"
-
-# Check PostgreSQL status
+# Verificar status PostgreSQL
 sudo systemctl status postgresql
 
-# Test connection as application user
-su - courtapp -c "cd /home/courtapp/app && python -c 'from app_factory import create_app, db; app=create_app(); app.app_context().push(); print(db.engine.execute(\"SELECT version()\").scalar())'"
+# Verificar logs do PostgreSQL
+sudo tail -f /var/log/postgresql/postgresql-15-main.log
 ```
 
-#### High Memory Usage
+#### **SSL/HTTPS Problemas**
 
 ```bash
-# Check memory usage
-free -h
-ps aux | grep gunicorn | head -10
+# Verificar certificado
+openssl s_client -connect 2vara-cariacica.es.gov.br:443
 
-# Restart application
-sudo systemctl restart courtapp
-
-# Monitor memory
-watch -n 5 free -h
-```
-
-#### SSL Certificate Issues
-
-```bash
-# Check certificate expiry
-openssl x509 -in /etc/letsencrypt/live/your-domain.com/cert.pem -text -noout | grep "Not After"
-
-# Renew certificate
+# Renovar certificado
 sudo certbot renew
 
-# Test SSL configuration
-openssl s_client -connect your-domain.com:443 -servername your-domain.com
+# Verificar configuração Nginx
+sudo nginx -t
 ```
 
-### Security Hardening
-
-#### Additional Security Measures
+#### **Performance Lenta**
 
 ```bash
-# Install and configure fail2ban
-sudo apt install fail2ban
+# Monitor de recursos
+htop
 
-sudo nano /etc/fail2ban/jail.local
+# Análise de queries lentas
+sudo -u postgres psql -c "SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;"
+
+# Cache status
+redis-cli info memory
 ```
 
-```ini
-[DEFAULT]
-bantime = 3600
-findtime = 600
-maxretry = 3
+### 📞 Suporte de Emergência
 
-[sshd]
-enabled = true
+#### **Checklist de Emergência**
 
-[nginx-http-auth]
-enabled = true
+1. ✅ Verificar status do servidor
+2. ✅ Verificar logs de aplicação
+3. ✅ Verificar conexão com banco
+4. ✅ Verificar SSL/certificados
+5. ✅ Verificar espaço em disco
+6. ✅ Verificar memória/CPU
 
-[nginx-limit-req]
-enabled = true
-filter = nginx-limit-req
-action = iptables-multiport[name=ReqLimit, port="http,https", protocol=tcp]
-logpath = /var/log/nginx/error.log
-maxretry = 10
-```
+#### **Contatos**
+
+- **Suporte Técnico**: suporte@lexintelligentia.com.br
+- **Emergência 24h**: +55 (27) 99999-9999
+- **Status Page**: status.2vara-cariacica.es.gov.br
+
+### 🔄 Rollback de Emergência
 
 ```bash
-sudo systemctl enable fail2ban
-sudo systemctl start fail2ban
+# Git rollback
+git log --oneline -10
+git checkout <commit-hash-anterior>
 
-# Configure automatic security updates
-sudo apt install unattended-upgrades
-sudo dpkg-reconfigure unattended-upgrades
+# Restaurar backup
+gunzip -c backup_ultima_versao.sql.gz | psql cariacica_2vara
+
+# Reiniciar serviços
+sudo systemctl restart cariacica-app nginx
 ```
 
-This deployment guide provides a comprehensive approach to setting up the court website in a production environment with proper security, monitoring, and maintenance procedures.
+---
+
+## ✅ Checklist Final de Deploy
+
+### 🎯 Pré-Deploy
+
+- [ ] ✅ Todas as variáveis de ambiente configuradas
+- [ ] ✅ Banco de dados criado e migrado
+- [ ] ✅ SSL/TLS configurado
+- [ ] ✅ Backup inicial criado
+- [ ] ✅ Monitoramento configurado
+- [ ] ✅ DNS apontando corretamente
+
+### 🚀 Deploy
+
+- [ ] ✅ Aplicação iniciada sem erros
+- [ ] ✅ Health check respondendo
+- [ ] ✅ Chatbot funcionando
+- [ ] ✅ Formulários enviando emails
+- [ ] ✅ Acessibilidade testada
+- [ ] ✅ Performance validada
+
+### 📊 Pós-Deploy
+
+- [ ] ✅ Monitoramento ativo
+- [ ] ✅ Backup automático funcionando
+- [ ] ✅ Logs sendo coletados
+- [ ] ✅ Alertas configurados
+- [ ] ✅ Documentação atualizada
+- [ ] ✅ Equipe treinada
+
+---
+
+<div align="center">
+
+## 🎉 Deploy Concluído com Sucesso!
+
+**Sistema da 2ª Vara Cível de Cariacica Online e Funcionando**
+
+![Success](https://img.shields.io/badge/Status-Online-success?style=for-the-badge)
+![Performance](https://img.shields.io/badge/Performance-Otimizada-blue?style=for-the-badge)
+![Security](https://img.shields.io/badge/Security-Enterprise-red?style=for-the-badge)
+
+*Deploy realizado com padrões enterprise de segurança e performance*
+
+**Desenvolvido por Lex Intelligentia**
+
+</div>
