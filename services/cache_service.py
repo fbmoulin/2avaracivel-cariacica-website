@@ -1,126 +1,219 @@
 """
-Caching service for 2ª Vara Cível de Cariacica
-Optimized for performance and scalability
+Advanced caching service with Redis support and intelligent cache management
+Provides distributed caching, cache warming, and automatic invalidation
 """
-from functools import wraps
-from flask import current_app
-from app_factory import cache
+import os
 import json
+import logging
+import time
+from typing import Any, Optional, Dict, List
+from functools import wraps
+from datetime import datetime, timedelta
 import hashlib
 
 
 class CacheService:
-    """Centralized caching service"""
+    """Advanced caching service with multiple backends"""
     
-    # Cache timeouts (in seconds)
-    SHORT_CACHE = 300      # 5 minutes
-    MEDIUM_CACHE = 1800    # 30 minutes
-    LONG_CACHE = 3600      # 1 hour
-    VERY_LONG_CACHE = 86400  # 24 hours
+    # Cache timeout constants
+    SHORT_CACHE = 60          # 1 minute
+    MEDIUM_CACHE = 300        # 5 minutes
+    LONG_CACHE = 1800         # 30 minutes
+    EXTENDED_CACHE = 7200     # 2 hours
+    
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.cache_backend = self._initialize_cache_backend()
+        self._cache_stats = {
+            'hits': 0,
+            'misses': 0,
+            'sets': 0,
+            'deletes': 0
+        }
+    
+    def _initialize_cache_backend(self):
+        """Initialize appropriate cache backend"""
+        try:
+            # Try Redis first for production
+            import redis
+            redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+            client = redis.from_url(redis_url, decode_responses=True)
+            client.ping()  # Test connection
+            self.logger.info("Redis cache backend initialized")
+            return RedisCache(client)
+        except Exception as e:
+            # Fallback to memory cache
+            self.logger.info(f"Redis not available ({e}), using memory cache backend")
+            return MemoryCache()
+    
+    def get(self, key: str) -> Optional[Any]:
+        """Get value from cache"""
+        try:
+            value = self.cache_backend.get(key)
+            if value is not None:
+                self._cache_stats['hits'] += 1
+                return value
+            else:
+                self._cache_stats['misses'] += 1
+                return None
+        except Exception as e:
+            self.logger.error(f"Cache get error: {e}")
+            self._cache_stats['misses'] += 1
+            return None
+    
+    def set(self, key: str, value: Any, timeout: int = MEDIUM_CACHE) -> bool:
+        """Set value in cache"""
+        try:
+            success = self.cache_backend.set(key, value, timeout)
+            if success:
+                self._cache_stats['sets'] += 1
+            return success
+        except Exception as e:
+            self.logger.error(f"Cache set error: {e}")
+            return False
+    
+    def delete(self, key: str) -> bool:
+        """Delete value from cache"""
+        try:
+            success = self.cache_backend.delete(key)
+            if success:
+                self._cache_stats['deletes'] += 1
+            return success
+        except Exception as e:
+            self.logger.error(f"Cache delete error: {e}")
+            return False
+    
+    def clear_pattern(self, pattern: str) -> int:
+        """Clear all keys matching pattern"""
+        try:
+            count = self.cache_backend.clear_pattern(pattern)
+            self._cache_stats['deletes'] += count
+            return count
+        except Exception as e:
+            self.logger.error(f"Cache clear pattern error: {e}")
+            return 0
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Get cache statistics"""
+        total_requests = self._cache_stats['hits'] + self._cache_stats['misses']
+        hit_rate = (self._cache_stats['hits'] / max(total_requests, 1)) * 100
+        
+        return {
+            'hits': self._cache_stats['hits'],
+            'misses': self._cache_stats['misses'],
+            'sets': self._cache_stats['sets'],
+            'deletes': self._cache_stats['deletes'],
+            'hit_rate': round(hit_rate, 2),
+            'backend': type(self.cache_backend).__name__
+        }
     
     @staticmethod
-    def generate_cache_key(*args, **kwargs):
-        """Generate a consistent cache key from arguments"""
-        key_data = str(args) + str(sorted(kwargs.items()))
-        return hashlib.md5(key_data.encode()).hexdigest()
-    
-    @staticmethod
-    def cached_route(timeout=MEDIUM_CACHE, key_prefix='route'):
-        """Decorator for caching route responses"""
-        def decorator(f):
-            @wraps(f)
-            def decorated_function(*args, **kwargs):
-                cache_key = f"{key_prefix}:{f.__name__}:{CacheService.generate_cache_key(*args, **kwargs)}"
+    def cached_route(timeout: int = MEDIUM_CACHE, key_prefix: str = None):
+        """Decorator for caching Flask route responses"""
+        def decorator(func):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                from flask import request
+                
+                # Generate cache key
+                if key_prefix:
+                    cache_key = f"{key_prefix}:{request.path}:{request.query_string.decode()}"
+                else:
+                    cache_key = f"route:{request.path}:{request.query_string.decode()}"
+                
+                # Hash long keys
+                if len(cache_key) > 200:
+                    cache_key = hashlib.md5(cache_key.encode()).hexdigest()
                 
                 # Try to get from cache
-                cached_result = cache.get(cache_key)
+                cached_result = cache_service.get(cache_key)
                 if cached_result is not None:
                     return cached_result
                 
                 # Execute function and cache result
-                result = f(*args, **kwargs)
-                cache.set(cache_key, result, timeout=timeout)
+                result = func(*args, **kwargs)
+                cache_service.set(cache_key, result, timeout)
                 return result
             
-            return decorated_function
+            return wrapper
         return decorator
+
+
+class MemoryCache:
+    """Simple in-memory cache implementation"""
     
-    @staticmethod
-    def cached_data(timeout=MEDIUM_CACHE, key_prefix='data'):
-        """Decorator for caching data functions"""
-        def decorator(f):
-            @wraps(f)
-            def decorated_function(*args, **kwargs):
-                cache_key = f"{key_prefix}:{f.__name__}:{CacheService.generate_cache_key(*args, **kwargs)}"
-                
-                cached_result = cache.get(cache_key)
-                if cached_result is not None:
-                    return cached_result
-                
-                result = f(*args, **kwargs)
-                cache.set(cache_key, result, timeout=timeout)
-                return result
-            
-            return decorated_function
-        return decorator
+    def __init__(self):
+        self._cache = {}
+        self._expiry = {}
     
-    @staticmethod
-    def invalidate_pattern(pattern):
-        """Invalidate all cache keys matching a pattern"""
+    def get(self, key: str) -> Optional[Any]:
+        if key in self._cache:
+            if key in self._expiry and time.time() > self._expiry[key]:
+                del self._cache[key]
+                del self._expiry[key]
+                return None
+            return self._cache[key]
+        return None
+    
+    def set(self, key: str, value: Any, timeout: int) -> bool:
+        self._cache[key] = value
+        self._expiry[key] = time.time() + timeout
+        return True
+    
+    def delete(self, key: str) -> bool:
+        if key in self._cache:
+            del self._cache[key]
+            if key in self._expiry:
+                del self._expiry[key]
+            return True
+        return False
+    
+    def clear_pattern(self, pattern: str) -> int:
+        """Clear keys matching pattern (simple implementation)"""
+        import fnmatch
+        keys_to_delete = [key for key in self._cache.keys() if fnmatch.fnmatch(key, pattern)]
+        for key in keys_to_delete:
+            self.delete(key)
+        return len(keys_to_delete)
+
+
+class RedisCache:
+    """Redis-based cache implementation"""
+    
+    def __init__(self, client):
+        self.client = client
+    
+    def get(self, key: str) -> Optional[Any]:
         try:
-            if hasattr(cache.cache, 'delete_pattern'):
-                cache.cache.delete_pattern(pattern)
-            else:
-                # Fallback for simple cache backends
-                cache.clear()
-        except Exception as e:
-            current_app.logger.warning(f"Cache invalidation failed: {e}")
-    
-    @staticmethod
-    def get_cache_stats():
-        """Get cache statistics if available"""
-        try:
-            if hasattr(cache.cache, 'info'):
-                return cache.cache.info()
-            return {"status": "Cache statistics not available"}
+            value = self.client.get(key)
+            if value:
+                return json.loads(value)
+            return None
         except Exception:
-            return {"status": "Error retrieving cache stats"}
+            return None
+    
+    def set(self, key: str, value: Any, timeout: int) -> bool:
+        try:
+            serialized = json.dumps(value, default=str)
+            return self.client.setex(key, timeout, serialized)
+        except Exception:
+            return False
+    
+    def delete(self, key: str) -> bool:
+        try:
+            return bool(self.client.delete(key))
+        except Exception:
+            return False
+    
+    def clear_pattern(self, pattern: str) -> int:
+        try:
+            keys = self.client.keys(pattern)
+            if keys:
+                return self.client.delete(*keys)
+            return 0
+        except Exception:
+            return 0
 
 
-# Convenience functions
-def cache_faq_data():
-    """Cache FAQ data"""
-    @CacheService.cached_data(timeout=CacheService.LONG_CACHE, key_prefix='faq')
-    def _get_faq_data():
-        from services.content import ContentService
-        content_service = ContentService()
-        return content_service.get_faq_data()
-    return _get_faq_data()
-
-
-def cache_services_data():
-    """Cache services data"""
-    @CacheService.cached_data(timeout=CacheService.LONG_CACHE, key_prefix='services')
-    def _get_services_data():
-        from services.content import ContentService
-        content_service = ContentService()
-        return content_service.get_services_data()
-    return _get_services_data()
-
-
-def cache_news_data():
-    """Cache news data"""
-    @CacheService.cached_data(timeout=CacheService.MEDIUM_CACHE, key_prefix='news')
-    def _get_news_data():
-        from services.content import ContentService
-        content_service = ContentService()
-        return content_service.get_news()
-    return _get_news_data()
-
-
-def invalidate_content_cache():
-    """Invalidate all content-related cache"""
-    CacheService.invalidate_pattern('faq:*')
-    CacheService.invalidate_pattern('services:*')
-    CacheService.invalidate_pattern('news:*')
-    CacheService.invalidate_pattern('route:*')
+# Global cache service instance
+cache_service = CacheService()
