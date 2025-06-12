@@ -428,7 +428,7 @@ body {
     color: white;
     padding: 1rem 1.5rem;
     display: flex;
-    justify-content: between;
+    justify-content: space-between;
     align-items: center;
 }
 
