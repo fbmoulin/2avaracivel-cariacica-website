@@ -445,8 +445,10 @@ window.MobileOptimizer = window.MobileOptimizer || class MobileOptimizer {
 }
 
 // Add touch feedback styles
-const touchStyles = document.createElement('style');
-touchStyles.textContent = `
+if (!document.getElementById('mobile-touch-styles')) {
+    const touchStyles = document.createElement('style');
+    touchStyles.id = 'mobile-touch-styles';
+    touchStyles.textContent = `
     .touch-active {
         transform: scale(0.98) !important;
         opacity: 0.8 !important;
@@ -463,7 +465,8 @@ touchStyles.textContent = `
         outline-offset: 2px;
     }
 `;
-document.head.appendChild(touchStyles);
+    document.head.appendChild(touchStyles);
+}
 
 // Initialize mobile optimization when DOM is ready
 if (document.readyState === 'loading') {
