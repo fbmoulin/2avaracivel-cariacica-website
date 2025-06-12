@@ -98,6 +98,29 @@ p {
 .card-title {
     color: var(--text-primary) !important;
     font-weight: 700 !important;
+}
+
+/* Custom icon styling for service cards */
+.service-icon-custom {
+    width: 72px;
+    height: 72px;
+    max-width: 100%;
+    transition: var(--transition);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.service-icon-custom:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+/* Service icon container styling */
+.service-icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80px;
+}
     font-size: 1.3rem !important;
     margin-bottom: 0.75rem !important;
     line-height: 1.4 !important;

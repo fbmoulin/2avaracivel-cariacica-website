@@ -52,8 +52,10 @@
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
                         <div class="service-icon-container mb-3">
-                            <i class="fas fa-search fa-3x text-primary" aria-hidden="true"></i>
-                            <div class="service-icon-fallback" style="display: none;">🔍</div>
+                            <img src="{{ url_for('static', filename='images/icons/consulta_processual.png') }}" 
+                                 alt="Consulta Processual" 
+                                 class="service-icon-custom"
+                                 srcset="{{ url_for('static', filename='images/icons/consulta_processual@2x.png') }} 2x">
                         </div>
                         <h5 class="card-title">Consulta Processual</h5>
                         <p class="card-text flex-grow-1">Consulte o andamento do seu processo com o número CNJ.</p>
@@ -68,8 +70,10 @@
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
                         <div class="service-icon-container mb-3">
-                            <i class="fas fa-calendar-alt fa-3x text-primary" aria-hidden="true"></i>
-                            <div class="service-icon-fallback" style="display: none;">📅</div>
+                            <img src="{{ url_for('static', filename='images/icons/agendamento.png') }}" 
+                                 alt="Agendamento" 
+                                 class="service-icon-custom"
+                                 srcset="{{ url_for('static', filename='images/icons/agendamento@2x.png') }} 2x">
                         </div>
                         <h5 class="card-title">Agendamento</h5>
                         <p class="card-text flex-grow-1">Agende seu atendimento presencial ou virtual.</p>
@@ -84,11 +88,13 @@
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
                         <div class="service-icon-container mb-3">
-                            <i class="fas fa-gavel fa-3x text-primary" aria-hidden="true"></i>
-                            <div class="service-icon-fallback" style="display: none;">⚖️</div>
+                            <img src="{{ url_for('static', filename='images/icons/balcao_virtual.png') }}" 
+                                 alt="Balcão Virtual" 
+                                 class="service-icon-custom"
+                                 srcset="{{ url_for('static', filename='images/icons/balcao_virtual@2x.png') }} 2x">
                         </div>
-                        <h5 class="card-title">Audiências</h5>
-                        <p class="card-text flex-grow-1">Informações sobre audiências presenciais e virtuais.</p>
+                        <h5 class="card-title">Balcão Virtual</h5>
+                        <p class="card-text flex-grow-1">Atendimento virtual e serviços online disponíveis.</p>
                         <a href="/servicos/audiencias" class="btn btn-primary mt-auto" 
                            role="button" aria-label="Acessar informações sobre audiências">
                             <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Ver Mais
@@ -100,14 +106,15 @@
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
                         <div class="service-icon-container mb-3">
-                            <i class="fas fa-file-text fa-3x text-primary" aria-hidden="true"></i>
-                            <div class="service-icon-fallback" style="display: none;">📄</div>
+                            <img src="{{ url_for('static', filename='images/icons/contato.png') }}" 
+                                 alt="Contato" 
+                                 class="service-icon-custom">
                         </div>
-                        <h5 class="card-title">Certidões</h5>
-                        <p class="card-text flex-grow-1">Solicite certidões e outros documentos oficiais.</p>
-                        <a href="/servicos/certidoes" class="btn btn-primary mt-auto" 
-                           role="button" aria-label="Solicitar certidões">
-                            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Solicitar
+                        <h5 class="card-title">Contato</h5>
+                        <p class="card-text flex-grow-1">Entre em contato conosco através do formulário online.</p>
+                        <a href="{{ url_for('main.contact') }}" class="btn btn-primary mt-auto" 
+                           role="button" aria-label="Acessar formulário de contato">
+                            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Contatar
                         </a>
                     </div>
                 </div>
