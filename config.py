@@ -8,7 +8,9 @@ from datetime import timedelta
 
 class Config:
     """Base configuration"""
-    SECRET_KEY = os.environ.get('SESSION_SECRET') or 'dev-secret-key-change-in-production'
+    SECRET_KEY = os.environ.get('SESSION_SECRET')
+    if not SECRET_KEY:
+        raise ValueError("SESSION_SECRET environment variable is required")
     
     # Database Configuration
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///court_site.db'
@@ -24,11 +26,22 @@ class Config:
     }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
-    # Session Configuration
+    # Enhanced Session Security Configuration
     PERMANENT_SESSION_LIFETIME = timedelta(hours=2)
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_NAME = 'secure_session'
+    
+    # Security Headers
+    SECURITY_HEADERS = {
+        'X-Content-Type-Options': 'nosniff',
+        'X-Frame-Options': 'DENY',
+        'X-XSS-Protection': '1; mode=block',
+        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+        'Referrer-Policy': 'strict-origin-when-cross-origin',
+        'Permissions-Policy': 'geolocation=(), microphone=(), camera=()'
+    }
     
     # Security Configuration
     WTF_CSRF_ENABLED = True
