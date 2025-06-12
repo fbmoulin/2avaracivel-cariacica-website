@@ -140,3 +140,68 @@ a:hover {
     color: #334155 !important;
     font-weight: 500 !important;
 }
+
+/* Map container text fixes */
+.map-container h5 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+.map-container p {
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+
+/* Generic text improvements for better contrast */
+h1, h2, h3, h4, h5, h6 {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+p {
+    color: #374151 !important;
+    font-weight: 400 !important;
+}
+
+/* Footer specific fixes */
+.footer-modern * {
+    color: #e5e7eb !important;
+}
+
+.footer-modern .text-muted {
+    color: #d1d5db !important;
+}
+
+/* Ensure all small text is readable */
+small, .small {
+    color: #4b5563 !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+}
+
+/* Card improvements */
+.card-body p,
+.card-text {
+    color: #374151 !important;
+    font-weight: 400 !important;
+}
+
+/* List improvements */
+li {
+    color: #374151 !important;
+}
+
+/* Ensure white backgrounds for readability */
+.card,
+.alert,
+.form-control,
+.form-select {
+    background-color: #ffffff !important;
+}
+
+/* Text on light backgrounds */
+.bg-light,
+.bg-light *,
+.text-light {
+    color: #1f2937 !important;
+}
