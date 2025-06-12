@@ -346,6 +346,17 @@
             width: 100% !important;
         }
         
+        /* Full-width banner container */
+        .hero-banner-container-full {
+            text-align: center !important;
+            width: 100% !important;
+            padding: 2rem 0 !important;
+            margin-bottom: 3rem !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        
         .hero-banner-title {
             max-width: 100% !important;
             width: 100% !important;
@@ -356,6 +367,21 @@
             filter: brightness(1.2) contrast(1.1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3)) !important;
             transition: all 0.4s ease !important;
             animation: bannerGlow 3s ease-in-out infinite alternate !important;
+        }
+        
+        /* Full-width banner styling */
+        .hero-banner-title-full {
+            width: 95% !important;
+            max-width: 1200px !important;
+            height: auto !important;
+            max-height: 800px !important;
+            min-height: 400px !important;
+            object-fit: contain !important;
+            filter: brightness(1.2) contrast(1.1) drop-shadow(0 12px 24px rgba(0, 0, 0, 0.4)) !important;
+            transition: all 0.4s ease !important;
+            animation: bannerGlow 3s ease-in-out infinite alternate !important;
+            margin: 0 auto !important;
+            display: block !important;
         }
         
         /* Adaptive Banner Sizing for Different Devices */
@@ -372,6 +398,12 @@
                 padding: 2rem 0 !important;
                 margin-bottom: 4rem !important;
             }
+            
+            .hero-banner-title-full {
+                max-width: 1400px !important;
+                max-height: 900px !important;
+                min-height: 500px !important;
+            }
         }
         
         /* Large Screens (Desktops 992px-1199px) */
@@ -385,6 +417,12 @@
             .hero-banner-container {
                 padding: 1.5rem 0 !important;
                 margin-bottom: 3.5rem !important;
+            }
+            
+            .hero-banner-title-full {
+                max-width: 1100px !important;
+                max-height: 700px !important;
+                min-height: 400px !important;
             }
         }
         
@@ -400,6 +438,13 @@
                 padding: 1.25rem 0 !important;
                 margin-bottom: 3rem !important;
             }
+            
+            .hero-banner-title-full {
+                max-width: 900px !important;
+                max-height: 500px !important;
+                min-height: 300px !important;
+                width: 98% !important;
+            }
         }
         
         /* Small Screens (Large Phones 576px-767px) */
@@ -413,6 +458,13 @@
             .hero-banner-container {
                 padding: 1rem 0 !important;
                 margin-bottom: 2.5rem !important;
+            }
+            
+            .hero-banner-title-full {
+                max-width: 95% !important;
+                max-height: 400px !important;
+                min-height: 250px !important;
+                width: 100% !important;
             }
         }
         
@@ -429,8 +481,19 @@
                 margin-bottom: 2rem !important;
             }
             
+            .hero-banner-title-full {
+                max-width: 100% !important;
+                max-height: 350px !important;
+                min-height: 200px !important;
+                width: 100% !important;
+            }
+            
             /* Adjust animation for mobile performance */
             .hero-banner-title {
+                animation: bannerGlowMobile 4s ease-in-out infinite alternate !important;
+            }
+            
+            .hero-banner-title-full {
                 animation: bannerGlowMobile 4s ease-in-out infinite alternate !important;
             }
         }
@@ -467,6 +530,12 @@
             .hero-banner-container {
                 padding: 2.5rem 0 !important;
                 margin-bottom: 4.5rem !important;
+            }
+            
+            .hero-banner-title-full {
+                max-width: 1600px !important;
+                max-height: 1000px !important;
+                min-height: 600px !important;
             }
         }
         

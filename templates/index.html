@@ -7,28 +7,34 @@
 {% block content %}
 <!-- Hero Section -->
 <section class="hero-section">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <div class="hero-banner-container mb-4">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="hero-banner-container-full mb-5">
                     <img src="{{ url_for('static', filename='images/banners/banner_principal.png') }}" 
                          alt="2ª Vara Cível de Cariacica" 
-                         class="hero-banner-title">
-                </div>
-                <p class="lead">Tribunal de Justiça do Espírito Santo</p>
-                <p class="mb-4">Oferecemos serviços judiciais com transparência, eficiência e acessibilidade para todos os cidadãos.</p>
-                <div class="hero-buttons">
-                    <a href="/servicos/" class="btn btn-primary btn-lg me-3">
-                        <i class="fas fa-list me-2"></i>Nossos Serviços
-                    </a>
-                    <a href="/servicos/consulta-processual" class="btn btn-outline-primary btn-lg">
-                        <i class="fas fa-search me-2"></i>Consultar Processo
-                    </a>
+                         class="hero-banner-title-full">
                 </div>
             </div>
-            <div class="col-lg-6">
-                <div class="hero-icon-container text-center">
-                    <i class="fas fa-balance-scale hero-icon"></i>
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <p class="lead text-center">Tribunal de Justiça do Espírito Santo</p>
+                    <p class="mb-4 text-center">Oferecemos serviços judiciais com transparência, eficiência e acessibilidade para todos os cidadãos.</p>
+                    <div class="hero-buttons text-center">
+                        <a href="/servicos/" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-list me-2"></i>Nossos Serviços
+                        </a>
+                        <a href="/servicos/consulta-processual" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>Consultar Processo
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-icon-container text-center">
+                        <i class="fas fa-balance-scale hero-icon"></i>
+                    </div>
                 </div>
             </div>
         </div>
