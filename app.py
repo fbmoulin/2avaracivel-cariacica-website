@@ -1,18 +1,13 @@
 import os
 import logging
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
-from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
+from database import db, configure_database, create_all_tables, optimize_database_performance
 
 # Configure logging for debugging
 logging.basicConfig(level=logging.DEBUG)
 
-class Base(DeclarativeBase):
-    pass
-
-db = SQLAlchemy(model_class=Base)
 csrf = CSRFProtect()
 
 def create_app():
@@ -25,16 +20,8 @@ def create_app():
     # Proxy fix for deployment behind reverse proxy
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
     
-    # Enhanced database configuration for production
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///court_site.db")
-    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-        "pool_recycle": 300,
-        "pool_pre_ping": True,
-        "pool_timeout": 30,
-        "max_overflow": 20,
-        "pool_size": 10,
-        "echo": False
-    }
+    # Configure database with optimized settings
+    configure_database(app)
     
     # Additional configuration for robust integration
     app.config.update({
@@ -45,8 +32,7 @@ def create_app():
         'CACHE_TIMEOUT': 300
     })
     
-    # Initialize extensions
-    db.init_app(app)
+    # Initialize CSRF protection
     csrf.init_app(app)
     
     # Exempt chatbot API from CSRF protection

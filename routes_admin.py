@@ -110,6 +110,34 @@ def cache_stats_api():
             'error': str(e)
         }), 500
 
+@admin_bp.route('/performance-metrics', methods=['POST'])
+def performance_metrics():
+    """Performance metrics collection endpoint"""
+    try:
+        metrics_data = request.get_json() or {}
+        
+        # Log performance metrics
+        logging.info(f"Performance metrics received: {json.dumps(metrics_data, indent=2)}")
+        
+        # Store in performance monitor if available
+        try:
+            from performance_monitor import performance_monitor
+            performance_monitor.record_metrics(metrics_data)
+        except ImportError:
+            pass
+        
+        return jsonify({
+            'status': 'success',
+            'message': 'Metrics recorded successfully'
+        })
+        
+    except Exception as e:
+        logging.error(f"Performance metrics error: {e}")
+        return jsonify({
+            'status': 'error',
+            'error': str(e)
+        }), 500
+
 @admin_bp.route('/api/cache/clear', methods=['POST'])
 def clear_cache_api():
     """Clear cache API"""
