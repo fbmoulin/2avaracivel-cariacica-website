@@ -865,7 +865,7 @@ img.loaded {
 }
 
 .timeline-content {
-    background-color: white;
+    background-color: var(--light-color);
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow-sm);
@@ -905,7 +905,7 @@ img.loaded {
     width: 350px;
     max-width: 90vw;
     height: 400px;
-    background-color: white;
+    background-color: var(--light-color);
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
     border: 1px solid var(--border-color);
@@ -952,8 +952,8 @@ img.loaded {
 }
 
 .user-message {
-    background-color: white;
-    color: var(--dark-color);
+    background-color: var(--primary-color);
+    color: white;
     margin-left: auto;
     margin-right: 0;
     border: 1px solid var(--border-color);
@@ -962,7 +962,7 @@ img.loaded {
 .chatbot-input {
     padding: 1rem;
     border-top: 1px solid var(--border-color);
-    background-color: white;
+    background-color: var(--light-color);
 }
 
 .chatbot-input .form-control {
@@ -979,7 +979,7 @@ img.loaded {
 .quick-responses {
     padding: 1rem;
     border-top: 1px solid var(--border-color);
-    background-color: white;
+    background-color: var(--light-color);
 }
 
 .quick-responses p {
