@@ -211,8 +211,13 @@
         
         <div class="schedule-info">
             <h5><i class="fas fa-clock me-2"></i>Configuração de Envio</h5>
-            <p><strong>Email de destino:</strong> {{ admin_email }}</p>
-            <p><strong>Horário de envio:</strong> Diariamente às 17:00</p>
+            <p><strong>Destinatários:</strong></p>
+            <ul>
+                <li>fbmoulin@tjes.jus.br</li>
+                <li>alraimundo@tjes.jus.br</li>
+                <li>rtnobrega@tjes.jus.br</li>
+            </ul>
+            <p><strong>Horários de envio:</strong> 12:00 e 17:00 (Segunda a Sexta-feira)</p>
             <p><strong>Próximo envio:</strong> <span id="next-send-time">Calculando...</span></p>
         </div>
         
@@ -276,7 +281,14 @@
         
         <div class="config-section">
             <h5>Configurações Atuais</h5>
-            <p><strong>Email de destino:</strong> {{ admin_email }}</p>
+            <p><strong>Destinatários configurados:</strong></p>
+            <ul>
+                <li>fbmoulin@tjes.jus.br (Principal)</li>
+                <li>alraimundo@tjes.jus.br</li>
+                <li>rtnobrega@tjes.jus.br</li>
+            </ul>
+            <p><strong>Frequência:</strong> 2x por dia (12:00 e 17:00)</p>
+            <p><strong>Dias úteis:</strong> Segunda a Sexta-feira</p>
             <p><strong>Servidor SMTP:</strong> Configurado via variáveis de ambiente</p>
             <p><strong>Status:</strong> 
                 <span class="badge bg-success">Configurado</span>

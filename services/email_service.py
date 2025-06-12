@@ -425,14 +425,19 @@ class EmailService:
             </div>
             """
         
-        html += """
+        # Add recipients information
+        recipients_list = ', '.join(self.admin_emails)
+        
+        html += f"""
             <div class="footer">
                 <p>Este relatório é gerado automaticamente pelo sistema da 2ª Vara Cível de Cariacica.</p>
-                <p>Gerado em: {}</p>
+                <p><strong>Horários de envio:</strong> 12:00 e 17:00 (Segunda a Sexta-feira)</p>
+                <p><strong>Destinatários:</strong> {recipients_list}</p>
+                <p>Gerado em: {datetime.now().strftime('%d/%m/%Y às %H:%M')}</p>
             </div>
         </body>
         </html>
-        """.format(datetime.now().strftime('%d/%m/%Y às %H:%M'))
+        """
         
         return html
     
@@ -448,7 +453,14 @@ class EmailService:
                 logging.error("Failed to generate daily report data")
                 return False
             
-            subject = f"Relatório Diário - 2ª Vara Cível de Cariacica - {report_data['date']}"
+            # Determine report time period for subject
+            current_time = datetime.now().time()
+            if current_time.hour < 14:  # Morning report (12:00)
+                period = "Manhã"
+            else:  # Afternoon report (17:00)
+                period = "Tarde"
+            
+            subject = f"Relatório Diário ({period}) - 2ª Vara Cível de Cariacica - {report_data['date']}"
             html_body = self.format_daily_report_html(report_data)
             
             # Send to all admin emails

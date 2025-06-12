@@ -44,8 +44,18 @@ class SchedulerService:
     
     def setup_jobs(self):
         """Setup all scheduled jobs"""
-        # Daily report at 17:00 (5 PM)
-        schedule.every().day.at("17:00").do(self.send_daily_report)
+        # Daily reports - Monday to Friday at 12:00 and 17:00
+        schedule.every().monday.at("12:00").do(self.send_daily_report)
+        schedule.every().tuesday.at("12:00").do(self.send_daily_report)
+        schedule.every().wednesday.at("12:00").do(self.send_daily_report)
+        schedule.every().thursday.at("12:00").do(self.send_daily_report)
+        schedule.every().friday.at("12:00").do(self.send_daily_report)
+        
+        schedule.every().monday.at("17:00").do(self.send_daily_report)
+        schedule.every().tuesday.at("17:00").do(self.send_daily_report)
+        schedule.every().wednesday.at("17:00").do(self.send_daily_report)
+        schedule.every().thursday.at("17:00").do(self.send_daily_report)
+        schedule.every().friday.at("17:00").do(self.send_daily_report)
         
         # Weekly summary on Fridays at 18:00
         schedule.every().friday.at("18:00").do(self.send_weekly_summary)
@@ -56,7 +66,7 @@ class SchedulerService:
         # Cleanup old data every Sunday at 02:00
         schedule.every().sunday.at("02:00").do(self.cleanup_old_data)
         
-        logging.info("Scheduled jobs configured")
+        logging.info("Scheduled jobs configured: Daily reports at 12:00 and 17:00 (Mon-Fri)")
     
     def _run_scheduler(self):
         """Run the scheduler loop"""
@@ -100,17 +110,20 @@ class SchedulerService:
                 html_body = self.format_weekly_summary_html(weekly_data)
                 subject = f"Relatório Semanal - 2ª Vara Cível de Cariacica - {start_date.strftime('%d/%m')} a {end_date.strftime('%d/%m/%Y')}"
                 
-                success = email_service.send_email(
-                    to_email=email_service.admin_email,
-                    subject=subject,
-                    body=html_body,
-                    is_html=True
-                )
-                
-                if success:
-                    logging.info("Weekly summary sent successfully")
-                else:
-                    logging.error("Failed to send weekly summary")
+                # Send to all admin emails
+                all_success = True
+                for admin_email in email_service.admin_emails:
+                    success = email_service.send_email(
+                        to_email=admin_email,
+                        subject=subject,
+                        body=html_body,
+                        is_html=True
+                    )
+                    if success:
+                        logging.info(f"Weekly summary sent successfully to {admin_email}")
+                    else:
+                        logging.error(f"Failed to send weekly summary to {admin_email}")
+                        all_success = False
             
         except Exception as e:
             logging.error(f"Error sending weekly summary: {e}")
