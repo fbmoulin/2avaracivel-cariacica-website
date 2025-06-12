@@ -130,7 +130,7 @@ def certificates():
 
 @services_bp.route('/consulta-processual', methods=['GET', 'POST'])
 def process_consultation():
-    """Process consultation service"""
+    """Process consultation service with enhanced integration"""
     if request.method == 'POST':
         process_number = sanitize_input(request.form.get('process_number', ''))
         
@@ -147,8 +147,19 @@ def process_consultation():
             db.session.add(consultation)
             db.session.commit()
             
-            # In a real implementation, this would query the actual court system
-            flash('Consulta realizada. Para informações detalhadas, acesse o portal do TJES.', 'info')
+            # Try integration with TJES if available
+            if API_SERVICE_AVAILABLE:
+                try:
+                    tjes_result = tjes_integration.search_process(process_number)
+                    if tjes_result.get('success'):
+                        flash('Processo encontrado no sistema TJES. Informações atualizadas.', 'success')
+                    else:
+                        flash('Consulta registrada. Para informações detalhadas, acesse o portal do TJES.', 'info')
+                except Exception as e:
+                    logging.warning(f"TJES integration error: {e}")
+                    flash('Consulta registrada. Para informações detalhadas, acesse o portal do TJES.', 'info')
+            else:
+                flash('Consulta registrada. Para informações detalhadas, acesse o portal do TJES.', 'info')
             
         except Exception as e:
             logging.error(f"Error logging process consultation: {e}")

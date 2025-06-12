@@ -68,6 +68,14 @@ def create_app():
     app.register_blueprint(services_bp)
     app.register_blueprint(chatbot_bp)
     
+    # Register admin blueprint if available
+    try:
+        from routes_admin import admin_bp
+        app.register_blueprint(admin_bp)
+        logging.info("Admin dashboard registered")
+    except ImportError:
+        logging.warning("Admin dashboard not available")
+    
     # Create database tables
     with app.app_context():
         import models
