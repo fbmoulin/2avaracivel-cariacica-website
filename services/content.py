@@ -10,6 +10,9 @@ class ContentService:
     
     def __init__(self):
         self.data_path = 'data'
+        self._news_cache = None
+        self._cache_timestamp = 0
+        self._cache_duration = 300  # 5 minutes
     
     def get_faq_data(self):
         """Load FAQ data from JSON file"""
@@ -106,7 +109,14 @@ class ContentService:
         ]
     
     def get_news(self):
-        """Get news from database or fallback to JSON"""
+        """Get news from database or fallback to JSON with caching"""
+        current_time = time.time()
+        
+        # Return cached data if still valid
+        if (self._news_cache is not None and 
+            current_time - self._cache_timestamp < self._cache_duration):
+            return self._news_cache
+        
         from flask import has_app_context
         
         # Only try database if we have app context
@@ -115,7 +125,7 @@ class ContentService:
                 # Try to get from database first
                 news_items = NewsItem.query.filter_by(is_active=True).order_by(NewsItem.published_at.desc()).all()
                 if news_items:
-                    return [
+                    result = [
                         {
                             'id': item.id,
                             'title': item.title,
@@ -125,6 +135,10 @@ class ContentService:
                         }
                         for item in news_items
                     ]
+                    # Cache the result
+                    self._news_cache = result
+                    self._cache_timestamp = current_time
+                    return result
             except Exception as e:
                 print(f"Error loading news from database: {e}")
         
@@ -132,12 +146,22 @@ class ContentService:
         try:
             news_file = os.path.join(self.data_path, 'news.json')
             with open(news_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                result = json.load(f)
+                # Cache the result
+                self._news_cache = result
+                self._cache_timestamp = current_time
+                return result
         except FileNotFoundError:
-            return self.get_default_news()
+            result = self.get_default_news()
+            self._news_cache = result
+            self._cache_timestamp = current_time
+            return result
         except Exception as e:
             print(f"Error loading news from JSON: {e}")
-            return self.get_default_news()
+            result = self.get_default_news()
+            self._news_cache = result
+            self._cache_timestamp = current_time
+            return result
     
     def get_latest_news(self, limit=3):
         """Get latest news items"""
