@@ -2,8 +2,10 @@ import os
 import json
 import logging
 from openai import OpenAI
-from services.integration_service import RetryManager, with_integration
+from services.integration_service import RetryManager, with_integration, integration_service
 import time
+from functools import lru_cache
+from datetime import datetime, timedelta
 
 class ChatbotService:
     """Service for handling chatbot interactions"""

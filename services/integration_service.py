@@ -200,6 +200,37 @@ class IntegrationService:
         self._service_registry = {}
         self._event_queue = queue.Queue()
         self._logger = logging.getLogger(__name__)
+        self._initialized = False
+    
+    def initialize(self):
+        """Initialize the integration service with default configurations"""
+        if self._initialized:
+            return
+        
+        # Register core services
+        self.register_service('openai', {
+            'failure_threshold': 3,
+            'recovery_timeout': 30,
+            'success_threshold': 2,
+            'timeout': 25
+        })
+        
+        self.register_service('database', {
+            'failure_threshold': 5,
+            'recovery_timeout': 60,
+            'success_threshold': 3,
+            'timeout': 10
+        })
+        
+        self.register_service('cache', {
+            'failure_threshold': 2,
+            'recovery_timeout': 15,
+            'success_threshold': 1,
+            'timeout': 5
+        })
+        
+        self._initialized = True
+        self._logger.info("Integration service initialized with core services")
         
     def register_service(self, name: str, service_config: Dict[str, Any]):
         """Register a service with the integration layer"""
