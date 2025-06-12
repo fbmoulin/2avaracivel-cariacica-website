@@ -1757,6 +1757,86 @@
     <script src="{{ url_for('static', filename='js/pwa-enhanced.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
     
+    <!-- Accessibility Toggle Button -->
+    <button id="accessibility-toggle" class="accessibility-toggle-btn" aria-label="Abrir painel de acessibilidade" title="Acessibilidade">
+        <i class="fas fa-universal-access"></i>
+        <span>Acessibilidade</span>
+    </button>
+
+    <!-- Accessibility Controls Panel -->
+    <div id="accessibility-controls-container" style="display: none;" role="dialog" aria-labelledby="accessibility-title" aria-modal="true">
+        <div class="accessibility-boxcard">
+            <div class="accessibility-header">
+                <h6 id="accessibility-title">
+                    <i class="fas fa-universal-access me-2"></i>
+                    Painel de Acessibilidade
+                </h6>
+                <button class="close-btn" id="accessibility-close" aria-label="Fechar painel">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="accessibility-content">
+                <div class="control-section">
+                    <h7>Contraste e Visualização</h7>
+                    <div class="controls-grid">
+                        <button class="control-btn" id="high-contrast-toggle" aria-pressed="false">
+                            <i class="fas fa-adjust"></i>
+                            <span>Alto Contraste</span>
+                        </button>
+                        <button class="control-btn" id="large-font-toggle" aria-pressed="false">
+                            <i class="fas fa-text-height"></i>
+                            <span>Texto Grande</span>
+                        </button>
+                        <button class="control-btn" id="dark-mode-toggle" aria-pressed="false">
+                            <i class="fas fa-moon"></i>
+                            <span>Modo Escuro</span>
+                        </button>
+                        <button class="control-btn" id="reading-guide-toggle" aria-pressed="false">
+                            <i class="fas fa-eye"></i>
+                            <span>Guia de Leitura</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h7>Navegação e Interação</h7>
+                    <div class="controls-grid">
+                        <button class="control-btn" id="focus-outline-toggle" aria-pressed="false">
+                            <i class="fas fa-square"></i>
+                            <span>Realçar Foco</span>
+                        </button>
+                        <button class="control-btn" id="keyboard-nav-toggle" aria-pressed="false">
+                            <i class="fas fa-keyboard"></i>
+                            <span>Navegação por Teclado</span>
+                        </button>
+                        <button class="control-btn" id="pause-animations-toggle" aria-pressed="false">
+                            <i class="fas fa-pause"></i>
+                            <span>Pausar Animações</span>
+                        </button>
+                        <button class="control-btn" id="screen-reader-toggle" aria-pressed="false">
+                            <i class="fas fa-assistive-listening-systems"></i>
+                            <span>Leitor de Tela</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h7>Ações Rápidas</h7>
+                    <div class="controls-grid">
+                        <button class="control-btn" id="reset-settings">
+                            <i class="fas fa-undo"></i>
+                            <span>Restaurar Padrão</span>
+                        </button>
+                        <button class="control-btn" id="save-settings">
+                            <i class="fas fa-save"></i>
+                            <span>Salvar Configurações</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Deferred scripts - Load after page interaction -->
     <script src="{{ url_for('static', filename='js/modern.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/forms.js') }}" defer></script>
