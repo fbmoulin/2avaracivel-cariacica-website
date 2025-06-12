@@ -15,7 +15,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from config import get_config
 from services.integration_service import setup_integration_services, integration_service
 from utils.request_middleware import RequestMiddleware
-from utils.workflow_optimizer import start_workflow_engine, stop_workflow_engine
+from utils.workflow_optimizer import start_workflow_engine
 from utils.error_logger import setup_error_logging
 
 
