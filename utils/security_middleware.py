@@ -240,6 +240,11 @@ class SecurityMiddleware:
 
     def block_ip(self, client_ip, duration=3600):
         """Block an IP address for specified duration"""
+        # Don't block localhost/testing IPs
+        if client_ip in ['127.0.0.1', 'localhost', '::1']:
+            logger.debug(f"Not blocking localhost IP: {client_ip}")
+            return
+            
         self.blocked_ips.add(client_ip)
         logger.warning(f"IP blocked: {client_ip}")
         

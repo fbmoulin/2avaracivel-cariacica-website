@@ -365,6 +365,85 @@ def system_status():
         logging.error(f"Status dashboard error: {e}")
         return jsonify({'error': 'Unable to load status'}), 500
 
+@main_bp.route('/consulta', methods=['GET', 'POST'])
+def process_consultation():
+    """Process consultation page"""
+    if request.method == 'POST':
+        try:
+            process_number = sanitize_input(request.form.get('numero_processo', ''))
+            
+            if not process_number:
+                flash('Número do processo é obrigatório.', 'error')
+                return render_template('consultation.html')
+            
+            # Save consultation request
+            consultation = ProcessConsultation(
+                process_number=process_number,
+                created_at=datetime.utcnow()
+            )
+            
+            db.session.add(consultation)
+            db.session.commit()
+            
+            flash('Consulta realizada com sucesso!', 'success')
+            return render_template('consultation.html', result="Processo encontrado e em andamento.")
+            
+        except Exception as e:
+            logging.error(f"Process consultation error: {e}")
+            flash('Erro ao consultar processo. Tente novamente.', 'error')
+            db.session.rollback()
+    
+    return render_template('consultation.html')
+
+@main_bp.route('/agendamento', methods=['GET', 'POST'])
+def schedule_meeting():
+    """Schedule meeting with assessors"""
+    if request.method == 'POST':
+        try:
+            name = sanitize_input(request.form.get('nome', ''))
+            email = sanitize_input(request.form.get('email', ''))
+            phone = sanitize_input(request.form.get('telefone', ''))
+            meeting_type = sanitize_input(request.form.get('tipo_reuniao', ''))
+            preferred_date = request.form.get('data_preferida')
+            message = sanitize_input(request.form.get('mensagem', ''))
+            
+            if not all([name, email, meeting_type]):
+                flash('Campos obrigatórios devem ser preenchidos.', 'error')
+                return render_template('scheduling.html')
+            
+            if not validate_email(email):
+                flash('Email inválido.', 'error')
+                return render_template('scheduling.html')
+            
+            # Save meeting request
+            meeting = AssessorMeeting(
+                name=name,
+                email=email,
+                phone=phone,
+                meeting_type=meeting_type,
+                preferred_date=datetime.strptime(preferred_date, '%Y-%m-%d').date() if preferred_date else None,
+                message=message,
+                created_at=datetime.utcnow()
+            )
+            
+            db.session.add(meeting)
+            db.session.commit()
+            
+            flash('Agendamento solicitado com sucesso!', 'success')
+            return redirect(url_for('main.schedule_meeting'))
+            
+        except Exception as e:
+            logging.error(f"Meeting scheduling error: {e}")
+            flash('Erro ao agendar reunião. Tente novamente.', 'error')
+            db.session.rollback()
+    
+    return render_template('scheduling.html')
+
+@main_bp.route('/balcao-virtual')
+def virtual_counter():
+    """Virtual counter services page"""
+    return render_template('virtual_counter.html')
+
 @main_bp.route('/health')
 def health_check():
     """Comprehensive system health check with robust monitoring"""
