@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
-from app import csrf
+from database import db
 from services.content import ContentService
 from services.chatbot import ChatbotService
-from models import Contact, ProcessConsultation, AssessorMeeting, db
+from models import Contact, ProcessConsultation, AssessorMeeting
 from utils.security import sanitize_input, validate_email
 import logging
 import os
@@ -288,7 +288,6 @@ def confirmacao_assessor(token):
 
 # Chatbot routes
 @main_bp.route('/chat', methods=['POST'])
-@csrf.exempt
 def chat():
     """Handle chat messages - main chat endpoint"""
     try:
@@ -308,7 +307,6 @@ def chat():
         return jsonify({'error': 'Erro interno do servidor'}), 500
 
 @chatbot_bp.route('/api/message', methods=['POST'])
-@csrf.exempt
 def chatbot_message():
     """Handle chatbot messages"""
     try:
