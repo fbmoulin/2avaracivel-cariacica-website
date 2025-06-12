@@ -288,6 +288,11 @@ def clear_cache():
             'timestamp': datetime.now().isoformat()
         }), 500
 
+@async_simple_bp.route('/demo')
+def async_demo():
+    """Async performance demonstration page"""
+    return render_template('async_demo.html')
+
 async def generate_fallback_response(message: str) -> str:
     """Generate contextual fallback response for chatbot"""
     message_lower = message.lower()

@@ -1,12 +1,12 @@
-modules = ["python-3.11", "bash", "nodejs-23", "postgresql-17", "python-base-3.13", "docker", "postgresql-16", "python3"]
+modules = ["python-3.11", "bash", "nodejs-23", "postgresql-17", "docker"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["freetype", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssl", "postgresql", "tcl", "tk", "zlib"]
+packages = ["freetype", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "openssl", "tcl", "tk", "zlib"]
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind", "0.0.0.0:5000", "main:app"]
+run = ["gunicorn", "--workers", "3", "--bind", "0.0.0.0:5000", "main:app"]
 
 [workflows]
 runButton = "Project"
@@ -17,16 +17,8 @@ mode = "parallel"
 author = "agent"
 
 [[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Start application"
-
-[[workflows.workflow]]
-name = "Start application"
-author = "agent"
-
-[[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "gunicorn --bind 0.0.0.0:5000 --reuse-port --reload main:app"
+args = "gunicorn --workers 3 --bind 0.0.0.0:5000 --reuse-port --reload main:app"
 waitForPort = 5000
 
 [[ports]]
