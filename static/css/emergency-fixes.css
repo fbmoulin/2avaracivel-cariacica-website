@@ -1,0 +1,91 @@
+/* Emergency fixes for text visibility and accessibility */
+
+/* Location section text visibility - highest priority */
+.location-section .card,
+.location-info-prominent .card {
+    background-color: white !important;
+    color: #333 !important;
+    border: 2px solid #dee2e6 !important;
+}
+
+.location-section .card-header,
+.location-info-prominent .card-header {
+    background-color: white !important;
+    color: #2c5aa0 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.location-section .card-body,
+.location-info-prominent .card-body {
+    background-color: white !important;
+    color: #333 !important;
+}
+
+.location-section .card-body p,
+.location-section .card-body span,
+.location-section .card-body div,
+.location-info-prominent .card-body p,
+.location-info-prominent .card-body span,
+.location-info-prominent .card-body div {
+    color: #333 !important;
+}
+
+.location-section .card-body h5,
+.location-section .card-body h6,
+.location-info-prominent .card-body h5,
+.location-info-prominent .card-body h6 {
+    color: #2c5aa0 !important;
+}
+
+.location-section .card-body .text-primary,
+.location-info-prominent .card-body .text-primary {
+    color: #2c5aa0 !important;
+}
+
+.location-section .card-body strong,
+.location-info-prominent .card-body strong {
+    color: #333 !important;
+}
+
+/* Accessibility button positioning */
+#accessibility-toggle {
+    position: fixed !important;
+    bottom: 80px !important;
+    right: 20px !important;
+    z-index: 9998 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: linear-gradient(135deg, #2c5aa0, #1e3d72) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 12px 20px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 20px rgba(44, 90, 160, 0.3) !important;
+}
+
+#accessibility-toggle:hover {
+    background: linear-gradient(135deg, #3666b8, #254789) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 25px rgba(44, 90, 160, 0.4) !important;
+}
+
+#accessibility-toggle i {
+    font-size: 18px !important;
+}
+
+/* Accessibility panel positioning */
+#accessibility-controls-container {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+    max-width: 90vw !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+}
