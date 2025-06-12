@@ -338,6 +338,56 @@ img.loaded {
     transform: scale(1.1);
 }
 
+/* Service icon containers */
+.service-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    position: relative;
+    border: 2px solid rgba(30, 64, 175, 0.1);
+}
+
+.service-icon-container::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(135deg, var(--primary-color), #3b82f6);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.quick-access-card:hover .service-icon-container::before {
+    opacity: 1;
+}
+
+.quick-access-card:hover .service-icon-container {
+    background: white;
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.2);
+    border-color: transparent;
+}
+
+.service-icon-container i {
+    transition: all 0.3s ease;
+    font-size: 2.5rem !important;
+}
+
+.quick-access-card:hover .service-icon-container i {
+    transform: scale(1.1);
+    color: var(--primary-color) !important;
+}
+
 /* Sections */
 .quick-access-section,
 .info-section,

@@ -51,14 +51,14 @@
             <div class="col-md-6 col-lg-3 col-12">
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
-                        <img src="{{ url_for('static', filename='images/icons/consulta_processual.png') }}" 
-                             alt="Ícone consulta processual" class="service-icon mb-3" 
-                             style="width: 64px; height: 64px;" loading="lazy">
+                        <div class="service-icon-container mb-3">
+                            <i class="fas fa-search fa-3x text-primary" aria-hidden="true"></i>
+                        </div>
                         <h5 class="card-title">Consulta Processual</h5>
                         <p class="card-text flex-grow-1">Consulte o andamento do seu processo com o número CNJ.</p>
                         <a href="/servicos/consulta-processual" class="btn btn-primary mt-auto" 
                            role="button" aria-label="Acessar consulta processual">
-                            <i class="fas fa-search me-2" aria-hidden="true"></i>Acessar
+                            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Acessar
                         </a>
                     </div>
                 </div>
@@ -66,14 +66,14 @@
             <div class="col-md-6 col-lg-3 col-12">
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
-                        <img src="{{ url_for('static', filename='images/icons/agendamento.png') }}" 
-                             alt="Ícone agendamento" class="service-icon mb-3" 
-                             style="width: 64px; height: 64px;" loading="lazy">
+                        <div class="service-icon-container mb-3">
+                            <i class="fas fa-calendar-alt fa-3x text-primary" aria-hidden="true"></i>
+                        </div>
                         <h5 class="card-title">Agendamento</h5>
                         <p class="card-text flex-grow-1">Agende seu atendimento presencial ou virtual.</p>
                         <a href="/servicos/agendamento" class="btn btn-primary mt-auto" 
                            role="button" aria-label="Acessar agendamento">
-                            <i class="fas fa-calendar-alt me-2" aria-hidden="true"></i>Agendar
+                            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Agendar
                         </a>
                     </div>
                 </div>
@@ -81,14 +81,14 @@
             <div class="col-md-6 col-lg-3 col-12">
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
-                        <img src="{{ url_for('static', filename='images/icons/balcao_virtual.png') }}" 
-                             alt="Ícone audiências" class="service-icon mb-3" 
-                             style="width: 64px; height: 64px;" loading="lazy">
+                        <div class="service-icon-container mb-3">
+                            <i class="fas fa-gavel fa-3x text-primary" aria-hidden="true"></i>
+                        </div>
                         <h5 class="card-title">Audiências</h5>
                         <p class="card-text flex-grow-1">Informações sobre audiências presenciais e virtuais.</p>
                         <a href="/servicos/audiencias" class="btn btn-primary mt-auto" 
                            role="button" aria-label="Acessar informações sobre audiências">
-                            <i class="fas fa-gavel me-2" aria-hidden="true"></i>Ver Mais
+                            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Ver Mais
                         </a>
                     </div>
                 </div>
@@ -96,12 +96,14 @@
             <div class="col-md-6 col-lg-3 col-12">
                 <div class="card quick-access-card h-100 shadow-sm">
                     <div class="card-body text-center d-flex flex-column">
-                        <i class="fas fa-file-text fa-3x text-primary mb-3" aria-hidden="true"></i>
+                        <div class="service-icon-container mb-3">
+                            <i class="fas fa-file-text fa-3x text-primary" aria-hidden="true"></i>
+                        </div>
                         <h5 class="card-title">Certidões</h5>
                         <p class="card-text flex-grow-1">Solicite certidões e outros documentos oficiais.</p>
                         <a href="/servicos/certidoes" class="btn btn-primary mt-auto" 
                            role="button" aria-label="Solicitar certidões">
-                            <i class="fas fa-file-download me-2" aria-hidden="true"></i>Solicitar
+                            <i class="fas fa-arrow-right me-2" aria-hidden="true"></i>Solicitar
                         </a>
                     </div>
                 </div>
