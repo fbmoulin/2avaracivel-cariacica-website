@@ -186,8 +186,8 @@ const accessibilitySummary = {
   failed: Object.values(accessibilityChecks).filter(check => check.status === "Reprovado").length,
   conformanceLevel: "WCAG 2.1 AA",
   overallStatus: "Aprovado com recomendações de melhorias",
-  testDate: "10 de junho de 2025",
-  testedBy: "Equipe de Desenvolvimento - Lex Intelligentia"
+  testDate: "12 de junho de 2025",
+  testedBy: "Sistema de IA - Claude Sonnet 4.0"
 };
 
 // Recomendações prioritárias
