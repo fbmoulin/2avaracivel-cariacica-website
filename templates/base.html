@@ -350,12 +350,167 @@
             max-width: 100% !important;
             width: 100% !important;
             height: auto !important;
-            max-height: 300px !important;
-            min-height: 180px !important;
+            max-height: 350px !important;
+            min-height: 200px !important;
             object-fit: contain !important;
             filter: brightness(1.2) contrast(1.1) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3)) !important;
             transition: all 0.4s ease !important;
             animation: bannerGlow 3s ease-in-out infinite alternate !important;
+        }
+        
+        /* Adaptive Banner Sizing for Different Devices */
+        
+        /* Extra Large Screens (Desktops 1200px+) */
+        @media (min-width: 1200px) {
+            .hero-banner-title {
+                max-height: 400px !important;
+                min-height: 250px !important;
+                padding: 0 2rem !important;
+            }
+            
+            .hero-banner-container {
+                padding: 2rem 0 !important;
+                margin-bottom: 4rem !important;
+            }
+        }
+        
+        /* Large Screens (Desktops 992px-1199px) */
+        @media (min-width: 992px) and (max-width: 1199px) {
+            .hero-banner-title {
+                max-height: 350px !important;
+                min-height: 220px !important;
+                padding: 0 1.5rem !important;
+            }
+            
+            .hero-banner-container {
+                padding: 1.5rem 0 !important;
+                margin-bottom: 3.5rem !important;
+            }
+        }
+        
+        /* Medium Screens (Tablets 768px-991px) */
+        @media (min-width: 768px) and (max-width: 991px) {
+            .hero-banner-title {
+                max-height: 280px !important;
+                min-height: 180px !important;
+                padding: 0 1rem !important;
+            }
+            
+            .hero-banner-container {
+                padding: 1.25rem 0 !important;
+                margin-bottom: 3rem !important;
+            }
+        }
+        
+        /* Small Screens (Large Phones 576px-767px) */
+        @media (min-width: 576px) and (max-width: 767px) {
+            .hero-banner-title {
+                max-height: 220px !important;
+                min-height: 140px !important;
+                padding: 0 0.75rem !important;
+            }
+            
+            .hero-banner-container {
+                padding: 1rem 0 !important;
+                margin-bottom: 2.5rem !important;
+            }
+        }
+        
+        /* Extra Small Screens (Phones under 576px) */
+        @media (max-width: 575px) {
+            .hero-banner-title {
+                max-height: 180px !important;
+                min-height: 120px !important;
+                padding: 0 0.5rem !important;
+            }
+            
+            .hero-banner-container {
+                padding: 0.75rem 0 !important;
+                margin-bottom: 2rem !important;
+            }
+            
+            /* Adjust animation for mobile performance */
+            .hero-banner-title {
+                animation: bannerGlowMobile 4s ease-in-out infinite alternate !important;
+            }
+        }
+        
+        /* Landscape Phones (specific handling) */
+        @media (max-width: 767px) and (orientation: landscape) {
+            .hero-banner-title {
+                max-height: 150px !important;
+                min-height: 100px !important;
+            }
+            
+            .hero-banner-container {
+                padding: 0.5rem 0 !important;
+                margin-bottom: 1.5rem !important;
+            }
+        }
+        
+        /* High DPI/Retina Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .hero-banner-title {
+                image-rendering: -webkit-optimize-contrast !important;
+                image-rendering: crisp-edges !important;
+            }
+        }
+        
+        /* Ultra-wide screens (1400px+) */
+        @media (min-width: 1400px) {
+            .hero-banner-title {
+                max-height: 450px !important;
+                min-height: 280px !important;
+                padding: 0 3rem !important;
+            }
+            
+            .hero-banner-container {
+                padding: 2.5rem 0 !important;
+                margin-bottom: 4.5rem !important;
+            }
+        }
+        
+        /* Mobile-optimized animation */
+        @keyframes bannerGlowMobile {
+            0% { 
+                filter: brightness(1.1) contrast(1.0) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            }
+            100% { 
+                filter: brightness(1.2) contrast(1.1) drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+            }
+        }
+        
+        /* Performance optimizations for adaptive banner */
+        .hero-banner-title {
+            will-change: transform, filter !important;
+            backface-visibility: hidden !important;
+            perspective: 1000px !important;
+            transform: translateZ(0) !important;
+        }
+        
+        /* Prefers reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .hero-banner-title {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+        
+        /* Dark mode support for banner */
+        @media (prefers-color-scheme: dark) {
+            .hero-banner-title {
+                filter: brightness(0.9) contrast(1.1) drop-shadow(0 8px 16px rgba(255, 255, 255, 0.1)) !important;
+            }
+        }
+        
+        /* Print media - hide animations and optimize for printing */
+        @media print {
+            .hero-banner-title {
+                animation: none !important;
+                filter: none !important;
+                max-height: 200px !important;
+                break-inside: avoid !important;
+            }
         }
         
         @keyframes bannerGlow {
@@ -560,6 +715,7 @@
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modern.js') }}"></script>
     <script src="{{ url_for('static', filename='js/forms.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/adaptive-banner.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
     <script src="{{ url_for('static', filename='js/accessibility-tests.js') }}"></script>
     {% block scripts %}{% endblock %}
