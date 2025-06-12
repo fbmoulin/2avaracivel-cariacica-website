@@ -79,6 +79,43 @@ body::after {
     }
 }
 
+/* Image loading and optimization */
+img {
+    max-width: 100%;
+    height: auto;
+    loading: lazy;
+    image-rendering: auto;
+    transition: opacity 0.3s ease;
+}
+
+img[data-src] {
+    opacity: 0.3;
+    filter: blur(5px);
+}
+
+img.loaded {
+    opacity: 1;
+    filter: none;
+}
+
+/* Retina display support */
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+       only screen and (min--moz-device-pixel-ratio: 2),
+       only screen and (-o-min-device-pixel-ratio: 2/1),
+       only screen and (min-device-pixel-ratio: 2),
+       only screen and (min-resolution: 192dpi),
+       only screen and (min-resolution: 2dppx) {
+    .banner-principal {
+        background-image: url('../images/banners/banner_principal@2x.png');
+        background-size: cover;
+    }
+    
+    .forum-image {
+        background-image: url('../images/institutional/forum_cariacica@2x.png');
+        background-size: contain;
+    }
+}
+
 /* Skip link for accessibility */
 .skip-link {
     position: absolute;
