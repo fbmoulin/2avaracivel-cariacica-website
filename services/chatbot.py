@@ -68,6 +68,14 @@ class ChatbotService:
             'prazos': {
                 'response': 'Informações sobre Prazos:\n📅 Prazos processuais variam conforme o tipo\n⚖️ Consulte seu advogado para orientações específicas\n🔍 Acompanhe pelo sistema processual\n\n⏰ Fique atento aos prazos para não perder direitos.',
                 'keywords': ['prazo', 'prazos', 'tempo', 'vencimento', 'data']
+            },
+            'agendamento': {
+                'response': 'Agendamento de Atendimento:\n📅 Disponível de segunda a sexta, 12h às 18h\n📞 Telefone: (27) 3246-8200\n💻 Também pelo nosso portal online\n\n📝 Tenha em mãos documentos necessários para o atendimento.',
+                'keywords': ['agendamento', 'agendar', 'marcar', 'atendimento', 'horario']
+            },
+            'documentos': {
+                'response': 'Documentos e Certidões:\n📋 Certidões de objeto e pé\n📄 Cartas de sentença\n🏛️ Documentos processuais\n📞 Solicite pelo telefone (27) 3246-8200\n\n💰 Consulte taxas e prazos no atendimento.',
+                'keywords': ['documento', 'documentos', 'certidao', 'certidão', 'papel', 'carta']
             }
         }
     
@@ -183,21 +191,15 @@ INSTRUÇÕES:
         
         # More comprehensive keyword matching
         if any(word in normalized_message for word in ['horario', 'hora', 'funcionamento', 'aberto']):
-            return self.predefined_responses['horario']
+            return self.predefined_responses['horario']['response']
         elif any(word in normalized_message for word in ['endereco', 'endereço', 'localização', 'onde', 'local']):
-            return self.predefined_responses['endereco']
+            return self.predefined_responses['endereco']['response']
         elif any(word in normalized_message for word in ['telefone', 'contato', 'falar', 'ligar']):
-            return self.predefined_responses['telefone']
+            return self.predefined_responses['telefone']['response']
         elif any(word in normalized_message for word in ['processo', 'consulta', 'numero', 'cnj']):
-            return self.predefined_responses['processo']
+            return self.predefined_responses['processo']['response']
         elif any(word in normalized_message for word in ['audiencia', 'audiência', 'zoom', 'virtual']):
-            return self.predefined_responses['audiencia']
-        elif any(word in normalized_message for word in ['agendamento', 'agendar', 'marcar']):
-            return self.predefined_responses['agendamento']
-        elif any(word in normalized_message for word in ['documento', 'certidao', 'certidão', 'papel']):
-            return self.predefined_responses['documentos']
-        elif any(word in normalized_message for word in ['mediacao', 'mediação', 'conciliacao', 'conciliação']):
-            return self.predefined_responses['mediacao']
+            return self.predefined_responses['audiencia']['response']
         
         return self.get_default_response()
     
