@@ -786,6 +786,120 @@
             font-family: 'Montserrat', 'Inter', sans-serif !important;
             font-weight: 600 !important;
         }
+
+        /* Footer Legal and Developer Attribution Styling */
+        .legal-notices {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2c5aa0;
+        }
+
+        .legal-notices h6 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .legal-notices p {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .developer-attribution {
+            background: linear-gradient(135deg, rgba(44, 90, 160, 0.15), rgba(30, 61, 114, 0.15));
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .developer-attribution h6 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .lex-brand {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .lex-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2c5aa0, #1e3d72, #3666b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            display: inline-block;
+            letter-spacing: 1px;
+        }
+
+        .lex-brand p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 4px;
+        }
+
+        .tech-credits p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .tech-credits i {
+            color: #2c5aa0;
+        }
+
+        /* Footer responsiveness */
+        @media (max-width: 768px) {
+            .legal-notices,
+            .developer-attribution {
+                margin-bottom: 20px;
+            }
+
+            .lex-name {
+                font-size: 20px;
+            }
+
+            .developer-attribution {
+                text-align: center;
+            }
+        }
+
+        /* Enhanced footer styling */
+        .footer-section {
+            background: linear-gradient(135deg, #1a2b4c, #2c3e50);
+            color: white;
+            padding: 40px 0 20px 0;
+            margin-top: 60px;
+        }
+
+        .footer-section hr {
+            border-color: rgba(255, 255, 255, 0.2);
+            margin: 30px 0 20px 0;
+        }
+
+        .footer-section h5 {
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #2c5aa0;
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
     </style>
     
     {% block head %}{% endblock %}
@@ -908,8 +1022,73 @@
             </div>
             <hr>
             <div class="row">
+                <div class="col-md-8">
+                    <div class="legal-notices">
+                        <h6 class="mb-3">Avisos Legais e Direitos Autorais</h6>
+                        <p class="small mb-2">
+                            <strong>&copy; 2024 Tribunal de Justiça do Espírito Santo.</strong> Todos os direitos reservados.
+                        </p>
+                        <p class="small mb-2">
+                            O conteúdo deste website, incluindo textos, imagens, logotipos, ícones, fotografias, 
+                            áudios, vídeos e softwares, é de propriedade exclusiva do Tribunal de Justiça do Espírito Santo 
+                            ou de seus respectivos proprietários e está protegido pelas leis brasileiras e internacionais 
+                            de direitos autorais e propriedade intelectual.
+                        </p>
+                        <p class="small mb-2">
+                            É vedada a reprodução, distribuição, transmissão, exibição, publicação ou criação de obras 
+                            derivadas de qualquer parte deste conteúdo sem autorização prévia e expressa por escrito 
+                            do Tribunal de Justiça do Espírito Santo.
+                        </p>
+                        <p class="small mb-2">
+                            As informações contidas neste website são fornecidas apenas para fins informativos e não 
+                            constituem aconselhamento jurídico. Para orientações específicas, consulte sempre um 
+                            profissional qualificado da área jurídica.
+                        </p>
+                        <p class="small mb-1">
+                            <strong>Lei de Acesso à Informação:</strong> Este portal atende às disposições da 
+                            Lei nº 12.527/2011 (Lei de Acesso à Informação).
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="developer-attribution">
+                        <h6 class="mb-2">Desenvolvimento Tecnológico</h6>
+                        <div class="lex-brand">
+                            <p class="mb-1">
+                                <strong>Desenvolvido por</strong>
+                            </p>
+                            <p class="lex-logo mb-2">
+                                <span class="lex-name">Lex Intelligentia</span>
+                            </p>
+                            <p class="small text-muted mb-1">
+                                Soluções Jurídicas Inteligentes
+                            </p>
+                            <p class="small text-muted">
+                                Tecnologia & Inovação para o Judiciário
+                            </p>
+                        </div>
+                        <div class="tech-credits mt-3">
+                            <p class="small">
+                                <i class="fas fa-code me-1"></i>
+                                Plataforma desenvolvida com tecnologias modernas
+                            </p>
+                            <p class="small">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Segurança e acessibilidade certificadas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
                 <div class="col-12 text-center">
-                    <p>&copy; 2024 Tribunal de Justiça do Espírito Santo. Todos os direitos reservados.</p>
+                    <p class="small text-muted mb-1">
+                        2ª Vara Cível de Cariacica - Tribunal de Justiça do Espírito Santo
+                    </p>
+                    <p class="small text-muted">
+                        Versão 2.0 | Última atualização: 12/06/2025
+                    </p>
                 </div>
             </div>
         </div>
