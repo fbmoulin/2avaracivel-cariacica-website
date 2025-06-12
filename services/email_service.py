@@ -25,7 +25,13 @@ class EmailService:
         self.email_user = os.environ.get('EMAIL_USER')
         self.email_password = os.environ.get('EMAIL_PASSWORD')
         self.from_email = os.environ.get('FROM_EMAIL', 'noreply@varacivel.cariacica.tjes.jus.br')
-        self.admin_email = os.environ.get('ADMIN_EMAIL', 'fbmoulin@tjes.jus.br')
+        # Multiple admin emails for daily reports
+        self.admin_emails = [
+            'fbmoulin@tjes.jus.br',
+            'alraimundo@tjes.jus.br', 
+            'rtnobrega@tjes.jus.br'
+        ]
+        self.admin_email = self.admin_emails[0]  # Primary email for compatibility
         
     def send_email(self, to_email: str, subject: str, body: str, 
                    attachments: Optional[List[str]] = None, is_html: bool = True) -> bool:
@@ -431,7 +437,7 @@ class EmailService:
         return html
     
     def send_daily_report(self, date: datetime = None) -> bool:
-        """Send daily report to admin email"""
+        """Send daily report to all admin emails"""
         try:
             if not date:
                 date = datetime.now().date() - timedelta(days=1)  # Previous day
@@ -445,19 +451,23 @@ class EmailService:
             subject = f"Relatório Diário - 2ª Vara Cível de Cariacica - {report_data['date']}"
             html_body = self.format_daily_report_html(report_data)
             
-            success = self.send_email(
-                to_email=self.admin_email,
-                subject=subject,
-                body=html_body,
-                is_html=True
-            )
+            # Send to all admin emails
+            all_success = True
+            for admin_email in self.admin_emails:
+                success = self.send_email(
+                    to_email=admin_email,
+                    subject=subject,
+                    body=html_body,
+                    is_html=True
+                )
+                
+                if success:
+                    logging.info(f"Daily report sent successfully to {admin_email}")
+                else:
+                    logging.error(f"Failed to send daily report to {admin_email}")
+                    all_success = False
             
-            if success:
-                logging.info(f"Daily report sent successfully to {self.admin_email}")
-            else:
-                logging.error(f"Failed to send daily report to {self.admin_email}")
-            
-            return success
+            return all_success
             
         except Exception as e:
             logging.error(f"Error sending daily report: {e}")
