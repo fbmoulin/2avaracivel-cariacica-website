@@ -79,13 +79,13 @@ def create_app():
     # Setup enhanced error monitoring and performance tracking
     try:
         from services.error_handler import setup_integration_monitoring, error_collector
-        from error_monitor import setup_flask_error_handlers
+        from error_monitor import setup_flask_error_handlers, start_monitoring
         from performance_monitor import setup_performance_monitoring
         
         setup_flask_error_handlers(app)
         setup_performance_monitoring(app)
         setup_integration_monitoring()
-        # Removed blocking start_monitoring() call
+        start_monitoring()
         
         logging.info("Enhanced error monitoring and performance tracking initialized")
     except ImportError:

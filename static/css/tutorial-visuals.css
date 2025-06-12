@@ -1,6 +1,6 @@
-/**
- * Tutorial Visual Styles for Zoom Audio Configuration
- * 2ª Vara Cível de Cariacica - Enhanced Accessibility & Responsiveness
+/* 
+ * Estilos aprimorados para o tutorial do Zoom - 2ª Vara Cível de Cariacica
+ * Versão otimizada com correções de acessibilidade e responsividade
  */
 
 /* Tutorial Container */
@@ -12,6 +12,51 @@
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    position: relative;
+}
+
+/* Breadcrumbs Navigation */
+.breadcrumb-nav {
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: var(--bg-secondary, #f9fafb);
+    border-radius: 0.25rem;
+}
+
+.breadcrumb-item {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+    padding-left: 0.5rem;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    display: inline-block;
+    padding-right: 0.5rem;
+    color: var(--text-secondary, #6b7280);
+    content: "/";
+}
+
+.breadcrumb-item a {
+    color: var(--primary-color, #2563eb);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-secondary, #6b7280);
 }
 
 /* Header Section */
@@ -32,7 +77,7 @@
 
 .tutorial-subtitle {
     font-size: 1.25rem;
-    color: var(--text-secondary, #6b7280);
+    color: #595959; /* Melhorado para contraste WCAG AA */
     margin-bottom: 2rem;
     max-width: 600px;
     margin-left: auto;
@@ -491,6 +536,8 @@
     
     .step-image-container {
         width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
     }
     
     .action-buttons {
@@ -501,6 +548,13 @@
     .gif-controls {
         flex-direction: column;
         align-items: stretch;
+    }
+    
+    .action-btn,
+    .accessibility-btn,
+    .tutorial-tab,
+    .gif-control-btn {
+        min-height: 48px; /* Larger touch targets on mobile */
     }
 }
 
@@ -515,13 +569,12 @@
     }
     
     .step-content {
-        text-align: center;
+        text-align: left;
     }
     
-    .accessibility-btn,
-    .tutorial-tab,
-    .action-btn {
-        min-height: 48px; /* Larger touch targets on mobile */
+    .breadcrumb {
+        font-size: 0.875rem;
+        padding: 0.5rem;
     }
 }
 
@@ -535,7 +588,8 @@
     .accessibility-controls,
     .tutorial-tabs,
     .gif-controls,
-    .action-buttons {
+    .action-buttons,
+    .breadcrumb-nav {
         display: none;
     }
     
@@ -551,12 +605,20 @@
     .step-image {
         max-width: 300px;
     }
+    
+    .print-header,
+    .print-footer {
+        display: block;
+        text-align: center;
+        margin: 1rem 0;
+    }
 }
 
 /* Loading States */
 .loading {
     opacity: 0.6;
     pointer-events: none;
+    position: relative;
 }
 
 .loading::after {
@@ -619,4 +681,47 @@
 .tooltip:focus .tooltip-text {
     visibility: visible;
     opacity: 1;
+}
+
+/* Print-only elements */
+.print-header,
+.print-footer {
+    display: none;
+}
+
+/* Feedback states for buttons */
+.action-btn:active,
+.accessibility-btn:active,
+.gif-control-btn:active {
+    transform: translateY(1px);
+    opacity: 0.9;
+}
+
+/* Loading indicator for images */
+.step-image.loading,
+.tutorial-gif.loading {
+    filter: blur(2px);
+}
+
+/* Improved focus styles for keyboard navigation */
+:focus-visible {
+    outline: 3px solid var(--focus-color, #93c5fd);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Skip to content link for keyboard users */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--primary-color, #2563eb);
+    color: white;
+    padding: 8px;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+    top: 0;
 }

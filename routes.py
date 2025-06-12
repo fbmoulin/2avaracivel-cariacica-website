@@ -61,6 +61,11 @@ def form_demo():
     """Demo page for form micro-interactions"""
     return render_template('form-demo.html')
 
+@main_bp.route('/chatbot')
+def chatbot():
+    """Chatbot interface page"""
+    return render_template('chatbot.html')
+
 @main_bp.route('/contato', methods=['GET', 'POST'])
 def contact():
     """Contact page with form"""

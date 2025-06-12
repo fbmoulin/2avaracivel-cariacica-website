@@ -155,6 +155,7 @@
         <div class="row">
             <div class="col-lg-8">
                 <div class="map-container-prominent rounded shadow-lg">
+                    <!-- Mapa do Google Maps corrigido para usar embed padrão sem restrições -->
                     <iframe 
                         src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3741.1735004711674!2d-40.40079!3d-20.326389!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xb83dd9c4c9e3ed%3A0x1d8d0ecd3929c91f!2sRua%20Expedito%20Garcia%2C%20Cariacica%20-%20ES!5e0!3m2!1spt-BR!2sbr!4v1686581234567!5m2!1spt-BR!2sbr"
                         width="100%" 
@@ -301,40 +302,30 @@
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <h2 class="text-center mb-5">Perguntas Frequentes</h2>
-                <div class="accordion" id="faqAccordion">
+                <div class="accordion" id="faqPreviewAccordion">
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingOne">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                Qual o horário de funcionamento da 2ª Vara Cível?
+                        <h3 class="accordion-header" id="faqPreviewHeading1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqPreviewCollapse1" aria-expanded="true" aria-controls="faqPreviewCollapse1">
+                                Como consultar o andamento do meu processo?
                             </button>
-                        </h2>
-                        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="faqPreviewCollapse1" class="accordion-collapse collapse show" aria-labelledby="faqPreviewHeading1" data-bs-parent="#faqPreviewAccordion">
                             <div class="accordion-body">
-                                A 2ª Vara Cível de Cariacica funciona das 12h às 18h, de segunda a sexta-feira.
+                                <p>Para consultar o andamento do seu processo, você pode utilizar o serviço de Consulta Processual disponível em nosso site. Basta inserir o número do processo no formato CNJ (XX.XXXX.X.XX.XXXX.X.XX.XXXX) ou o número antigo.</p>
+                                <p>Você também pode realizar a consulta diretamente no site do <a href="https://www.tjes.jus.br/consulta-processual/" target="_blank" rel="noopener noreferrer">Tribunal de Justiça do Espírito Santo</a>.</p>
                             </div>
                         </div>
                     </div>
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingTwo">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                Como consultar um processo?
+                        <h3 class="accordion-header" id="faqPreviewHeading2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqPreviewCollapse2" aria-expanded="false" aria-controls="faqPreviewCollapse2">
+                                Como agendar atendimento com o juiz ou assessor?
                             </button>
-                        </h2>
-                        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                        </h3>
+                        <div id="faqPreviewCollapse2" class="accordion-collapse collapse" aria-labelledby="faqPreviewHeading2" data-bs-parent="#faqPreviewAccordion">
                             <div class="accordion-body">
-                                Você pode consultar seu processo através do número CNJ no portal do TJES ou em nossa seção de consulta processual.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingThree">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                Como participar de audiência virtual?
-                            </button>
-                        </h2>
-                        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
-                            <div class="accordion-body">
-                                Você receberá um link por email para participar via Zoom. Certifique-se de ter boa conexão de internet e ambiente adequado.
+                                <p>Para agendar atendimento com o juiz ou assessor, acesse a seção de Agendamento em nosso site e preencha o formulário com suas informações e o motivo do atendimento. O agendamento está sujeito à disponibilidade e será confirmado por e-mail ou telefone.</p>
+                                <p>Lembre-se de que o atendimento pode ser realizado presencialmente ou por videoconferência, conforme sua preferência e disponibilidade.</p>
                             </div>
                         </div>
                     </div>
@@ -346,4 +337,86 @@
         </div>
     </div>
 </section>
+
+<!-- Chatbot Teaser -->
+<section class="chatbot-teaser-section py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2>Precisa de Ajuda?</h2>
+                <p class="lead">Nosso assistente virtual está disponível 24 horas para responder suas dúvidas sobre serviços, processos e funcionamento da vara.</p>
+                <a href="{{ url_for('main.chatbot') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-comments me-2"></i>Conversar com Assistente
+                </a>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{{ url_for('static', filename='images/chatbot/chatbot_avatar.png') }}" 
+                     alt="Assistente Virtual" 
+                     class="img-fluid chatbot-teaser-image"
+                     width="250"
+                     loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mobile App Teaser -->
+<section class="app-teaser-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center mb-4 mb-md-0">
+                <img src="{{ url_for('static', filename='images/download_buttons/app_store_google_play_buttons.jpg') }}" 
+                     alt="Botões de download para App Store e Google Play" 
+                     class="img-fluid app-store-buttons"
+                     width="300"
+                     loading="lazy">
+            </div>
+            <div class="col-md-6">
+                <h2>Baixe Nosso Aplicativo</h2>
+                <p class="lead">Acesse os serviços da 2ª Vara Cível de Cariacica diretamente do seu smartphone.</p>
+                <ul class="app-features-list">
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Consulta processual</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Notificações de movimentações</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Agendamento de atendimentos</li>
+                    <li><i class="fas fa-check-circle text-success me-2"></i>Acesso a documentos</li>
+                </ul>
+                <p><small class="text-muted">Disponível para Android e iOS</small></p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Script para verificar se o mapa do Google Maps foi carregado corretamente
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapIframe = document.querySelector('.map-container-prominent iframe');
+        
+        // Adiciona um evento para detectar quando o iframe terminar de carregar
+        mapIframe.addEventListener('load', function() {
+            console.log('Mapa carregado com sucesso');
+        });
+        
+        // Adiciona um evento para detectar erros de carregamento
+        mapIframe.addEventListener('error', function() {
+            console.error('Erro ao carregar o mapa');
+            // Exibe uma mensagem de erro e um link alternativo
+            const mapContainer = document.querySelector('.map-container-prominent');
+            mapContainer.innerHTML = `
+                <div class="alert alert-warning text-center p-5">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h4>Não foi possível carregar o mapa</h4>
+                    <p>Por favor, tente novamente mais tarde ou acesse diretamente pelo link abaixo:</p>
+                    <a href="https://www.google.com/maps/place/Rua+Expedito+Garcia,+Cariacica+-+ES" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="btn btn-primary mt-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>Ver no Google Maps
+                    </a>
+                </div>
+            `;
+        });
+    });
+</script>
 {% endblock %}

@@ -10,6 +10,15 @@
 {% endblock %}
 
 {% block content %}
+<!-- Breadcrumbs para navegação consistente -->
+<nav aria-label="Navegação estrutural" class="breadcrumb-nav">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Início</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('services') }}">Serviços</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Tutorial do Zoom</li>
+    </ol>
+</nav>
+
 <div class="tutorial-container" role="main" aria-label="Tutorial de configuração de áudio do Zoom">
     <!-- Tutorial Header -->
     <header class="tutorial-header">
@@ -59,7 +68,8 @@
                 <img src="{{ url_for('static', filename='images/zoom_tutorial_gif/tutorial_zoom_audio_pt.gif') }}" 
                      alt="Animação mostrando os 3 passos para configurar áudio no Zoom: acessar configurações, selecionar áudio e testar dispositivos" 
                      class="tutorial-gif"
-                     loading="lazy">
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}';">
                 
                 <!-- GIF Controls -->
                 <div class="gif-controls" role="group" aria-label="Controles da animação">
@@ -112,7 +122,7 @@
                     </div>
                     <div class="step-image-container">
                         <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}" 
-                             alt="Tela principal do Zoom mostrando o ícone de configurações (engrenagem) destacado no canto superior direito"
+                             alt="Tela principal do Zoom mostrando o ícone de configurações (engrenagem) destacado no canto superior direito com uma seta vermelha apontando para ele"
                              class="step-image"
                              loading="lazy"
                              tabindex="0"
@@ -142,7 +152,7 @@
                     </div>
                     <div class="step-image-container">
                         <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_2_pt.png') }}" 
-                             alt="Janela de configurações do Zoom com a aba Áudio selecionada, mostrando opções de microfone e alto-falantes"
+                             alt="Janela de configurações do Zoom com a aba Áudio selecionada no menu lateral esquerdo, mostrando opções de microfone e alto-falantes na área principal"
                              class="step-image"
                              loading="lazy"
                              tabindex="0"
@@ -180,7 +190,7 @@
                     </div>
                     <div class="step-image-container">
                         <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_3_pt.png') }}" 
-                             alt="Seção de teste de áudio do Zoom mostrando botões para testar microfone e alto-falantes com indicadores de nível"
+                             alt="Seção de teste de áudio do Zoom mostrando botões para testar microfone e alto-falantes com indicadores de nível e barras de volume"
                              class="step-image"
                              loading="lazy"
                              tabindex="0"
@@ -197,11 +207,11 @@
         <h2 class="faq-title">Perguntas Frequentes</h2>
         
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-1" id="faq-question-1">
                 <span>Não consigo encontrar o ícone de configurações. O que fazer?</span>
                 <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="faq-answer">
+            <div class="faq-answer" id="faq-answer-1" aria-labelledby="faq-question-1">
                 <p>Se o ícone de configurações não está visível, tente estas soluções:</p>
                 <ul>
                     <li>Mova o mouse pela tela - às vezes os controles ficam ocultos</li>
@@ -213,11 +223,11 @@
         </div>
 
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-2" id="faq-question-2">
                 <span>Meu microfone não está funcionando. Como resolver?</span>
                 <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="faq-answer">
+            <div class="faq-answer" id="faq-answer-2" aria-labelledby="faq-question-2">
                 <p>Para resolver problemas com o microfone:</p>
                 <ul>
                     <li>Verifique se o microfone está conectado corretamente</li>
@@ -230,11 +240,11 @@
         </div>
 
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-3" id="faq-question-3">
                 <span>Não estou ouvindo nada. Como verificar os alto-falantes?</span>
                 <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="faq-answer">
+            <div class="faq-answer" id="faq-answer-3" aria-labelledby="faq-question-3">
                 <p>Para resolver problemas de áudio:</p>
                 <ul>
                     <li>Verifique se o volume do computador não está no mínimo ou mudo</li>
@@ -247,11 +257,11 @@
         </div>
 
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-4" id="faq-question-4">
                 <span>Durante a audiência, o áudio está com eco. Como resolver?</span>
                 <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="faq-answer">
+            <div class="faq-answer" id="faq-answer-4" aria-labelledby="faq-question-4">
                 <p>Para eliminar o eco durante a audiência:</p>
                 <ul>
                     <li>Use fones de ouvido ou headset em vez dos alto-falantes do computador</li>
@@ -264,11 +274,11 @@
         </div>
 
         <div class="faq-item">
-            <button class="faq-question" aria-expanded="false">
+            <button class="faq-question" aria-expanded="false" aria-controls="faq-answer-5" id="faq-question-5">
                 <span>Como melhorar a qualidade do áudio para a audiência?</span>
                 <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
-            <div class="faq-answer">
+            <div class="faq-answer" id="faq-answer-5" aria-labelledby="faq-question-5">
                 <p>Para garantir a melhor qualidade de áudio:</p>
                 <ul>
                     <li>Use um ambiente silencioso, sem ruídos de fundo</li>
@@ -283,102 +293,206 @@
     </section>
 
     <!-- Action Buttons -->
-    <footer class="action-buttons" role="region" aria-label="Ações adicionais">
-        <button onclick="window.print()" class="action-btn secondary">
+    <div class="action-buttons">
+        <a href="{{ url_for('services') }}" class="action-btn secondary">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            <span>Voltar para Serviços</span>
+        </a>
+        <button class="action-btn" id="print-tutorial">
             <i class="fas fa-print" aria-hidden="true"></i>
-            <span>Imprimir Tutorial</span>
+            <span>Versão para Impressão</span>
         </button>
-        
-        <a href="{{ url_for('main.contact') }}" class="action-btn">
+        <a href="{{ url_for('contact') }}" class="action-btn">
             <i class="fas fa-headset" aria-hidden="true"></i>
             <span>Precisa de Ajuda?</span>
         </a>
-        
-        <a href="{{ url_for('services.hearings') }}" class="action-btn">
-            <i class="fas fa-video" aria-hidden="true"></i>
-            <span>Sobre Audiências Virtuais</span>
-        </a>
-        
-        <button id="tutorial-shortcuts" class="action-btn secondary" aria-label="Mostrar atalhos de teclado">
-            <i class="fas fa-keyboard" aria-hidden="true"></i>
-            <span>Atalhos</span>
-        </button>
-    </footer>
-</div>
-
-<!-- Image Modal -->
-<div class="image-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
-    <div class="modal-content">
-        <button class="modal-close" aria-label="Fechar imagem ampliada">
-            <i class="fas fa-times" aria-hidden="true"></i>
-        </button>
-        <img class="modal-image" alt="" id="modal-title">
     </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="image-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+            <img src="" alt="" class="modal-image" id="modal-image">
+            <button class="modal-close" id="modal-close" aria-label="Fechar imagem ampliada">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen Reader Live Region -->
+    <div id="aria-live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 </div>
 
-<!-- Screen Reader Only Instructions -->
-<div class="sr-only" id="keyboard-instructions">
-    <h2>Instruções para Navegação por Teclado</h2>
-    <ul>
-        <li>Use Tab para navegar pelos elementos</li>
-        <li>Use Enter ou Espaço para ativar botões e links</li>
-        <li>Use Escape para fechar modais</li>
-        <li>Use Ctrl + Setas para navegar entre passos</li>
-        <li>Use Ctrl + 1, 2, ou 3 para ir diretamente a um passo</li>
-    </ul>
-</div>
+<!-- Print Header and Footer (visible only when printing) -->
+<header class="print-header">
+    <h1>Tutorial de Configuração de Áudio do Zoom</h1>
+    <p>2ª Vara Cível de Cariacica - Tribunal de Justiça do Espírito Santo</p>
+</header>
+
+<footer class="print-footer">
+    <p>Este material foi produzido pela 2ª Vara Cível de Cariacica. Para mais informações, visite nosso site.</p>
+    <p>© {{ now.year }} - Todos os direitos reservados - Desenvolvido por Lex Intelligentia</p>
+</footer>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/tutorial-accessibility.js') }}" defer></script>
-<script src="{{ url_for('static', filename='js/tutorial-toggle.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/tutorial-accessibility.js') }}"></script>
+<script src="{{ url_for('static', filename='js/tutorial-toggle.js') }}"></script>
 <script>
-// Tutorial initialization and keyboard shortcuts
-document.addEventListener('DOMContentLoaded', function() {
-    // Show keyboard shortcuts
-    const shortcutsBtn = document.getElementById('tutorial-shortcuts');
-    if (shortcutsBtn) {
-        shortcutsBtn.addEventListener('click', function() {
-            if (window.tutorialAccessibility) {
-                window.tutorialAccessibility.showKeyboardShortcuts();
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize accessibility features
+        const accessibilityManager = new TutorialAccessibility();
+        
+        // Initialize tab switching
+        const tabs = document.querySelectorAll('.tutorial-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const view = this.getAttribute('data-view');
+                
+                // Update tab states
+                tabs.forEach(t => {
+                    t.classList.remove('active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+                this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
+                
+                // Update content visibility
+                const sections = document.querySelectorAll('.content-section');
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(`${view}-view`).classList.add('active');
+                
+                // Announce to screen readers
+                document.getElementById('aria-live-announcer').textContent = 
+                    view === 'animation' ? 'Mostrando animação do tutorial' : 'Mostrando tutorial passo a passo';
+            });
         });
-    }
-    
-    // Enhanced print functionality
-    window.addEventListener('beforeprint', function() {
-        // Ensure all content is visible for printing
-        const sections = document.querySelectorAll('.content-section');
-        sections.forEach(section => {
-            section.style.display = 'block';
+        
+        // Initialize FAQ accordion
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', function() {
+                const answer = this.nextElementSibling;
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                
+                this.setAttribute('aria-expanded', !isExpanded);
+                answer.classList.toggle('active');
+                
+                // Announce to screen readers
+                document.getElementById('aria-live-announcer').textContent = 
+                    isExpanded ? 'Resposta recolhida' : 'Resposta expandida';
+            });
         });
-    });
-    
-    window.addEventListener('afterprint', function() {
-        // Restore original display states
-        const sections = document.querySelectorAll('.content-section:not(.active)');
-        sections.forEach(section => {
-            section.style.display = 'none';
-        });
-    });
-    
-    // Performance optimization - lazy load GIF
-    const gif = document.querySelector('.tutorial-gif');
-    if (gif && 'IntersectionObserver' in window) {
-        const gifObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // GIF is already loaded, just ensure it's visible
-                    gif.style.opacity = '1';
-                    gifObserver.unobserve(gif);
+        
+        // Initialize image modal
+        const stepImages = document.querySelectorAll('.step-image');
+        const modal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const modalClose = document.getElementById('modal-close');
+        
+        stepImages.forEach(image => {
+            image.addEventListener('click', function() {
+                modalImage.src = this.src;
+                modalImage.alt = this.alt;
+                modal.classList.add('active');
+                modal.setAttribute('aria-hidden', 'false');
+                modalClose.focus();
+                document.body.style.overflow = 'hidden';
+                
+                // Announce to screen readers
+                document.getElementById('aria-live-announcer').textContent = 'Imagem ampliada aberta. Pressione Escape para fechar.';
+            });
+            
+            // Keyboard accessibility
+            image.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
                 }
             });
         });
         
-        gifObserver.observe(gif);
-    }
-    
-    console.log('Tutorial do Zoom inicializado com acessibilidade completa');
-});
+        modalClose.addEventListener('click', function() {
+            closeModal();
+        });
+        
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+        
+        function closeModal() {
+            modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = 'auto';
+            
+            // Return focus to the image that opened the modal
+            const activeImage = document.querySelector('.step-image:focus') || stepImages[0];
+            if (activeImage) {
+                activeImage.focus();
+            }
+            
+            // Announce to screen readers
+            document.getElementById('aria-live-announcer').textContent = 'Imagem ampliada fechada';
+        }
+        
+        // Print functionality
+        const printButton = document.getElementById('print-tutorial');
+        printButton.addEventListener('click', function() {
+            window.print();
+        });
+        
+        // GIF controls
+        const gifPlayPause = document.getElementById('gif-play-pause');
+        const gifRestart = document.getElementById('gif-restart');
+        const gifSpeed = document.getElementById('gif-speed');
+        const tutorialGif = document.querySelector('.tutorial-gif');
+        
+        if (gifPlayPause && tutorialGif) {
+            let gifPaused = false;
+            let originalSrc = tutorialGif.src;
+            
+            gifPlayPause.addEventListener('click', function() {
+                if (gifPaused) {
+                    // Resume GIF
+                    tutorialGif.src = originalSrc;
+                    gifPlayPause.innerHTML = '<i class="fas fa-pause" aria-hidden="true"></i><span>Pausar</span>';
+                    gifPlayPause.setAttribute('aria-label', 'Pausar animação');
+                    document.getElementById('aria-live-announcer').textContent = 'Animação retomada';
+                } else {
+                    // Pause GIF by replacing with static image
+                    tutorialGif.src = "{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}";
+                    gifPlayPause.innerHTML = '<i class="fas fa-play" aria-hidden="true"></i><span>Reproduzir</span>';
+                    gifPlayPause.setAttribute('aria-label', 'Reproduzir animação');
+                    document.getElementById('aria-live-announcer').textContent = 'Animação pausada';
+                }
+                gifPaused = !gifPaused;
+            });
+            
+            gifRestart.addEventListener('click', function() {
+                // Restart GIF by reloading it
+                const currentSrc = tutorialGif.src;
+                tutorialGif.src = '';
+                setTimeout(() => {
+                    tutorialGif.src = originalSrc;
+                }, 10);
+                
+                // Reset play/pause button
+                gifPaused = false;
+                gifPlayPause.innerHTML = '<i class="fas fa-pause" aria-hidden="true"></i><span>Pausar</span>';
+                gifPlayPause.setAttribute('aria-label', 'Pausar animação');
+                
+                document.getElementById('aria-live-announcer').textContent = 'Animação reiniciada';
+            });
+        }
+    });
 </script>
 {% endblock %}
