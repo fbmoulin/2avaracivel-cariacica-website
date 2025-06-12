@@ -2,6 +2,7 @@ import os
 import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 from sqlalchemy.orm import DeclarativeBase
 from werkzeug.middleware.proxy_fix import ProxyFix
 
@@ -12,6 +13,7 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
+csrf = CSRFProtect()
 
 def create_app():
     # Create the Flask application
@@ -45,6 +47,7 @@ def create_app():
     
     # Initialize extensions
     db.init_app(app)
+    csrf.init_app(app)
     
     # Initialize middleware and monitoring
     try:
