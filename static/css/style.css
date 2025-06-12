@@ -156,6 +156,58 @@ a:focus {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Standardize all button variants to blue */
+.btn-outline-secondary {
+    color: white !important;
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    font-weight: 600;
+}
+
+.btn-outline-secondary:hover {
+    color: white !important;
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    color: white !important;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.btn-light {
+    color: white !important;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Standardize small button variants */
+.btn-sm.btn-outline-primary,
+.btn-sm.btn-outline-secondary,
+.btn-sm.btn-secondary,
+.btn-sm.btn-light {
+    color: white !important;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Standardize all button classes to blue theme */
+.btn:not(.btn-danger):not(.btn-warning):not(.btn-success):not(.btn-info):not(.btn-dark) {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.btn:not(.btn-danger):not(.btn-warning):not(.btn-success):not(.btn-info):not(.btn-dark):hover {
+    background-color: var(--primary-dark) !important;
+    border-color: var(--primary-dark) !important;
+    color: white !important;
+}
+
 /* Badge contrast improvements */
 .badge {
     font-weight: 600;
