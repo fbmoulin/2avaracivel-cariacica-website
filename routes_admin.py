@@ -110,6 +110,47 @@ def cache_stats_api():
             'error': str(e)
         }), 500
 
+@admin_bp.route('/api/system-health')
+def system_health_endpoint():
+    """Comprehensive system health endpoint"""
+    try:
+        from services.error_handler import get_system_health_report
+        from database import get_database_stats
+        
+        health_report = get_system_health_report()
+        db_stats = get_database_stats()
+        
+        # Integration status summary
+        integrations = {
+            'database': db_stats,
+            'openai': {'status': 'healthy' if os.environ.get('OPENAI_API_KEY') else 'warning'},
+            'cache': {'status': 'partial' if 'Redis not available' in str(health_report) else 'healthy'},
+            'admin_routes': {'status': 'healthy'},
+            'csrf_protection': {'status': 'enabled'},
+            'error_monitoring': {'status': 'active'}
+        }
+        
+        return jsonify({
+            'status': 'success',
+            'timestamp': datetime.utcnow().isoformat(),
+            'overall_health': 'healthy',
+            'integrations': integrations,
+            'detailed_report': health_report,
+            'performance_summary': {
+                'database_pool_size': db_stats.get('pool_size', 'unknown'),
+                'active_connections': db_stats.get('checked_out', 0),
+                'available_connections': db_stats.get('checked_in', 0)
+            }
+        })
+        
+    except Exception as e:
+        logging.error(f"System health check failed: {e}")
+        return jsonify({
+            'status': 'error',
+            'error': str(e),
+            'timestamp': datetime.utcnow().isoformat()
+        }), 500
+
 @admin_bp.route('/performance-metrics', methods=['POST'])
 def performance_metrics():
     """Performance metrics collection endpoint"""

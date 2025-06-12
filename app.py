@@ -35,8 +35,9 @@ def create_app():
     # Initialize CSRF protection
     csrf.init_app(app)
     
-    # Exempt chatbot API from CSRF protection
+    # Exempt specific APIs from CSRF protection
     csrf.exempt('chatbot.chatbot_message')
+    csrf.exempt('admin.performance_metrics')
     
     # Initialize middleware and monitoring
     try:
@@ -68,21 +69,25 @@ def create_app():
     except ImportError:
         logging.warning("Admin dashboard not available")
     
-    # Create database tables
-    with app.app_context():
-        import models
-        db.create_all()
+    # Create database tables with optimized approach
+    create_all_tables(app)
     
-    # Setup error monitoring and performance tracking
+    # Apply database performance optimizations
+    with app.app_context():
+        optimize_database_performance()
+    
+    # Setup enhanced error monitoring and performance tracking
     try:
+        from services.error_handler import setup_integration_monitoring, error_collector
         from error_monitor import setup_flask_error_handlers, start_monitoring
         from performance_monitor import setup_performance_monitoring
         
         setup_flask_error_handlers(app)
         setup_performance_monitoring(app)
+        setup_integration_monitoring()
         start_monitoring()
         
-        logging.info("Error monitoring and performance tracking initialized")
+        logging.info("Enhanced error monitoring and performance tracking initialized")
     except ImportError:
         logging.warning("Monitoring services not fully available")
     

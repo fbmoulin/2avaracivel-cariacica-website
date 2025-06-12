@@ -67,17 +67,28 @@ def create_all_tables(app):
 def optimize_database_performance():
     """Apply database performance optimizations"""
     try:
+        # Get all table names in the database
+        inspector = db.inspect(db.engine)
+        existing_tables = inspector.get_table_names()
+        
         # PostgreSQL optimizations
         if "postgresql" in db.engine.url.drivername:
             with db.engine.connect() as conn:
-                # Create indexes if they don't exist
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_contact_created_at ON contact(created_at)")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_news_published_at ON newsitem(published_at)")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_process_consultation_created ON processconsultation(consulted_at)")
-                conn.execute("CREATE INDEX IF NOT EXISTS idx_chat_session ON chatmessage(session_id)")
+                # Create indexes only for existing tables
+                if 'contact' in existing_tables:
+                    conn.execute(db.text("CREATE INDEX IF NOT EXISTS idx_contact_created_at ON contact(created_at)"))
+                if 'news_item' in existing_tables or 'newsitem' in existing_tables:
+                    table_name = 'news_item' if 'news_item' in existing_tables else 'newsitem'
+                    conn.execute(db.text(f"CREATE INDEX IF NOT EXISTS idx_news_published_at ON {table_name}(published_at)"))
+                if 'process_consultation' in existing_tables or 'processconsultation' in existing_tables:
+                    table_name = 'process_consultation' if 'process_consultation' in existing_tables else 'processconsultation'
+                    conn.execute(db.text(f"CREATE INDEX IF NOT EXISTS idx_process_consultation_created ON {table_name}(consulted_at)"))
+                if 'chat_message' in existing_tables or 'chatmessage' in existing_tables:
+                    table_name = 'chat_message' if 'chat_message' in existing_tables else 'chatmessage'
+                    conn.execute(db.text(f"CREATE INDEX IF NOT EXISTS idx_chat_session ON {table_name}(session_id)"))
                 conn.commit()
                 
-        logging.info("Database performance optimizations applied")
+        logging.info(f"Database performance optimizations applied for tables: {existing_tables}")
         
     except Exception as e:
         logging.warning(f"Could not apply database optimizations: {e}")
