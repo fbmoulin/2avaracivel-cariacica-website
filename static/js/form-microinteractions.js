@@ -32,7 +32,6 @@ class FormMicroInteractions {
     init() {
         this.setupStyles();
         this.initializeForms();
-        this.setupEventListeners();
         console.log('Form micro-interactions initialized');
     }
     
@@ -727,6 +726,32 @@ class FormMicroInteractions {
         
         // Update form validity
         formData.isValid = progress === 100;
+        
+        // Update submit button state
+        this.updateSubmitButton(formData.element, formData.isValid);
+    }
+    
+    updateSubmitButton(form, isValid) {
+        const submitButton = form.querySelector('button[type="submit"], .submit-button');
+        if (submitButton) {
+            submitButton.disabled = !isValid;
+            
+            if (isValid) {
+                submitButton.classList.add('btn-success');
+                submitButton.classList.remove('btn-primary');
+                const buttonText = submitButton.querySelector('.button-text');
+                if (buttonText) {
+                    buttonText.innerHTML = '<i class="fas fa-check me-2"></i>Pronto para Enviar';
+                }
+            } else {
+                submitButton.classList.add('btn-primary');
+                submitButton.classList.remove('btn-success');
+                const buttonText = submitButton.querySelector('.button-text');
+                if (buttonText) {
+                    buttonText.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Mensagem';
+                }
+            }
+        }
     }
     
     setupPasswordStrength(passwordField) {
@@ -808,6 +833,32 @@ class FormMicroInteractions {
                     behavior: 'smooth', 
                     block: 'center' 
                 });
+            }
+            
+            // Shake the submit button
+            const submitButton = form.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.style.animation = 'shake 0.5s ease-in-out';
+                setTimeout(() => {
+                    submitButton.style.animation = '';
+                }, 500);
+            }
+        } else {
+            // Show loading state
+            this.showSubmitLoading(form);
+        }
+    }
+    
+    showSubmitLoading(form) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            const buttonText = submitButton.querySelector('.button-text');
+            const buttonLoading = submitButton.querySelector('.button-loading');
+            
+            if (buttonText && buttonLoading) {
+                buttonText.style.display = 'none';
+                buttonLoading.style.display = 'flex';
+                submitButton.disabled = true;
             }
         }
     }

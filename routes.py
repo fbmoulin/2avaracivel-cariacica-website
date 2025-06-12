@@ -54,6 +54,11 @@ def faq():
     faq_data = content_service.get_faq_data()
     return render_template('faq.html', faq_data=faq_data)
 
+@main_bp.route('/form-demo')
+def form_demo():
+    """Demo page for form micro-interactions"""
+    return render_template('form-demo.html')
+
 @main_bp.route('/contato', methods=['GET', 'POST'])
 def contact():
     """Contact page with form"""
