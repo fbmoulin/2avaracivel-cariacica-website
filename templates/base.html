@@ -549,6 +549,170 @@
             }
         }
         
+        /* Voice Accessibility Controls Styling */
+        #voice-accessibility-controls {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .accessibility-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 220px;
+        }
+
+        .accessibility-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #2c5aa0, #1e3d72);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .accessibility-btn:hover {
+            background: linear-gradient(135deg, #3666b8, #254789);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(44, 90, 160, 0.3);
+        }
+
+        .accessibility-btn.active {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .accessibility-btn i {
+            font-size: 16px;
+        }
+
+        .voice-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 0;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+        }
+
+        .voice-controls label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .voice-controls input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #ddd;
+            border-radius: 3px;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .voice-controls input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #2c5aa0;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .voice-controls input[type="range"]::-webkit-slider-thumb:hover {
+            background: #1e3d72;
+            transform: scale(1.2);
+        }
+
+        .listening-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        /* Mobile responsiveness for accessibility controls */
+        @media (max-width: 768px) {
+            #voice-accessibility-controls {
+                position: fixed;
+                bottom: 80px;
+                right: 10px;
+                left: 10px;
+                top: auto;
+                width: auto;
+            }
+
+            .accessibility-panel {
+                min-width: auto;
+            }
+
+            .accessibility-btn {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            #voice-accessibility-controls {
+                background: white;
+                border: 2px solid black;
+            }
+
+            .accessibility-btn {
+                background: black;
+                color: white;
+                border: 1px solid white;
+            }
+
+            .accessibility-btn:hover {
+                background: #333;
+            }
+        }
+
+        /* Reduced motion support */
+        @media (prefers-reduced-motion: reduce) {
+            .accessibility-btn {
+                transition: none;
+            }
+
+            .listening-indicator {
+                animation: none;
+            }
+
+            #voice-accessibility-controls {
+                transition: none;
+            }
+        }
+        
         /* Performance optimizations for adaptive banner */
         .hero-banner-title {
             will-change: transform, filter !important;
@@ -787,6 +951,7 @@
     <script src="{{ url_for('static', filename='js/adaptive-banner.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
     <script src="{{ url_for('static', filename='js/accessibility-tests.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/voice-accessibility.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
