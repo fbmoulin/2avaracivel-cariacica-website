@@ -6,6 +6,7 @@ from services.integration_service import RetryManager, with_integration, integra
 import time
 from functools import lru_cache
 from datetime import datetime, timedelta
+import re
 
 class ChatbotService:
     """Service for handling chatbot interactions"""
@@ -78,6 +79,18 @@ class ChatbotService:
             'documentos': {
                 'response': 'Documentos e Certidões:\n📋 Certidões de objeto e pé\n📄 Cartas de sentença\n🏛️ Documentos processuais\n📞 Solicite pelo telefone (27) 3246-8200\n\n💰 Consulte taxas e prazos no atendimento.',
                 'keywords': ['documento', 'documentos', 'certidao', 'certidão', 'papel', 'carta']
+            },
+            'reuniao_assessor': {
+                'response': 'Agendamento de Reunião com Assessores:\n👥 Reuniões disponíveis com assessores judiciais\n📅 Horários: 12h às 18h, segunda a sexta\n⏰ Duração típica: 30-60 minutos\n📋 Necessário: dados do processo e identificação\n\n🔗 Para agendar, clique aqui: [AGENDAR_REUNIAO_ASSESSOR]',
+                'keywords': ['reuniao', 'reunião', 'assessor', 'assessores', 'conversar', 'falar', 'encontro', 'atendimento']
+            },
+            'reuniao_juiz': {
+                'response': 'Solicitação de Audiência com o Juiz:\n⚖️ Audiências com o juiz são formais e processuais\n📋 Necessário: petição através de advogado\n📅 Agendamento através do sistema oficial\n💼 Requer representação legal\n\n📞 Para orientações: (27) 3246-8200',
+                'keywords': ['juiz', 'juíz', 'magistrado', 'audiencia', 'encontrar', 'reunião', 'falar']
+            },
+            'agendamento_geral': {
+                'response': 'Tipos de Agendamento Disponíveis:\n\n👥 **Reunião com Assessores**\n• Esclarecimentos sobre processos\n• Orientações gerais\n• Informações sobre andamentos\n\n⚖️ **Audiência com o Juiz**\n• Apenas através de petição\n• Representação obrigatória por advogado\n\n📅 **Atendimento Presencial**\n• Protocolo de documentos\n• Certidões e informações\n\n🔗 [AGENDAR_REUNIAO_ASSESSOR] para reunião com assessores',
+                'keywords': ['agendar', 'agendamento', 'marcar', 'reunião', 'encontro', 'conversa', 'falar']
             }
         }
     
@@ -104,10 +117,15 @@ class ChatbotService:
     def get_response(self, user_message, session_id=None):
         """Get chatbot response for user message"""
         try:
-            # Check for predefined responses first
+            # Check for meeting scheduling requests first
+            meeting_response = self.handle_meeting_requests(user_message)
+            if meeting_response:
+                return meeting_response
+            
+            # Check for predefined responses
             predefined_response = self.find_predefined_response(user_message)
             if predefined_response:
-                return predefined_response
+                return self.process_special_actions(predefined_response)
             
             # Use OpenAI if available
             if self.openai_client:
@@ -151,14 +169,21 @@ COMPETÊNCIAS DA VARA:
 
 SERVIÇOS DISPONÍVEIS:
 • Consulta processual online
-• Agendamento de atendimento
+• Agendamento de reuniões com assessores
 • Audiências presenciais e virtuais
 • Solicitação de certidões
 • Balcão virtual
 • Serviços de mediação
 
+AGENDAMENTO DE REUNIÕES:
+• ASSESSORES: Reuniões diretas disponíveis para esclarecimentos, orientações sobre processos
+• JUIZ: Apenas por petição formal através de advogado, não agendamento direto
+• Para reunião com assessor, ofereça: [AGENDAR_REUNIAO_ASSESSOR]
+
 INSTRUÇÕES:
 • Seja sempre cordial e profissional
+• Para solicitações de reunião com assessores, forneça opção de agendamento direto
+• Para solicitações de reunião com juiz, explique o processo formal necessário
 • Forneça informações precisas e atualizadas
 • Para dúvidas específicas sobre processos, oriente consulta pelo número CNJ
 • Em caso de urgência, indique contato telefônico
@@ -178,7 +203,8 @@ INSTRUÇÕES:
             
             # Validate response
             if response.choices and response.choices[0].message.content:
-                return response.choices[0].message.content.strip()
+                ai_response = response.choices[0].message.content.strip()
+                return self.process_special_actions(ai_response)
             else:
                 logging.warning("Empty OpenAI response, using fallback")
                 return self.get_fallback_response(user_message)
@@ -204,6 +230,97 @@ INSTRUÇÕES:
             return self.predefined_responses['audiencia']['response']
         
         return self.get_default_response()
+    
+    def handle_meeting_requests(self, user_message):
+        """Handle specific meeting scheduling requests"""
+        normalized_message = user_message.lower().strip()
+        
+        # Check for specific meeting requests with assessors
+        assessor_patterns = [
+            r'.*quero.*reunião.*assessor.*',
+            r'.*agendar.*encontro.*assessor.*',
+            r'.*marcar.*conversa.*assessor.*',
+            r'.*falar.*assessor.*',
+            r'.*reunir.*assessor.*'
+        ]
+        
+        # Check for judge meeting requests
+        judge_patterns = [
+            r'.*quero.*reunião.*juiz.*',
+            r'.*agendar.*encontro.*juiz.*',
+            r'.*marcar.*conversa.*juiz.*',
+            r'.*falar.*juiz.*',
+            r'.*reunir.*juiz.*',
+            r'.*audiência.*juiz.*'
+        ]
+        
+        for pattern in assessor_patterns:
+            if re.search(pattern, normalized_message):
+                return self.get_assessor_meeting_response()
+        
+        for pattern in judge_patterns:
+            if re.search(pattern, normalized_message):
+                return self.get_judge_meeting_response()
+        
+        return None
+    
+    def get_assessor_meeting_response(self):
+        """Response for assessor meeting requests"""
+        return """🤝 **Agendamento de Reunião com Assessores**
+
+📋 **Informações Necessárias:**
+• Nome completo
+• CPF ou documento de identificação
+• Número do processo (se houver)
+• Assunto da reunião
+
+📅 **Horários Disponíveis:**
+• Segunda a sexta-feira: 12h às 18h
+• Duração: 30 a 60 minutos
+• Presencial ou virtual
+
+⚡ **Para agendar agora:**
+Clique no botão abaixo para iniciar o agendamento online
+
+[INICIAR_AGENDAMENTO_ASSESSOR]
+
+📞 **Ou ligue:** (27) 3246-8200"""
+    
+    def get_judge_meeting_response(self):
+        """Response for judge meeting requests"""
+        return """⚖️ **Audiência com o Juiz**
+
+📋 **Processo Formal Obrigatório:**
+• Requer petição através de advogado
+• Não é possível agendamento direto
+• Deve seguir procedimento judicial
+
+💼 **Como Proceder:**
+1. Consulte seu advogado
+2. Advogado deve protocolar petição
+3. Agendamento através do sistema oficial
+
+📞 **Para orientações:**
+• Telefone: (27) 3246-8200
+• Email: 2varacivel.cariacica@tjes.jus.br
+
+💡 **Alternativa:**
+Para esclarecimentos gerais, posso agendar uma reunião com nossos assessores judiciais.
+
+[AGENDAR_REUNIAO_ASSESSOR]"""
+    
+    def process_special_actions(self, response):
+        """Process special action tokens in responses"""
+        # Convert action tokens to interactive buttons/links
+        if '[AGENDAR_REUNIAO_ASSESSOR]' in response:
+            response = response.replace('[AGENDAR_REUNIAO_ASSESSOR]', 
+                '🔗 **[Clique aqui para agendar reunião com assessores](/servicos/agendamento-assessor)**')
+        
+        if '[INICIAR_AGENDAMENTO_ASSESSOR]' in response:
+            response = response.replace('[INICIAR_AGENDAMENTO_ASSESSOR]', 
+                '🔗 **[AGENDAR REUNIÃO COM ASSESSOR](/servicos/agendamento-assessor)**')
+        
+        return response
     
     def get_default_response(self):
         """Default response when no specific match is found"""
