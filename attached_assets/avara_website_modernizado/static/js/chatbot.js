@@ -197,7 +197,7 @@ class Chatbot {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
-        messageDiv.innerHTML = this.formatMessage(text);
+        this.setMessageContent(messageDiv, text);
 
         // Add timestamp for accessibility
         const timestamp = new Date().toLocaleTimeString('pt-BR');
@@ -231,23 +231,85 @@ class Chatbot {
         });
     }
 
-    formatMessage(text) {
-        // Convert URLs to links
+    setMessageContent(messageDiv, text) {
+        // Safely set text content without allowing HTML injection
+        messageDiv.textContent = text;
+        
+        // Apply safe formatting by creating elements programmatically
+        const content = messageDiv.textContent;
+        messageDiv.innerHTML = '';
+        
+        this.addFormattedContent(messageDiv, content);
+    }
+
+    addFormattedContent(container, text) {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
-        text = text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
-
-        // Convert line breaks to <br>
-        text = text.replace(/\n/g, '<br>');
-
-        // Format phone numbers
-        const phoneRegex = /\(?\d{2}\)?\s?\d{4,5}-?\d{4}/g;
-        text = text.replace(phoneRegex, '<strong>$&</strong>');
-
-        // Format email addresses
-        const emailRegex = /[\w.-]+@[\w.-]+\.\w+/g;
-        text = text.replace(emailRegex, '<a href="mailto:$&">$&</a>');
-
-        return text;
+        const emailRegex = /([\w.-]+@[\w.-]+\.\w+)/g;
+        const phoneRegex = /(\(?\d{2}\)?\s?\d{4,5}-?\d{4})/g;
+        
+        let lastIndex = 0;
+        const parts = [];
+        
+        // Find all matches and their positions
+        const matches = [];
+        let match;
+        
+        while ((match = urlRegex.exec(text)) !== null) {
+            matches.push({ type: 'url', match: match[0], index: match.index });
+        }
+        while ((match = emailRegex.exec(text)) !== null) {
+            matches.push({ type: 'email', match: match[0], index: match.index });
+        }
+        while ((match = phoneRegex.exec(text)) !== null) {
+            matches.push({ type: 'phone', match: match[0], index: match.index });
+        }
+        
+        // Sort matches by position
+        matches.sort((a, b) => a.index - b.index);
+        
+        // Build content with safe elements
+        matches.forEach(({ type, match, index }) => {
+            // Add text before this match
+            if (index > lastIndex) {
+                const textPart = text.substring(lastIndex, index);
+                container.appendChild(document.createTextNode(textPart));
+            }
+            
+            // Add formatted element
+            let element;
+            if (type === 'url') {
+                element = document.createElement('a');
+                element.href = match;
+                element.target = '_blank';
+                element.rel = 'noopener noreferrer';
+                element.textContent = match;
+            } else if (type === 'email') {
+                element = document.createElement('a');
+                element.href = `mailto:${match}`;
+                element.textContent = match;
+            } else if (type === 'phone') {
+                element = document.createElement('strong');
+                element.textContent = match;
+            }
+            
+            container.appendChild(element);
+            lastIndex = index + match.length;
+        });
+        
+        // Add remaining text
+        if (lastIndex < text.length) {
+            const remainingText = text.substring(lastIndex);
+            // Handle line breaks safely
+            const lines = remainingText.split('\n');
+            lines.forEach((line, i) => {
+                if (i > 0) {
+                    container.appendChild(document.createElement('br'));
+                }
+                if (line) {
+                    container.appendChild(document.createTextNode(line));
+                }
+            });
+        }
     }
 
     showTypingIndicator() {
@@ -360,7 +422,7 @@ class Chatbot {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
-        messageDiv.innerHTML = this.formatMessage(text);
+        this.setMessageContent(messageDiv, text);
 
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
