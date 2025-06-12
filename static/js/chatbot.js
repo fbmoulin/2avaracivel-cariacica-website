@@ -213,7 +213,7 @@ class Chatbot {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
-        messageDiv.innerHTML = this.formatMessage(text);
+        this.setMessageContent(messageDiv, text);
 
         // Add timestamp for accessibility
         const timestamp = new Date().toLocaleTimeString('pt-BR');
@@ -247,23 +247,138 @@ class Chatbot {
         });
     }
 
-    formatMessage(text) {
-        // Convert URLs to links
+    setMessageContent(messageDiv, text) {
+        // Safely set text content without allowing HTML injection
+        messageDiv.textContent = text;
+        
+        // Apply safe formatting by creating elements programmatically
+        const content = messageDiv.textContent;
+        messageDiv.innerHTML = '';
+        
+        this.addFormattedContent(messageDiv, content);
+    }
+
+    addFormattedContent(container, text) {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
-        text = text.replace(urlRegex, '<a href="$1" target="_blank" rel="noopener">$1</a>');
-
-        // Convert line breaks to <br>
-        text = text.replace(/\n/g, '<br>');
-
-        // Format phone numbers
-        const phoneRegex = /\(?\d{2}\)?\s?\d{4,5}-?\d{4}/g;
-        text = text.replace(phoneRegex, '<strong>$&</strong>');
-
-        // Format email addresses
-        const emailRegex = /[\w.-]+@[\w.-]+\.\w+/g;
-        text = text.replace(emailRegex, '<a href="mailto:$&">$&</a>');
-
-        return text;
+        const emailRegex = /([\w.-]+@[\w.-]+\.\w+)/g;
+        const phoneRegex = /(\(?\d{2}\)?\s?\d{4,5}-?\d{4})/g;
+        const actionLinkRegex = /\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/g;
+        
+        let lastIndex = 0;
+        const matches = [];
+        let match;
+        
+        // Find action links first (priority)
+        while ((match = actionLinkRegex.exec(text)) !== null) {
+            matches.push({ 
+                type: 'action_link', 
+                match: match[0], 
+                text: match[1], 
+                url: match[2], 
+                index: match.index 
+            });
+        }
+        
+        // Find other patterns
+        while ((match = urlRegex.exec(text)) !== null) {
+            // Skip if this URL is part of an action link
+            const isPartOfActionLink = matches.some(m => 
+                m.type === 'action_link' && 
+                match.index >= m.index && 
+                match.index < m.index + m.match.length
+            );
+            if (!isPartOfActionLink) {
+                matches.push({ type: 'url', match: match[0], index: match.index });
+            }
+        }
+        
+        while ((match = emailRegex.exec(text)) !== null) {
+            matches.push({ type: 'email', match: match[0], index: match.index });
+        }
+        while ((match = phoneRegex.exec(text)) !== null) {
+            matches.push({ type: 'phone', match: match[0], index: match.index });
+        }
+        
+        // Sort matches by position
+        matches.sort((a, b) => a.index - b.index);
+        
+        // Build content with safe elements
+        matches.forEach(({ type, match, text: linkText, url, index }) => {
+            // Add text before this match
+            if (index > lastIndex) {
+                const textPart = text.substring(lastIndex, index);
+                this.addTextWithLineBreaks(container, textPart);
+            }
+            
+            // Add formatted element
+            let element;
+            if (type === 'action_link') {
+                element = document.createElement('a');
+                element.href = url;
+                element.className = 'btn btn-primary btn-sm me-2 mb-2';
+                element.innerHTML = `<i class="fas fa-calendar-plus me-1"></i>${linkText}`;
+                element.style.cssText = 'text-decoration: none; color: white;';
+            } else if (type === 'url') {
+                element = document.createElement('a');
+                element.href = match;
+                element.target = '_blank';
+                element.rel = 'noopener noreferrer';
+                element.textContent = match;
+            } else if (type === 'email') {
+                element = document.createElement('a');
+                element.href = `mailto:${match}`;
+                element.textContent = match;
+            } else if (type === 'phone') {
+                element = document.createElement('strong');
+                element.textContent = match;
+            }
+            
+            container.appendChild(element);
+            lastIndex = index + match.length;
+        });
+        
+        // Add remaining text
+        if (lastIndex < text.length) {
+            const remainingText = text.substring(lastIndex);
+            this.addTextWithLineBreaks(container, remainingText);
+        }
+    }
+    
+    addTextWithLineBreaks(container, text) {
+        // Handle line breaks and markdown-style formatting
+        const lines = text.split('\n');
+        lines.forEach((line, i) => {
+            if (i > 0) {
+                container.appendChild(document.createElement('br'));
+            }
+            if (line) {
+                // Handle bold text
+                const boldRegex = /\*\*([^*]+)\*\*/g;
+                let lastIdx = 0;
+                let boldMatch;
+                
+                while ((boldMatch = boldRegex.exec(line)) !== null) {
+                    // Add text before bold
+                    if (boldMatch.index > lastIdx) {
+                        const beforeText = line.substring(lastIdx, boldMatch.index);
+                        container.appendChild(document.createTextNode(beforeText));
+                    }
+                    
+                    // Add bold text
+                    const boldElement = document.createElement('strong');
+                    boldElement.textContent = boldMatch[1];
+                    container.appendChild(boldElement);
+                    
+                    lastIdx = boldMatch.index + boldMatch[0].length;
+                }
+                
+                // Add remaining text
+                if (lastIdx < line.length) {
+                    const remainingText = line.substring(lastIdx);
+                    container.appendChild(document.createTextNode(remainingText));
+                }
+            }
+        });
     }
 
     showTypingIndicator() {
@@ -379,7 +494,7 @@ class Chatbot {
 
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
-        messageDiv.innerHTML = this.formatMessage(text);
+        this.setMessageContent(messageDiv, text);
 
         messagesContainer.appendChild(messageDiv);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
