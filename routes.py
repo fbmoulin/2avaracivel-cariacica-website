@@ -130,6 +130,16 @@ def virtual_desk():
     """Virtual desk service page"""
     return render_template('services/virtual_desk.html')
 
+@services_bp.route('/tutorial-zoom')
+def tutorial_zoom():
+    """Zoom audio configuration tutorial"""
+    return render_template('services/zoom_tutorial.html')
+
+@services_bp.route('/tutorial-zoom-acessivel')
+def tutorial_zoom_accessible():
+    """Enhanced accessibility version of Zoom tutorial"""
+    return render_template('services/zoom_tutorial.html')
+
 @services_bp.route('/certidoes')
 def certificates():
     """Certificates service page"""
