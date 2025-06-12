@@ -133,7 +133,7 @@ def virtual_desk():
 @services_bp.route('/tutorial-zoom')
 def tutorial_zoom():
     """Zoom audio configuration tutorial"""
-    return render_template('services/zoom_tutorial.html')
+    return render_template('services/zoom_tutorial_simple.html')
 
 @services_bp.route('/tutorial-zoom-acessivel')
 def tutorial_zoom_accessible():
