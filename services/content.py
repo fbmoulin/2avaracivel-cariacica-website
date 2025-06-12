@@ -2,6 +2,8 @@ import json
 import os
 from datetime import datetime
 from models import NewsItem, db
+from functools import lru_cache
+import time
 
 class ContentService:
     """Service for managing static content"""
