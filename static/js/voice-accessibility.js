@@ -3,7 +3,7 @@
  * Provides comprehensive voice guidance and accessibility features
  */
 
-class VoiceAccessibilityManager {
+window.VoiceAccessibilityManager = window.VoiceAccessibilityManager || class VoiceAccessibilityManager {
     constructor() {
         this.synthesis = window.speechSynthesis;
         this.recognition = null;

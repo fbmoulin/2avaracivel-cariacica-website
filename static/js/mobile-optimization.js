@@ -3,7 +3,7 @@
  * Enhances mobile user experience with touch interactions and performance optimizations
  */
 
-class MobileOptimizer {
+window.MobileOptimizer = window.MobileOptimizer || class MobileOptimizer {
     constructor() {
         this.isMobile = this.detectMobile();
         this.isTouch = 'ontouchstart' in window;

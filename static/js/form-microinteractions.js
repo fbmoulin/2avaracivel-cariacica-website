@@ -3,7 +3,7 @@
  * Real-time validation with smooth animations and user feedback
  */
 
-class FormMicroInteractions {
+window.FormMicroInteractions = window.FormMicroInteractions || class FormMicroInteractions {
     constructor() {
         this.forms = new Map();
         this.validationRules = new Map();
@@ -940,7 +940,9 @@ class FormMicroInteractions {
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.formMicroInteractions = new FormMicroInteractions();
+    if (!window.formMicroInteractions) {
+        window.formMicroInteractions = new FormMicroInteractions();
+    }
 });
 
 // Voice accessibility integration
