@@ -1,372 +1,443 @@
 """
-Scheduler service for automated tasks
-Handles daily email reports and other scheduled operations
+Advanced scheduler service for automated court website workflows
+Comprehensive task scheduling, monitoring, and optimization automation
 """
-
-import os
-import logging
-import threading
-import time
-from datetime import datetime, timedelta
-from typing import Dict, List
 import schedule
-from services.email_service import email_service
+import time
+import logging
+from datetime import datetime, timedelta
+from typing import Dict, Any, List, Callable
+from concurrent.futures import ThreadPoolExecutor
+import threading
+from functools import wraps
+
+logger = logging.getLogger(__name__)
 
 
 class SchedulerService:
-    """Service for managing scheduled tasks"""
+    """Enterprise-grade task scheduler with monitoring and error handling"""
     
     def __init__(self):
         self.running = False
-        self.thread = None
-        self.jobs = []
+        self.scheduler_thread = None
+        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.task_history = []
+        self.active_tasks = {}
         
-    def start(self):
-        """Start the scheduler service"""
+    def task_wrapper(self, task_name: str):
+        """Decorator to wrap scheduled tasks with monitoring"""
+        def decorator(func: Callable):
+            @wraps(func)
+            def wrapper(*args, **kwargs):
+                start_time = datetime.utcnow()
+                task_id = f"{task_name}_{int(start_time.timestamp())}"
+                
+                self.active_tasks[task_id] = {
+                    'name': task_name,
+                    'start_time': start_time,
+                    'status': 'running'
+                }
+                
+                try:
+                    logger.info(f"Starting scheduled task: {task_name}")
+                    result = func(*args, **kwargs)
+                    
+                    end_time = datetime.utcnow()
+                    duration = (end_time - start_time).total_seconds()
+                    
+                    self.task_history.append({
+                        'task_name': task_name,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'duration_seconds': duration,
+                        'status': 'completed',
+                        'result': str(result)[:500] if result else None
+                    })
+                    
+                    logger.info(f"Task {task_name} completed in {duration:.2f}s")
+                    
+                except Exception as e:
+                    end_time = datetime.utcnow()
+                    duration = (end_time - start_time).total_seconds()
+                    
+                    self.task_history.append({
+                        'task_name': task_name,
+                        'start_time': start_time,
+                        'end_time': end_time,
+                        'duration_seconds': duration,
+                        'status': 'failed',
+                        'error': str(e)
+                    })
+                    
+                    logger.error(f"Task {task_name} failed after {duration:.2f}s: {e}")
+                    
+                finally:
+                    self.active_tasks.pop(task_id, None)
+                    
+            return wrapper
+        return decorator
+    
+    def schedule_database_maintenance(self):
+        """Schedule comprehensive database maintenance tasks"""
+        
+        @self.task_wrapper("database_cleanup")
+        def database_cleanup():
+            """Clean up old database records"""
+            from app import app
+            with app.app_context():
+                from services.database_service_optimized import db_service
+                result = db_service.cleanup_old_data(90)
+                return f"Cleaned up: {result}"
+        
+        @self.task_wrapper("database_optimization")
+        def database_optimization():
+            """Optimize database performance"""
+            from app import app
+            with app.app_context():
+                from sqlalchemy import text
+                from models import db
+                
+                # Update statistics
+                db.session.execute(text("ANALYZE"))
+                db.session.commit()
+                
+                # Refresh materialized views
+                try:
+                    db.session.execute(text("REFRESH MATERIALIZED VIEW CONCURRENTLY daily_consultation_stats"))
+                    db.session.execute(text("REFRESH MATERIALIZED VIEW CONCURRENTLY chatbot_performance_stats"))
+                    db.session.commit()
+                    return "Database optimized and views refreshed"
+                except Exception as e:
+                    return f"Optimization completed with view refresh warning: {e}"
+        
+        @self.task_wrapper("performance_metrics_collection")
+        def collect_performance_metrics():
+            """Collect and store performance metrics"""
+            from app import app
+            with app.app_context():
+                from services.database_service_optimized import db_service
+                from services.cache_service_optimized import cache_service
+                from models import db
+                from sqlalchemy import text
+                
+                # Database metrics
+                health, msg = db_service.check_connection()
+                
+                # Cache metrics
+                cache_stats = cache_service.get_stats()
+                primary_backend = cache_stats.get('primary_backend', {})
+                
+                # Store metrics
+                metrics_data = [
+                    ('database_health', 1 if health else 0, 'boolean', 'database'),
+                    ('cache_hit_rate', primary_backend.get('hit_rate', 0), 'percentage', 'cache'),
+                    ('cache_entries', primary_backend.get('total_keys', 0), 'count', 'cache')
+                ]
+                
+                for metric_name, value, unit, component in metrics_data:
+                    db.session.execute(
+                        text("INSERT INTO performance_metrics (metric_name, metric_value, metric_unit, component) VALUES (:name, :value, :unit, :component)"),
+                        {'name': metric_name, 'value': value, 'unit': unit, 'component': component}
+                    )
+                
+                db.session.commit()
+                return f"Collected {len(metrics_data)} performance metrics"
+        
+        # Schedule tasks
+        schedule.every().day.at("02:00").do(database_cleanup)
+        schedule.every().day.at("03:00").do(database_optimization)
+        schedule.every().hour.do(collect_performance_metrics)
+        
+        logger.info("Database maintenance tasks scheduled")
+    
+    def schedule_cache_management(self):
+        """Schedule cache optimization and management tasks"""
+        
+        @self.task_wrapper("cache_optimization")
+        def optimize_cache():
+            """Optimize cache performance"""
+            from services.cache_service_optimized import cache_service
+            
+            stats = cache_service.get_stats()
+            primary_backend = stats.get('primary_backend', {})
+            hit_rate = primary_backend.get('hit_rate', 0)
+            
+            # Clear cache if hit rate is too low
+            if hit_rate < 30 and primary_backend.get('total_keys', 0) > 100:
+                cache_service.clear()
+                return f"Cache cleared due to low hit rate: {hit_rate:.1f}%"
+            
+            return f"Cache performance acceptable: {hit_rate:.1f}% hit rate"
+        
+        @self.task_wrapper("cache_statistics")
+        def log_cache_statistics():
+            """Log cache performance statistics"""
+            from services.cache_service_optimized import cache_service
+            from app import app
+            
+            with app.app_context():
+                from models import db
+                from sqlalchemy import text
+                
+                stats = cache_service.get_stats()
+                
+                # Log to system_logs
+                db.session.execute(
+                    text("INSERT INTO system_logs (log_level, message, component, metadata) VALUES (:level, :message, :component, :metadata)"),
+                    {
+                        'level': 'INFO',
+                        'message': 'Cache statistics collected',
+                        'component': 'cache_management',
+                        'metadata': str(stats)
+                    }
+                )
+                db.session.commit()
+                
+                return f"Cache statistics logged: {stats}"
+        
+        # Schedule cache tasks
+        schedule.every(30).minutes.do(optimize_cache)
+        schedule.every().hour.at(":30").do(log_cache_statistics)
+        
+        logger.info("Cache management tasks scheduled")
+    
+    def schedule_health_monitoring(self):
+        """Schedule comprehensive health monitoring tasks"""
+        
+        @self.task_wrapper("system_health_check")
+        def system_health_check():
+            """Comprehensive system health verification"""
+            import psutil
+            import requests
+            
+            health_report = {
+                'timestamp': datetime.utcnow().isoformat(),
+                'cpu_percent': psutil.cpu_percent(interval=1),
+                'memory_percent': psutil.virtual_memory().percent,
+                'disk_percent': psutil.disk_usage('/').percent
+            }
+            
+            # Application health
+            try:
+                response = requests.get('http://localhost:5000/health', timeout=10)
+                health_report['app_status'] = response.status_code
+                health_report['response_time_ms'] = response.elapsed.total_seconds() * 1000
+            except Exception as e:
+                health_report['app_status'] = 0
+                health_report['app_error'] = str(e)
+            
+            # Database health
+            from app import app
+            with app.app_context():
+                from services.database_service_optimized import db_service
+                db_health, db_msg = db_service.check_connection()
+                health_report['database_healthy'] = db_health
+                health_report['database_message'] = db_msg
+            
+            # Check for alerts
+            alerts = []
+            if health_report['cpu_percent'] > 80:
+                alerts.append(f"High CPU: {health_report['cpu_percent']:.1f}%")
+            if health_report['memory_percent'] > 85:
+                alerts.append(f"High Memory: {health_report['memory_percent']:.1f}%")
+            if health_report.get('response_time_ms', 0) > 2000:
+                alerts.append(f"Slow Response: {health_report['response_time_ms']:.0f}ms")
+            
+            if alerts:
+                logger.warning(f"Health alerts: {', '.join(alerts)}")
+                
+                # Store critical alerts
+                from models import db
+                from sqlalchemy import text
+                
+                db.session.execute(
+                    text("INSERT INTO system_logs (log_level, message, component, metadata) VALUES (:level, :message, :component, :metadata)"),
+                    {
+                        'level': 'WARNING',
+                        'message': f"System health alerts: {', '.join(alerts)}",
+                        'component': 'health_monitor',
+                        'metadata': str(health_report)
+                    }
+                )
+                db.session.commit()
+            
+            return f"Health check completed - {len(alerts)} alerts"
+        
+        @self.task_wrapper("chatbot_performance_check")
+        def chatbot_performance_check():
+            """Monitor chatbot performance and optimize if needed"""
+            from services.chatbot_optimized import chatbot_service
+            
+            stats = chatbot_service.get_statistics()
+            cache_stats = stats.get('cache_statistics', {})
+            
+            # Check cache hit rate
+            hit_rate = cache_stats.get('hit_rate', 0)
+            if hit_rate < 60:
+                logger.warning(f"Low chatbot cache hit rate: {hit_rate:.1f}%")
+            
+            return f"Chatbot performance: {hit_rate:.1f}% cache hit rate, {stats.get('active_sessions', 0)} active sessions"
+        
+        # Schedule health monitoring
+        schedule.every(5).minutes.do(system_health_check)
+        schedule.every(15).minutes.do(chatbot_performance_check)
+        
+        logger.info("Health monitoring tasks scheduled")
+    
+    def schedule_content_management(self):
+        """Schedule content optimization and management tasks"""
+        
+        @self.task_wrapper("content_cache_refresh")
+        def refresh_content_cache():
+            """Refresh content caches for optimal performance"""
+            from services.content_optimized import content_service
+            
+            # Clear and refresh content cache
+            content_service.clear_cache()
+            
+            # Pre-load frequently accessed content
+            content_service.get_homepage_content()
+            content_service.get_faq_data()
+            content_service.get_news_data()
+            
+            cache_stats = content_service.get_cache_stats()
+            return f"Content cache refreshed: {cache_stats['entries']} entries"
+        
+        @self.task_wrapper("news_validation")
+        def validate_news_content():
+            """Validate and optimize news content"""
+            from services.content_optimized import content_service
+            
+            news_data = content_service.get_news_data()
+            active_news = [item for item in news_data if item.get('ativo', True)]
+            
+            # Archive old news (older than 6 months)
+            cutoff_date = datetime.utcnow() - timedelta(days=180)
+            old_news = 0
+            
+            for item in active_news:
+                try:
+                    pub_date = datetime.fromisoformat(item.get('data_publicacao', ''))
+                    if pub_date < cutoff_date:
+                        old_news += 1
+                except:
+                    pass
+            
+            return f"News validation: {len(active_news)} active, {old_news} candidates for archival"
+        
+        # Schedule content management
+        schedule.every().day.at("01:00").do(refresh_content_cache)
+        schedule.every().week.do(validate_news_content)
+        
+        logger.info("Content management tasks scheduled")
+    
+    def start_scheduler(self):
+        """Start the task scheduler"""
         if self.running:
+            logger.info("Scheduler already running")
             return
         
         self.running = True
-        self.setup_jobs()
         
-        # Start scheduler in a separate thread
-        self.thread = threading.Thread(target=self._run_scheduler, daemon=True)
-        self.thread.start()
+        # Schedule all task categories
+        self.schedule_database_maintenance()
+        self.schedule_cache_management()
+        self.schedule_health_monitoring()
+        self.schedule_content_management()
         
-        logging.info("Scheduler service started successfully")
+        def scheduler_loop():
+            logger.info("Scheduler service started")
+            while self.running:
+                try:
+                    schedule.run_pending()
+                    time.sleep(30)  # Check every 30 seconds
+                except Exception as e:
+                    logger.error(f"Scheduler error: {e}")
+                    time.sleep(60)
+            
+            logger.info("Scheduler service stopped")
+        
+        # Start scheduler in background thread
+        self.scheduler_thread = threading.Thread(target=scheduler_loop, daemon=True)
+        self.scheduler_thread.start()
+        
+        logger.info("Automated scheduler service initialized with comprehensive task management")
     
-    def stop(self):
-        """Stop the scheduler service"""
+    def stop_scheduler(self):
+        """Stop the task scheduler"""
         self.running = False
-        if self.thread:
-            self.thread.join(timeout=5)
-        logging.info("Scheduler service stopped")
+        if self.scheduler_thread:
+            self.scheduler_thread.join(timeout=5)
+        self.executor.shutdown(wait=True)
+        logger.info("Scheduler service stopped")
     
-    def setup_jobs(self):
-        """Setup all scheduled jobs"""
-        # Daily reports - Monday to Friday at 12:00 and 17:00
-        schedule.every().monday.at("12:00").do(self.send_daily_report)
-        schedule.every().tuesday.at("12:00").do(self.send_daily_report)
-        schedule.every().wednesday.at("12:00").do(self.send_daily_report)
-        schedule.every().thursday.at("12:00").do(self.send_daily_report)
-        schedule.every().friday.at("12:00").do(self.send_daily_report)
+    def get_scheduler_status(self) -> Dict[str, Any]:
+        """Get current scheduler status and task history"""
+        # Clean old history (keep last 100 tasks)
+        if len(self.task_history) > 100:
+            self.task_history = self.task_history[-100:]
         
-        schedule.every().monday.at("17:00").do(self.send_daily_report)
-        schedule.every().tuesday.at("17:00").do(self.send_daily_report)
-        schedule.every().wednesday.at("17:00").do(self.send_daily_report)
-        schedule.every().thursday.at("17:00").do(self.send_daily_report)
-        schedule.every().friday.at("17:00").do(self.send_daily_report)
+        # Recent task summary
+        recent_tasks = self.task_history[-10:] if self.task_history else []
         
-        # Weekly summary on Fridays at 18:00
-        schedule.every().friday.at("18:00").do(self.send_weekly_summary)
-        
-        # Monthly report on the 1st of each month at 09:00
-        schedule.every().day.at("09:00").do(self.check_monthly_report)
-        
-        # Cleanup old data every Sunday at 02:00
-        schedule.every().sunday.at("02:00").do(self.cleanup_old_data)
-        
-        logging.info("Scheduled jobs configured: Daily reports at 12:00 and 17:00 (Mon-Fri)")
+        return {
+            'running': self.running,
+            'active_tasks': len(self.active_tasks),
+            'total_scheduled_jobs': len(schedule.jobs),
+            'recent_tasks': recent_tasks,
+            'next_run': schedule.next_run().isoformat() if schedule.jobs else None,
+            'task_history_count': len(self.task_history)
+        }
     
-    def _run_scheduler(self):
-        """Run the scheduler loop"""
-        while self.running:
-            try:
-                schedule.run_pending()
-                time.sleep(60)  # Check every minute
-            except Exception as e:
-                logging.error(f"Error in scheduler loop: {e}")
-                time.sleep(60)
-    
-    def send_daily_report(self):
-        """Send daily report via email"""
+    def force_run_task(self, task_name: str) -> Dict[str, Any]:
+        """Manually trigger a specific task"""
         try:
-            logging.info("Starting daily report generation...")
+            # Find and run the task
+            for job in schedule.jobs:
+                if hasattr(job.job_func, '__name__') and task_name in job.job_func.__name__:
+                    job.run()
+                    return {'status': 'success', 'message': f'Task {task_name} executed'}
             
-            # Send report for previous day
-            yesterday = datetime.now().date() - timedelta(days=1)
-            success = email_service.send_daily_report(yesterday)
-            
-            if success:
-                logging.info(f"Daily report sent successfully for {yesterday}")
-            else:
-                logging.error(f"Failed to send daily report for {yesterday}")
-                
+            return {'status': 'error', 'message': f'Task {task_name} not found'}
         except Exception as e:
-            logging.error(f"Error sending daily report: {e}")
-    
-    def send_weekly_summary(self):
-        """Send weekly summary report"""
-        try:
-            logging.info("Generating weekly summary...")
-            
-            # Get data for the past week
-            end_date = datetime.now().date()
-            start_date = end_date - timedelta(days=7)
-            
-            weekly_data = self.generate_weekly_summary(start_date, end_date)
-            
-            if weekly_data:
-                html_body = self.format_weekly_summary_html(weekly_data)
-                subject = f"Relatório Semanal - 2ª Vara Cível de Cariacica - {start_date.strftime('%d/%m')} a {end_date.strftime('%d/%m/%Y')}"
-                
-                # Send to all admin emails
-                all_success = True
-                for admin_email in email_service.admin_emails:
-                    success = email_service.send_email(
-                        to_email=admin_email,
-                        subject=subject,
-                        body=html_body,
-                        is_html=True
-                    )
-                    if success:
-                        logging.info(f"Weekly summary sent successfully to {admin_email}")
-                    else:
-                        logging.error(f"Failed to send weekly summary to {admin_email}")
-                        all_success = False
-            
-        except Exception as e:
-            logging.error(f"Error sending weekly summary: {e}")
-    
-    def check_monthly_report(self):
-        """Check if monthly report should be sent (1st of month)"""
-        if datetime.now().day == 1:
-            self.send_monthly_report()
-    
-    def send_monthly_report(self):
-        """Send monthly report"""
-        try:
-            logging.info("Generating monthly report...")
-            
-            # Get data for previous month
-            today = datetime.now().date()
-            first_day_current_month = today.replace(day=1)
-            last_day_previous_month = first_day_current_month - timedelta(days=1)
-            first_day_previous_month = last_day_previous_month.replace(day=1)
-            
-            monthly_data = self.generate_monthly_summary(first_day_previous_month, last_day_previous_month)
-            
-            if monthly_data:
-                html_body = self.format_monthly_summary_html(monthly_data)
-                subject = f"Relatório Mensal - 2ª Vara Cível de Cariacica - {first_day_previous_month.strftime('%m/%Y')}"
-                
-                success = email_service.send_email(
-                    to_email=email_service.admin_email,
-                    subject=subject,
-                    body=html_body,
-                    is_html=True
-                )
-                
-                if success:
-                    logging.info("Monthly report sent successfully")
-                else:
-                    logging.error("Failed to send monthly report")
-            
-        except Exception as e:
-            logging.error(f"Error sending monthly report: {e}")
-    
-    def cleanup_old_data(self):
-        """Clean up old data from the database"""
-        try:
-            from models import ChatMessage, ProcessConsultation, db
-            
-            # Delete chat messages older than 90 days
-            cutoff_date = datetime.now() - timedelta(days=90)
-            
-            old_messages = ChatMessage.query.filter(ChatMessage.created_at < cutoff_date).all()
-            for message in old_messages:
-                db.session.delete(message)
-            
-            # Delete process consultations older than 180 days
-            cutoff_date = datetime.now() - timedelta(days=180)
-            old_consultations = ProcessConsultation.query.filter(ProcessConsultation.consulted_at < cutoff_date).all()
-            for consultation in old_consultations:
-                db.session.delete(consultation)
-            
-            db.session.commit()
-            
-            logging.info(f"Cleaned up {len(old_messages)} old chat messages and {len(old_consultations)} old consultations")
-            
-        except Exception as e:
-            logging.error(f"Error cleaning up old data: {e}")
-    
-    def generate_weekly_summary(self, start_date, end_date) -> Dict:
-        """Generate weekly summary data"""
-        try:
-            from models import Contact, ChatMessage, ProcessConsultation, HearingSchedule
-            
-            # Aggregate data for the week
-            weekly_stats = {}
-            current_date = start_date
-            
-            while current_date <= end_date:
-                daily_data = email_service.generate_daily_report(current_date)
-                day_name = current_date.strftime('%A')
-                weekly_stats[day_name] = daily_data.get('statistics', {})
-                current_date += timedelta(days=1)
-            
-            # Calculate totals
-            total_interactions = sum(day.get('total_interactions', 0) for day in weekly_stats.values())
-            total_contacts = sum(day.get('contact_forms', 0) for day in weekly_stats.values())
-            total_consultations = sum(day.get('process_consultations', 0) for day in weekly_stats.values())
-            total_hearings = sum(day.get('hearing_schedules', 0) for day in weekly_stats.values())
-            total_chat = sum(day.get('chatbot_interactions', 0) for day in weekly_stats.values())
-            
-            return {
-                'period': f"{start_date.strftime('%d/%m')} a {end_date.strftime('%d/%m/%Y')}",
-                'daily_stats': weekly_stats,
-                'totals': {
-                    'interactions': total_interactions,
-                    'contacts': total_contacts,
-                    'consultations': total_consultations,
-                    'hearings': total_hearings,
-                    'chatbot': total_chat
-                }
-            }
-            
-        except Exception as e:
-            logging.error(f"Error generating weekly summary: {e}")
-            return {}
-    
-    def generate_monthly_summary(self, start_date, end_date) -> Dict:
-        """Generate monthly summary data"""
-        try:
-            from models import Contact, ChatMessage, ProcessConsultation, HearingSchedule
-            
-            # Similar to weekly but for monthly period
-            total_stats = email_service.get_website_statistics(
-                datetime.combine(start_date, datetime.min.time()),
-                datetime.combine(end_date, datetime.max.time())
-            )
-            
-            # Get top consulting days, most active hours, etc.
-            return {
-                'period': f"{start_date.strftime('%m/%Y')}",
-                'totals': total_stats,
-                'month_name': start_date.strftime('%B %Y')
-            }
-            
-        except Exception as e:
-            logging.error(f"Error generating monthly summary: {e}")
-            return {}
-    
-    def format_weekly_summary_html(self, data: Dict) -> str:
-        """Format weekly summary as HTML"""
-        html = f"""
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-            <meta charset="UTF-8">
-            <title>Relatório Semanal - 2ª Vara Cível de Cariacica</title>
-            <style>
-                body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }}
-                .header {{ background: #1e40af; color: white; padding: 20px; text-align: center; border-radius: 8px; }}
-                .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }}
-                .stat-card {{ background: #f0f9ff; padding: 15px; border-radius: 8px; text-align: center; }}
-                .stat-number {{ font-size: 1.5em; font-weight: bold; color: #1e40af; }}
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>📊 Relatório Semanal</h1>
-                <h2>2ª Vara Cível de Cariacica</h2>
-                <p>Período: {data.get('period', 'N/A')}</p>
-            </div>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('interactions', 0)}</div>
-                    <div>Total Interações</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('contacts', 0)}</div>
-                    <div>Contatos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('consultations', 0)}</div>
-                    <div>Consultas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('hearings', 0)}</div>
-                    <div>Audiências</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('chatbot', 0)}</div>
-                    <div>Chatbot</div>
-                </div>
-            </div>
-            
-            <p style="text-align: center; color: #64748b; margin-top: 30px;">
-                Gerado automaticamente em {datetime.now().strftime('%d/%m/%Y às %H:%M')}
-            </p>
-        </body>
-        </html>
-        """
-        return html
-    
-    def format_monthly_summary_html(self, data: Dict) -> str:
-        """Format monthly summary as HTML"""
-        html = f"""
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-            <meta charset="UTF-8">
-            <title>Relatório Mensal - 2ª Vara Cível de Cariacica</title>
-            <style>
-                body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }}
-                .header {{ background: #1e40af; color: white; padding: 20px; text-align: center; border-radius: 8px; }}
-                .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 20px 0; }}
-                .stat-card {{ background: #f0f9ff; padding: 15px; border-radius: 8px; text-align: center; }}
-                .stat-number {{ font-size: 2em; font-weight: bold; color: #1e40af; }}
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>📈 Relatório Mensal</h1>
-                <h2>2ª Vara Cível de Cariacica</h2>
-                <p>{data.get('month_name', 'N/A')}</p>
-            </div>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('total_interactions', 0)}</div>
-                    <div>Total Interações</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('contact_forms', 0)}</div>
-                    <div>Formulários Contato</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('process_consultations', 0)}</div>
-                    <div>Consultas Processo</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('hearing_schedules', 0)}</div>
-                    <div>Audiências Agendadas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">{data.get('totals', {}).get('chatbot_interactions', 0)}</div>
-                    <div>Interações Chatbot</div>
-                </div>
-            </div>
-            
-            <p style="text-align: center; color: #64748b; margin-top: 30px;">
-                Gerado automaticamente em {datetime.now().strftime('%d/%m/%Y às %H:%M')}
-            </p>
-        </body>
-        </html>
-        """
-        return html
-    
-    def send_test_report(self):
-        """Send a test report immediately for verification"""
-        try:
-            logging.info("Sending test report...")
-            return email_service.send_daily_report()
-        except Exception as e:
-            logging.error(f"Error sending test report: {e}")
-            return False
+            return {'status': 'error', 'message': f'Task execution failed: {e}'}
 
 
-# Initialize scheduler service
+# Global scheduler service instance
 scheduler_service = SchedulerService()
+
+
+def start_automated_workflows():
+    """Start all automated workflow processes"""
+    try:
+        scheduler_service.start_scheduler()
+        
+        # Also start workflow optimizer if available
+        try:
+            from utils.workflow_optimizer import start_production_workflows
+            start_production_workflows()
+        except ImportError:
+            logger.info("Workflow optimizer not available, using scheduler only")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Failed to start automated workflows: {e}")
+        return False
+
+
+def stop_automated_workflows():
+    """Stop all automated workflow processes"""
+    try:
+        scheduler_service.stop_scheduler()
+        
+        # Also stop workflow optimizer if available
+        try:
+            from utils.workflow_optimizer import stop_production_workflows
+            stop_production_workflows()
+        except ImportError:
+            pass
+        
+        return True
+    except Exception as e:
+        logger.error(f"Failed to stop automated workflows: {e}")
+        return False

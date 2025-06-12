@@ -1,392 +1,410 @@
 """
-Workflow optimization and process management for court system
-Implements intelligent task scheduling, resource management, and process automation
+Advanced workflow optimization system for 2ª Vara Cível de Cariacica
+Automated performance monitoring, maintenance, and optimization workflows
 """
-import threading
-import queue
+import os
 import time
 import logging
+import psutil
+import requests
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Callable, Any
-from dataclasses import dataclass, field
-from enum import Enum
-import json
-import pickle
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, Any, List, Optional
+from concurrent.futures import ThreadPoolExecutor
+import schedule
+import threading
+
+logger = logging.getLogger(__name__)
 
 
-class WorkflowStatus(Enum):
-    PENDING = "pending"
-    RUNNING = "running"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    CANCELLED = "cancelled"
-    RETRYING = "retrying"
-
-
-class Priority(Enum):
-    LOW = 1
-    NORMAL = 2
-    HIGH = 3
-    URGENT = 4
-    CRITICAL = 5
-
-
-@dataclass
-class WorkflowTask:
-    """Individual workflow task representation"""
-    id: str
-    name: str
-    function: Callable
-    args: tuple = field(default_factory=tuple)
-    kwargs: dict = field(default_factory=dict)
-    priority: Priority = Priority.NORMAL
-    max_retries: int = 3
-    retry_delay: float = 1.0
-    timeout: Optional[float] = None
-    dependencies: List[str] = field(default_factory=list)
-    created_at: datetime = field(default_factory=datetime.now)
-    started_at: Optional[datetime] = None
-    completed_at: Optional[datetime] = None
-    status: WorkflowStatus = WorkflowStatus.PENDING
-    result: Any = None
-    error: Optional[str] = None
-    retry_count: int = 0
-
-
-class WorkflowEngine:
-    """Advanced workflow execution engine with optimization"""
+class WorkflowOptimizer:
+    """Comprehensive workflow automation and optimization system"""
     
-    def __init__(self, max_workers: int = 4, enable_persistence: bool = True):
-        self.max_workers = max_workers
-        self.enable_persistence = enable_persistence
-        self.tasks: Dict[str, WorkflowTask] = {}
-        self.task_queue = queue.PriorityQueue()
-        self.completed_tasks: Dict[str, WorkflowTask] = {}
-        self.failed_tasks: Dict[str, WorkflowTask] = {}
-        self.executor = ThreadPoolExecutor(max_workers=max_workers)
-        self.running = False
-        self.worker_threads = []
-        self.metrics = {
-            'total_tasks': 0,
-            'completed_tasks': 0,
-            'failed_tasks': 0,
-            'average_execution_time': 0.0,
-            'throughput_per_minute': 0.0
+    def __init__(self):
+        self.is_running = False
+        self.monitoring_active = False
+        self.maintenance_active = False
+        self.performance_metrics = []
+        self.alert_thresholds = {
+            'cpu_percent': 80,
+            'memory_percent': 85,
+            'response_time_ms': 2000,
+            'error_rate_percent': 5
         }
-        self._lock = threading.Lock()
-        self._logger = logging.getLogger(__name__)
-        
-        if enable_persistence:
-            self._load_persistent_state()
     
-    def add_task(self, task: WorkflowTask) -> bool:
-        """Add task to workflow with dependency validation"""
-        try:
-            with self._lock:
-                # Validate dependencies
-                for dep_id in task.dependencies:
-                    if dep_id not in self.tasks and dep_id not in self.completed_tasks:
-                        self._logger.error(f"Dependency {dep_id} not found for task {task.id}")
-                        return False
-                
-                self.tasks[task.id] = task
-                self.metrics['total_tasks'] += 1
-                
-                # Add to queue if dependencies are satisfied
-                if self._dependencies_satisfied(task):
-                    self.task_queue.put((task.priority.value, task.created_at.timestamp(), task))
-                    self._logger.info(f"Task {task.id} added to queue")
-                else:
-                    self._logger.info(f"Task {task.id} waiting for dependencies")
-                
-                if self.enable_persistence:
-                    self._save_persistent_state()
-                
-                return True
-        except Exception as e:
-            self._logger.error(f"Error adding task {task.id}: {e}")
-            return False
-    
-    def start(self):
-        """Start the workflow engine"""
-        if self.running:
+    def start_monitoring_workflow(self):
+        """Start comprehensive system monitoring workflow"""
+        if self.monitoring_active:
+            logger.info("Monitoring workflow already active")
             return
         
-        self.running = True
-        self._logger.info("Starting workflow engine")
+        self.monitoring_active = True
+        logger.info("Starting performance monitoring workflow")
         
-        # Start worker threads
-        for i in range(self.max_workers):
-            worker = threading.Thread(target=self._worker_loop, name=f"WorkflowWorker-{i}")
-            worker.daemon = True
-            worker.start()
-            self.worker_threads.append(worker)
-        
-        # Start dependency resolver thread
-        resolver = threading.Thread(target=self._dependency_resolver, name="DependencyResolver")
-        resolver.daemon = True
-        resolver.start()
-        
-        # Start metrics collector thread
-        metrics_thread = threading.Thread(target=self._metrics_collector, name="MetricsCollector")
-        metrics_thread.daemon = True
-        metrics_thread.start()
-    
-    def stop(self, timeout: float = 30.0):
-        """Stop the workflow engine gracefully"""
-        self._logger.info("Stopping workflow engine")
-        self.running = False
-        
-        # Wait for workers to finish current tasks
-        start_time = time.time()
-        while any(thread.is_alive() for thread in self.worker_threads) and (time.time() - start_time) < timeout:
-            time.sleep(0.1)
-        
-        self.executor.shutdown(wait=True, timeout=timeout)
-        
-        if self.enable_persistence:
-            self._save_persistent_state()
-        
-        self._logger.info("Workflow engine stopped")
-    
-    def get_task_status(self, task_id: str) -> Optional[WorkflowStatus]:
-        """Get status of specific task"""
-        with self._lock:
-            if task_id in self.tasks:
-                return self.tasks[task_id].status
-            elif task_id in self.completed_tasks:
-                return self.completed_tasks[task_id].status
-            elif task_id in self.failed_tasks:
-                return self.failed_tasks[task_id].status
-            return None
-    
-    def get_metrics(self) -> Dict[str, Any]:
-        """Get workflow execution metrics"""
-        with self._lock:
-            return self.metrics.copy()
-    
-    def get_workflow_summary(self) -> Dict[str, Any]:
-        """Get comprehensive workflow status summary"""
-        with self._lock:
-            pending_count = sum(1 for task in self.tasks.values() if task.status == WorkflowStatus.PENDING)
-            running_count = sum(1 for task in self.tasks.values() if task.status == WorkflowStatus.RUNNING)
-            
-            return {
-                'total_tasks': self.metrics['total_tasks'],
-                'pending_tasks': pending_count,
-                'running_tasks': running_count,
-                'completed_tasks': len(self.completed_tasks),
-                'failed_tasks': len(self.failed_tasks),
-                'queue_size': self.task_queue.qsize(),
-                'average_execution_time': self.metrics['average_execution_time'],
-                'throughput_per_minute': self.metrics['throughput_per_minute'],
-                'engine_status': 'running' if self.running else 'stopped'
-            }
-    
-    def _worker_loop(self):
-        """Main worker loop for task execution"""
-        while self.running:
-            try:
-                # Get task from queue with timeout
+        def monitor_loop():
+            while self.monitoring_active:
                 try:
-                    priority, timestamp, task = self.task_queue.get(timeout=1.0)
-                except queue.Empty:
-                    continue
-                
-                # Update task status
-                with self._lock:
-                    task.status = WorkflowStatus.RUNNING
-                    task.started_at = datetime.now()
-                
-                self._logger.info(f"Executing task {task.id}")
-                
-                # Execute task
-                success = self._execute_task(task)
-                
-                # Update task status and move to appropriate collection
-                with self._lock:
-                    task.completed_at = datetime.now()
-                    if success:
-                        task.status = WorkflowStatus.COMPLETED
-                        self.completed_tasks[task.id] = task
-                        self.metrics['completed_tasks'] += 1
-                        self._logger.info(f"Task {task.id} completed successfully")
-                    else:
-                        if task.retry_count < task.max_retries:
-                            task.status = WorkflowStatus.RETRYING
-                            task.retry_count += 1
-                            time.sleep(task.retry_delay * task.retry_count)  # Exponential backoff
-                            self.task_queue.put((task.priority.value, time.time(), task))
-                            self._logger.warning(f"Task {task.id} retrying ({task.retry_count}/{task.max_retries})")
-                        else:
-                            task.status = WorkflowStatus.FAILED
-                            self.failed_tasks[task.id] = task
-                            self.metrics['failed_tasks'] += 1
-                            self._logger.error(f"Task {task.id} failed after {task.max_retries} retries")
-                    
-                    # Remove from active tasks
-                    if task.id in self.tasks:
-                        del self.tasks[task.id]
-                
-                # Check for dependent tasks
-                self._check_dependent_tasks(task.id)
-                
-            except Exception as e:
-                self._logger.error(f"Worker error: {e}")
+                    metrics = self._collect_system_metrics()
+                    self._analyze_performance(metrics)
+                    self._check_alerts(metrics)
+                    time.sleep(30)  # Monitor every 30 seconds
+                except Exception as e:
+                    logger.error(f"Monitoring error: {e}")
+                    time.sleep(60)
+        
+        # Run monitoring in background thread
+        monitor_thread = threading.Thread(target=monitor_loop, daemon=True)
+        monitor_thread.start()
     
-    def _execute_task(self, task: WorkflowTask) -> bool:
-        """Execute individual task with timeout and error handling"""
+    def _collect_system_metrics(self) -> Dict[str, Any]:
+        """Collect comprehensive system performance metrics"""
+        metrics = {
+            'timestamp': datetime.utcnow(),
+            'cpu_percent': psutil.cpu_percent(interval=1),
+            'memory': psutil.virtual_memory()._asdict(),
+            'disk': psutil.disk_usage('/')._asdict(),
+            'network': self._get_network_stats(),
+            'application': self._get_application_metrics()
+        }
+        
+        # Store metrics for trend analysis
+        self.performance_metrics.append(metrics)
+        
+        # Keep only last 24 hours of metrics
+        cutoff = datetime.utcnow() - timedelta(hours=24)
+        self.performance_metrics = [
+            m for m in self.performance_metrics 
+            if m['timestamp'] > cutoff
+        ]
+        
+        return metrics
+    
+    def _get_network_stats(self) -> Dict[str, Any]:
+        """Get network I/O statistics"""
         try:
-            if task.timeout:
-                future = self.executor.submit(task.function, *task.args, **task.kwargs)
-                task.result = future.result(timeout=task.timeout)
-            else:
-                task.result = task.function(*task.args, **task.kwargs)
-            
-            return True
-        except Exception as e:
-            task.error = str(e)
-            self._logger.error(f"Task {task.id} execution failed: {e}")
-            return False
-    
-    def _dependencies_satisfied(self, task: WorkflowTask) -> bool:
-        """Check if task dependencies are satisfied"""
-        for dep_id in task.dependencies:
-            if dep_id not in self.completed_tasks:
-                return False
-        return True
-    
-    def _dependency_resolver(self):
-        """Background thread to check for tasks with satisfied dependencies"""
-        while self.running:
-            try:
-                with self._lock:
-                    ready_tasks = []
-                    for task in self.tasks.values():
-                        if (task.status == WorkflowStatus.PENDING and 
-                            self._dependencies_satisfied(task)):
-                            ready_tasks.append(task)
-                    
-                    for task in ready_tasks:
-                        self.task_queue.put((task.priority.value, task.created_at.timestamp(), task))
-                        self._logger.info(f"Task {task.id} dependencies satisfied, added to queue")
-                
-                time.sleep(5)  # Check every 5 seconds
-            except Exception as e:
-                self._logger.error(f"Dependency resolver error: {e}")
-    
-    def _check_dependent_tasks(self, completed_task_id: str):
-        """Check if any waiting tasks can now be executed"""
-        with self._lock:
-            for task in self.tasks.values():
-                if (task.status == WorkflowStatus.PENDING and 
-                    completed_task_id in task.dependencies and
-                    self._dependencies_satisfied(task)):
-                    self.task_queue.put((task.priority.value, task.created_at.timestamp(), task))
-                    self._logger.info(f"Task {task.id} ready after dependency {completed_task_id}")
-    
-    def _metrics_collector(self):
-        """Background thread to collect and update metrics"""
-        while self.running:
-            try:
-                with self._lock:
-                    if self.completed_tasks:
-                        total_time = sum(
-                            (task.completed_at - task.started_at).total_seconds()
-                            for task in self.completed_tasks.values()
-                            if task.started_at and task.completed_at
-                        )
-                        self.metrics['average_execution_time'] = total_time / len(self.completed_tasks)
-                    
-                    # Calculate throughput (tasks per minute)
-                    current_time = datetime.now()
-                    one_minute_ago = current_time - timedelta(minutes=1)
-                    recent_completions = sum(
-                        1 for task in self.completed_tasks.values()
-                        if task.completed_at and task.completed_at > one_minute_ago
-                    )
-                    self.metrics['throughput_per_minute'] = recent_completions
-                
-                time.sleep(30)  # Update every 30 seconds
-            except Exception as e:
-                self._logger.error(f"Metrics collector error: {e}")
-    
-    def _save_persistent_state(self):
-        """Save workflow state to disk"""
-        try:
-            state = {
-                'tasks': self.tasks,
-                'completed_tasks': self.completed_tasks,
-                'failed_tasks': self.failed_tasks,
-                'metrics': self.metrics
+            net_io = psutil.net_io_counters()
+            return {
+                'bytes_sent': net_io.bytes_sent,
+                'bytes_recv': net_io.bytes_recv,
+                'packets_sent': net_io.packets_sent,
+                'packets_recv': net_io.packets_recv
             }
-            with open('workflow_state.pkl', 'wb') as f:
-                pickle.dump(state, f)
         except Exception as e:
-            self._logger.error(f"Failed to save workflow state: {e}")
+            logger.warning(f"Network stats collection failed: {e}")
+            return {}
     
-    def _load_persistent_state(self):
-        """Load workflow state from disk"""
+    def _get_application_metrics(self) -> Dict[str, Any]:
+        """Get application-specific performance metrics"""
         try:
-            with open('workflow_state.pkl', 'rb') as f:
-                state = pickle.load(f)
-                self.tasks = state.get('tasks', {})
-                self.completed_tasks = state.get('completed_tasks', {})
-                self.failed_tasks = state.get('failed_tasks', {})
-                self.metrics = state.get('metrics', self.metrics)
-                
-            # Restore pending tasks to queue
-            for task in self.tasks.values():
-                if task.status == WorkflowStatus.PENDING and self._dependencies_satisfied(task):
-                    self.task_queue.put((task.priority.value, task.created_at.timestamp(), task))
-                    
-            self._logger.info("Workflow state restored from persistence")
-        except FileNotFoundError:
-            self._logger.info("No persistent state found, starting fresh")
+            # Health check
+            start_time = time.time()
+            response = requests.get('http://localhost:5000/health', timeout=10)
+            response_time = (time.time() - start_time) * 1000
+            
+            app_metrics = {
+                'status_code': response.status_code,
+                'response_time_ms': response_time,
+                'is_healthy': response.status_code == 200,
+                'content_length': len(response.content)
+            }
+            
+            # Database metrics
+            try:
+                from services.database_service_optimized import db_service
+                db_health, db_msg = db_service.check_connection()
+                app_metrics.update({
+                    'database_healthy': db_health,
+                    'database_message': db_msg
+                })
+            except Exception as e:
+                app_metrics.update({
+                    'database_healthy': False,
+                    'database_message': str(e)
+                })
+            
+            # Cache metrics
+            try:
+                from services.cache_service_optimized import cache_service
+                cache_stats = cache_service.get_stats()
+                app_metrics.update({
+                    'cache_hit_rate': cache_stats.get('primary_backend', {}).get('hit_rate', 0),
+                    'cache_backend': cache_stats.get('primary_backend', {}).get('backend', 'unknown')
+                })
+            except Exception as e:
+                app_metrics['cache_error'] = str(e)
+            
+            return app_metrics
+            
         except Exception as e:
-            self._logger.error(f"Failed to load workflow state: {e}")
+            logger.error(f"Application metrics collection failed: {e}")
+            return {
+                'status_code': 0,
+                'response_time_ms': 0,
+                'is_healthy': False,
+                'error': str(e)
+            }
+    
+    def _analyze_performance(self, metrics: Dict[str, Any]):
+        """Analyze performance trends and optimization opportunities"""
+        try:
+            # CPU trend analysis
+            if len(self.performance_metrics) >= 10:
+                recent_cpu = [m['cpu_percent'] for m in self.performance_metrics[-10:]]
+                avg_cpu = sum(recent_cpu) / len(recent_cpu)
+                
+                if avg_cpu > 70:
+                    logger.warning(f"High average CPU usage: {avg_cpu:.1f}%")
+                    self._suggest_cpu_optimization()
+            
+            # Memory usage analysis
+            memory_percent = metrics['memory']['percent']
+            if memory_percent > 75:
+                logger.warning(f"High memory usage: {memory_percent:.1f}%")
+                self._suggest_memory_optimization()
+            
+            # Response time analysis
+            app_metrics = metrics.get('application', {})
+            response_time = app_metrics.get('response_time_ms', 0)
+            if response_time > 1000:
+                logger.warning(f"Slow response time: {response_time:.0f}ms")
+                self._suggest_response_optimization()
+                
+        except Exception as e:
+            logger.error(f"Performance analysis error: {e}")
+    
+    def _check_alerts(self, metrics: Dict[str, Any]):
+        """Check for alert conditions and trigger notifications"""
+        alerts = []
+        
+        # CPU alert
+        if metrics['cpu_percent'] > self.alert_thresholds['cpu_percent']:
+            alerts.append(f"High CPU usage: {metrics['cpu_percent']:.1f}%")
+        
+        # Memory alert
+        if metrics['memory']['percent'] > self.alert_thresholds['memory_percent']:
+            alerts.append(f"High memory usage: {metrics['memory']['percent']:.1f}%")
+        
+        # Response time alert
+        app_metrics = metrics.get('application', {})
+        response_time = app_metrics.get('response_time_ms', 0)
+        if response_time > self.alert_thresholds['response_time_ms']:
+            alerts.append(f"Slow response: {response_time:.0f}ms")
+        
+        # Application health alert
+        if not app_metrics.get('is_healthy', False):
+            alerts.append("Application unhealthy")
+        
+        if alerts:
+            self._trigger_alerts(alerts)
+    
+    def _trigger_alerts(self, alerts: List[str]):
+        """Trigger alert notifications"""
+        alert_message = f"[{datetime.now().strftime('%H:%M:%S')}] ALERTS: {', '.join(alerts)}"
+        logger.warning(alert_message)
+        print(f"🚨 {alert_message}")
+        
+        # Store alert in database if available
+        try:
+            from services.database_service_optimized import db_service
+            from app import app
+            with app.app_context():
+                from models import db
+                from sqlalchemy import text
+                
+                db.session.execute(
+                    text("INSERT INTO system_logs (log_level, message, component, metadata) VALUES (:level, :message, :component, :metadata)"),
+                    {
+                        'level': 'WARNING',
+                        'message': alert_message,
+                        'component': 'workflow_optimizer',
+                        'metadata': '{"alert_type": "performance"}'
+                    }
+                )
+                db.session.commit()
+        except Exception as e:
+            logger.error(f"Failed to store alert: {e}")
+    
+    def _suggest_cpu_optimization(self):
+        """Suggest CPU optimization strategies"""
+        suggestions = [
+            "Consider enabling cache compression",
+            "Optimize database queries",
+            "Review background processes",
+            "Consider horizontal scaling"
+        ]
+        logger.info(f"CPU optimization suggestions: {', '.join(suggestions)}")
+    
+    def _suggest_memory_optimization(self):
+        """Suggest memory optimization strategies"""
+        suggestions = [
+            "Clear cache if hit rate is low",
+            "Optimize database connection pool",
+            "Review memory leaks in application",
+            "Consider garbage collection tuning"
+        ]
+        logger.info(f"Memory optimization suggestions: {', '.join(suggestions)}")
+    
+    def _suggest_response_optimization(self):
+        """Suggest response time optimization strategies"""
+        suggestions = [
+            "Increase cache timeout",
+            "Optimize database indexes",
+            "Review slow queries",
+            "Consider CDN for static assets"
+        ]
+        logger.info(f"Response optimization suggestions: {', '.join(suggestions)}")
+    
+    def start_maintenance_workflow(self):
+        """Start automated maintenance workflow"""
+        if self.maintenance_active:
+            logger.info("Maintenance workflow already active")
+            return
+        
+        self.maintenance_active = True
+        logger.info("Starting automated maintenance workflow")
+        
+        # Schedule maintenance tasks
+        schedule.every().day.at("02:00").do(self._daily_maintenance)
+        schedule.every().hour.at(":00").do(self._hourly_maintenance)
+        schedule.every(15).minutes.do(self._periodic_maintenance)
+        
+        def maintenance_loop():
+            while self.maintenance_active:
+                try:
+                    schedule.run_pending()
+                    time.sleep(60)  # Check every minute
+                except Exception as e:
+                    logger.error(f"Maintenance scheduler error: {e}")
+                    time.sleep(300)  # Wait 5 minutes on error
+        
+        # Run maintenance scheduler in background
+        maintenance_thread = threading.Thread(target=maintenance_loop, daemon=True)
+        maintenance_thread.start()
+    
+    def _daily_maintenance(self):
+        """Daily maintenance tasks"""
+        logger.info("Starting daily maintenance")
+        
+        try:
+            from app import app
+            with app.app_context():
+                from services.database_service_optimized import db_service
+                
+                # Database cleanup
+                cleanup_result = db_service.cleanup_old_data(90)
+                logger.info(f"Data cleanup completed: {cleanup_result}")
+                
+                # Refresh materialized views
+                from sqlalchemy import text
+                from models import db
+                
+                try:
+                    db.session.execute(text("REFRESH MATERIALIZED VIEW daily_consultation_stats"))
+                    db.session.execute(text("REFRESH MATERIALIZED VIEW chatbot_performance_stats"))
+                    db.session.commit()
+                    logger.info("Materialized views refreshed")
+                except Exception as e:
+                    logger.warning(f"Materialized view refresh failed: {e}")
+                
+                # Performance metrics cleanup
+                cutoff_date = datetime.utcnow() - timedelta(days=7)
+                db.session.execute(
+                    text("DELETE FROM performance_metrics WHERE recorded_at < :cutoff"),
+                    {'cutoff': cutoff_date}
+                )
+                db.session.commit()
+                logger.info("Performance metrics cleaned up")
+                
+        except Exception as e:
+            logger.error(f"Daily maintenance error: {e}")
+    
+    def _hourly_maintenance(self):
+        """Hourly maintenance tasks"""
+        logger.info("Starting hourly maintenance")
+        
+        try:
+            # Cache statistics update
+            from services.cache_service_optimized import cache_service
+            stats = cache_service.get_stats()
+            
+            # Log cache performance
+            primary_stats = stats.get('primary_backend', {})
+            hit_rate = primary_stats.get('hit_rate', 0)
+            
+            if hit_rate < 50:
+                logger.warning(f"Low cache hit rate: {hit_rate:.1f}%")
+            
+            logger.info(f"Cache performance: {hit_rate:.1f}% hit rate")
+            
+        except Exception as e:
+            logger.error(f"Hourly maintenance error: {e}")
+    
+    def _periodic_maintenance(self):
+        """15-minute periodic maintenance tasks"""
+        try:
+            # Application health verification
+            from app import app
+            with app.app_context():
+                from services.database_service_optimized import db_service
+                
+                health, msg = db_service.check_connection()
+                if not health:
+                    logger.error(f"Database health check failed: {msg}")
+                
+        except Exception as e:
+            logger.error(f"Periodic maintenance error: {e}")
+    
+    def stop_workflows(self):
+        """Stop all workflow processes"""
+        self.monitoring_active = False
+        self.maintenance_active = False
+        logger.info("All workflows stopped")
+    
+    def get_workflow_status(self) -> Dict[str, Any]:
+        """Get current workflow status and metrics"""
+        return {
+            'monitoring_active': self.monitoring_active,
+            'maintenance_active': self.maintenance_active,
+            'metrics_collected': len(self.performance_metrics),
+            'last_update': datetime.utcnow().isoformat(),
+            'alert_thresholds': self.alert_thresholds
+        }
 
 
-# Global workflow engine instance
-workflow_engine = WorkflowEngine()
+# Global workflow optimizer instance
+workflow_optimizer = WorkflowOptimizer()
 
 
-def create_workflow_task(task_id: str, name: str, function: Callable, 
-                        args: tuple = (), kwargs: dict = None, 
-                        priority: Priority = Priority.NORMAL,
-                        dependencies: List[str] = None) -> WorkflowTask:
-    """Helper function to create workflow tasks"""
-    return WorkflowTask(
-        id=task_id,
-        name=name,
-        function=function,
-        args=args,
-        kwargs=kwargs or {},
-        priority=priority,
-        dependencies=dependencies or []
-    )
+def start_production_workflows():
+    """Start all production workflows"""
+    try:
+        workflow_optimizer.start_monitoring_workflow()
+        workflow_optimizer.start_maintenance_workflow()
+        logger.info("Production workflows started successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to start production workflows: {e}")
+        return False
 
 
-def schedule_task(task_id: str, name: str, function: Callable,
-                 args: tuple = (), kwargs: dict = None,
-                 priority: Priority = Priority.NORMAL,
-                 dependencies: List[str] = None) -> bool:
-    """Schedule a task for execution"""
-    task = create_workflow_task(task_id, name, function, args, kwargs, priority, dependencies)
-    return workflow_engine.add_task(task)
+def stop_production_workflows():
+    """Stop all production workflows"""
+    try:
+        workflow_optimizer.stop_workflows()
+        logger.info("Production workflows stopped successfully")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to stop production workflows: {e}")
+        return False
 
 
-def get_workflow_status() -> Dict[str, Any]:
-    """Get current workflow status"""
-    return workflow_engine.get_workflow_summary()
-
-
-def start_workflow_engine():
-    """Start the global workflow engine"""
-    workflow_engine.start()
-
-
-def stop_workflow_engine():
-    """Stop the global workflow engine"""
-    workflow_engine.stop()
+if __name__ == '__main__':
+    # Start workflows when run directly
+    print("Starting Court Website Workflow Optimizer...")
+    start_production_workflows()
+    
+    try:
+        while True:
+            time.sleep(60)
+    except KeyboardInterrupt:
+        print("Stopping workflows...")
+        stop_production_workflows()
