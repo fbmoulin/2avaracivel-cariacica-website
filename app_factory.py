@@ -175,7 +175,7 @@ def setup_error_handlers(app):
 
 
 def setup_monitoring(app):
-    """Setup application monitoring"""
+    """Setup comprehensive application monitoring with auto-recovery"""
     try:
         from error_monitor import setup_flask_error_handlers, start_monitoring
         setup_flask_error_handlers(app)
@@ -183,12 +183,30 @@ def setup_monitoring(app):
     except ImportError:
         app.logger.warning('Error monitoring not available')
     
-    # Health check endpoint
+    # Initialize robust integration monitoring
+    try:
+        from services.robust_integration_monitor import integration_monitor
+        integration_monitor.start_monitoring(check_interval=30)
+        app.logger.info('Robust integration monitoring started')
+    except Exception as e:
+        app.logger.warning(f'Robust integration monitoring failed to start: {e}')
+    
+    # Enhanced health check endpoint
     @app.route('/health')
     def health_check():
-        """Simple health check endpoint"""
+        """Comprehensive health check endpoint"""
         from datetime import datetime
-        return {'status': 'healthy', 'timestamp': datetime.utcnow().isoformat()}
+        try:
+            from services.robust_integration_monitor import integration_monitor
+            health_report = integration_monitor.get_system_health_report()
+            return health_report
+        except Exception as e:
+            app.logger.error(f'Health check failed: {e}')
+            return {
+                'status': 'error',
+                'timestamp': datetime.utcnow().isoformat(),
+                'error': str(e)
+            }
 
 
 # For backwards compatibility

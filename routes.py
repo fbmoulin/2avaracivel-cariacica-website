@@ -365,6 +365,21 @@ def system_status():
         logging.error(f"Status dashboard error: {e}")
         return jsonify({'error': 'Unable to load status'}), 500
 
+@main_bp.route('/health')
+def health_check():
+    """Comprehensive system health check with integration monitoring"""
+    try:
+        from services.robust_integration_monitor import integration_monitor
+        health_report = integration_monitor.get_system_health_report()
+        return jsonify(health_report)
+    except Exception as e:
+        logging.error(f'Health check failed: {e}')
+        return jsonify({
+            'status': 'error',
+            'timestamp': datetime.now().isoformat(),
+            'error': str(e)
+        })
+
 @main_bp.route('/admin/health-check')
 def health_check_api():
     """API endpoint for health check results"""
