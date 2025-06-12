@@ -287,6 +287,26 @@ def confirmacao_assessor(token):
         return redirect(url_for('services.agendamento_assessor'))
 
 # Chatbot routes
+@main_bp.route('/chat', methods=['POST'])
+@csrf.exempt
+def chat():
+    """Handle chat messages - main chat endpoint"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '')
+        
+        if not user_message:
+            return jsonify({'error': 'Mensagem não pode estar vazia'}), 400
+        
+        # Get bot response
+        response = chatbot_service.get_response(user_message)
+        
+        return jsonify({'response': response})
+        
+    except Exception as e:
+        logging.error(f"Chat error: {e}")
+        return jsonify({'error': 'Erro interno do servidor'}), 500
+
 @chatbot_bp.route('/api/message', methods=['POST'])
 @csrf.exempt
 def chatbot_message():
