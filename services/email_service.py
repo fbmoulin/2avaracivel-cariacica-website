@@ -50,37 +50,40 @@ class EmailService:
                 
                 # Add body with encoding safety
                 msg.attach(MIMEText(body, 'html' if is_html else 'plain', 'utf-8'))
+                
+                # Add attachments if any
+                if attachments:
+                    for file_path in attachments:
+                        if os.path.exists(file_path):
+                            with open(file_path, 'rb') as attachment:
+                                part = MIMEBase('application', 'octet-stream')
+                                part.set_payload(attachment.read())
+                                encoders.encode_base64(part)
+                                part.add_header(
+                                    'Content-Disposition',
+                                    f'attachment; filename= {os.path.basename(file_path)}'
+                                )
+                                msg.attach(part)
             
-            # Add attachments if any
-            if attachments:
-                for file_path in attachments:
-                    if os.path.exists(file_path):
-                        with open(file_path, 'rb') as attachment:
-                            part = MIMEBase('application', 'octet-stream')
-                            part.set_payload(attachment.read())
-                            encoders.encode_base64(part)
-                            part.add_header(
-                                'Content-Disposition',
-                                f'attachment; filename= {os.path.basename(file_path)}'
-                            )
-                            msg.attach(part)
-            
-            # Send email
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            server.starttls()
-            
-            if self.email_user and self.email_password:
-                server.login(self.email_user, self.email_password)
-            
-            server.send_message(msg)
-            server.quit()
-            
-            logging.info(f"Email sent successfully to {to_email}")
-            return True
-            
-        except Exception as e:
-            logging.error(f"Failed to send email to {to_email}: {e}")
-            return False
+                # Send email with connection management
+                with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                    server.starttls()
+                    
+                    if self.email_user and self.email_password:
+                        server.login(self.email_user, self.email_password)
+                    
+                    server.send_message(msg)
+                
+                logging.info(f"Email sent successfully to {to_email}")
+                return True
+                
+            except Exception as e:
+                logging.error(f"Failed to send email (attempt {attempt + 1}): {e}")
+                if attempt == max_retries - 1:
+                    return False
+                time.sleep(1)  # Brief delay before retry
+        
+        return False
     
     def generate_daily_report(self, date: datetime = None) -> Dict:
         """Generate comprehensive daily activity report"""
