@@ -15,13 +15,13 @@ class Config:
     # Database Configuration
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///court_site.db'
     SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_recycle': 3600,
+        'pool_recycle': 1800,
         'pool_pre_ping': True,
         'pool_timeout': 30,
-        'max_overflow': 30,
-        'pool_size': 15,
+        'max_overflow': 20,
+        'pool_size': 10,
         'pool_reset_on_return': 'commit',
-        'echo_pool': False,
+        'echo': False,
         'isolation_level': 'READ_COMMITTED'
     }
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -63,8 +63,16 @@ class Config:
     
     # File Upload Configuration
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
+    SEND_FILE_MAX_AGE_DEFAULT = 31536000  # 1 year cache for static files
     UPLOAD_FOLDER = 'uploads'
     ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'}
+    
+    # Performance Optimizations
+    JSON_SORT_KEYS = False
+    JSONIFY_PRETTYPRINT_REGULAR = False
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
+    TEMPLATES_AUTO_RELOAD = False
+    EXPLAIN_TEMPLATE_LOADING = False
     
     # Logging Configuration
     LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
