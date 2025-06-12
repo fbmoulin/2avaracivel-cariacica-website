@@ -49,7 +49,7 @@ class ChatbotService:
                 'keywords': ['processo', 'consulta', 'andamento', 'número', 'cnj']
             },
             'audiencia': {
-                'response': 'Informações sobre audiências:\n🎥 Virtuais: Link enviado por email\n🏛️ Presenciais: Compareça no horário marcado\n📅 Reagendamento: Entre em contato conosco\n\n✉️ Instruções detalhadas são enviadas por email.',
+                'response': 'Informações sobre audiências:\n🎥 Virtuais: Realizadas pelo app Zoom, link enviado por email\n🏛️ Presenciais: Compareça no horário marcado\n📅 Reagendamento: Entre em contato conosco\n\n✉️ Instruções detalhadas são enviadas por email.',
                 'keywords': ['audiencia', 'virtual', 'presencial', 'online', 'reunião']
             },
             'agendamento': {
@@ -81,7 +81,7 @@ class ChatbotService:
                 'keywords': ['documento', 'documentos', 'certidao', 'certidão', 'papel', 'carta']
             },
             'reuniao_assessor': {
-                'response': 'Agendamento de Reunião com Assessores:\n👥 Reuniões disponíveis com assessores judiciais\n📅 Horários: 12h às 18h, segunda a sexta\n⏰ Duração típica: 30-60 minutos\n📋 Necessário: dados do processo e identificação\n\n🔗 Para agendar, clique aqui: [AGENDAR_REUNIAO_ASSESSOR]',
+                'response': 'Agendamento de Reunião com Assessores:\n👥 Reuniões disponíveis com assessores judiciais\n📅 Horários: 12h às 18h, segunda a sexta\n⏰ Duração típica: 30-60 minutos\n🎥 Atendimento presencial ou virtual pelo app Zoom\n📋 Necessário: dados do processo e identificação\n\n🔗 Para agendar, clique aqui: [AGENDAR_REUNIAO_ASSESSOR]',
                 'keywords': ['reuniao', 'reunião', 'assessor', 'assessores', 'conversar', 'falar', 'encontro', 'atendimento']
             },
             'reuniao_juiz': {
@@ -89,7 +89,7 @@ class ChatbotService:
                 'keywords': ['juiz', 'juíz', 'magistrado', 'audiencia', 'encontrar', 'reunião', 'falar']
             },
             'agendamento_geral': {
-                'response': 'Tipos de Agendamento Disponíveis:\n\n👥 **Reunião com Assessores**\n• Esclarecimentos sobre processos\n• Orientações gerais\n• Informações sobre andamentos\n\n⚖️ **Audiência com o Juiz**\n• Apenas através de petição\n• Representação obrigatória por advogado\n\n📅 **Atendimento Presencial**\n• Protocolo de documentos\n• Certidões e informações\n\n🔗 [AGENDAR_REUNIAO_ASSESSOR] para reunião com assessores',
+                'response': 'Tipos de Agendamento Disponíveis:\n\n👥 **Reunião com Assessores**\n• Esclarecimentos sobre processos\n• Orientações gerais\n• Informações sobre andamentos\n• Presencial ou virtual pelo app Zoom\n\n⚖️ **Audiência com o Juiz**\n• Apenas através de petição\n• Representação obrigatória por advogado\n\n📅 **Atendimento Presencial**\n• Protocolo de documentos\n• Certidões e informações\n\n🔗 [AGENDAR_REUNIAO_ASSESSOR] para reunião com assessores',
                 'keywords': ['agendar', 'agendamento', 'marcar', 'reunião', 'encontro', 'conversa', 'falar']
             }
         }
@@ -177,6 +177,7 @@ SERVIÇOS DISPONÍVEIS:
 
 AGENDAMENTO DE REUNIÕES:
 • ASSESSORES: Reuniões diretas disponíveis para esclarecimentos, orientações sobre processos
+• MODALIDADES: Presencial ou virtual pelo app Zoom
 • JUIZ: Apenas por petição formal através de advogado, não agendamento direto
 • Para reunião com assessor, ofereça: [AGENDAR_REUNIAO_ASSESSOR]
 
@@ -277,7 +278,7 @@ INSTRUÇÕES:
 📅 **Horários Disponíveis:**
 • Segunda a sexta-feira: 12h às 18h
 • Duração: 30 a 60 minutos
-• Presencial ou virtual
+• Presencial ou virtual pelo app Zoom
 
 ⚡ **Para agendar agora:**
 Clique no botão abaixo para iniciar o agendamento online
