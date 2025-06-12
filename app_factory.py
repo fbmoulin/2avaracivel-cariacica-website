@@ -126,12 +126,14 @@ def register_blueprints(app):
     try:
         from routes_optimized import main_bp, services_bp, chatbot_bp, admin_bp
         from routes_error_monitoring import error_bp
+        from routes_async import async_bp
         
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
         app.register_blueprint(admin_bp)
         app.register_blueprint(error_bp)
+        app.register_blueprint(async_bp)
         
         app.logger.info("All blueprints registered successfully")
     except ImportError as e:
@@ -139,11 +141,13 @@ def register_blueprints(app):
         # Fallback to original routes if optimized not available
         from routes import main_bp, services_bp, chatbot_bp
         from routes_error_monitoring import error_bp
+        from routes_async import async_bp
         
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
         app.register_blueprint(error_bp)
+        app.register_blueprint(async_bp)
 
 
 def setup_error_handlers(app):
