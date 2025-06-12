@@ -18,14 +18,30 @@ class Chatbot {
     }
 
     bindEvents() {
+        console.log('Configurando eventos do chatbot...');
+        
         const toggleButton = document.getElementById('chatbot-toggle');
         const closeButton = document.getElementById('chatbot-close');
         const sendButton = document.getElementById('chatbot-send');
         const input = document.getElementById('chatbot-input');
         const chatWindow = document.getElementById('chatbot-window');
 
+        console.log('Elementos encontrados:', {
+            toggle: !!toggleButton,
+            close: !!closeButton,
+            send: !!sendButton,
+            input: !!input,
+            window: !!chatWindow
+        });
+
         if (toggleButton) {
-            toggleButton.addEventListener('click', () => this.toggleChat());
+            console.log('Adicionando evento de clique ao botão toggle');
+            toggleButton.addEventListener('click', () => {
+                console.log('Botão toggle clicado!');
+                this.toggleChat();
+            });
+        } else {
+            console.error('Botão toggle não encontrado!');
         }
 
         if (closeButton) {
@@ -460,8 +476,31 @@ class Chatbot {
 
 // Initialize chatbot when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    window.chatbot = new Chatbot();
-    window.chatbot.setAccessibilityAttributes();
+    console.log('Inicializando chatbot...');
+    
+    // Verificar se elementos existem
+    const toggle = document.getElementById('chatbot-toggle');
+    const chatWindow = document.getElementById('chatbot-window');
+    
+    if (!toggle) {
+        console.error('Elemento chatbot-toggle não encontrado');
+        return;
+    }
+    
+    if (!chatWindow) {
+        console.error('Elemento chatbot-window não encontrado');
+        return;
+    }
+    
+    console.log('Elementos do chatbot encontrados, criando instância...');
+    
+    try {
+        window.chatbot = new Chatbot();
+        window.chatbot.setAccessibilityAttributes();
+        console.log('Chatbot inicializado com sucesso');
+    } catch (error) {
+        console.error('Erro ao inicializar chatbot:', error);
+    }
 });
 
 // Export for global access
