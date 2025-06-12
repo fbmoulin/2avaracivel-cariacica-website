@@ -367,10 +367,10 @@ def system_status():
 
 @main_bp.route('/health')
 def health_check():
-    """Comprehensive system health check with integration monitoring"""
+    """Comprehensive system health check with robust monitoring"""
     try:
-        from services.robust_integration_monitor import integration_monitor
-        health_report = integration_monitor.get_system_health_report()
+        from services.health_monitor import health_monitor
+        health_report = health_monitor.get_comprehensive_health_report()
         return jsonify(health_report)
     except Exception as e:
         logging.error(f'Health check failed: {e}')
