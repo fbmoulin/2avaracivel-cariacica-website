@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, request, jsonify, flash, redirect,
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from services.content import ContentService
-from services.chatbot import ChatbotService
+from services.chatbot_enhanced import enhanced_chatbot_service
 from services.database_service import DatabaseService
 from services.scheduling_service import SchedulingService, initialize_scheduling_system
 from models import HearingSchedule, AvailableTimeSlot
@@ -28,7 +28,6 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # Initialize services
 content_service = ContentService()
-chatbot_service = ChatbotService()
 
 # Main routes with caching and rate limiting
 @main_bp.route('/')
@@ -269,12 +268,27 @@ def chatbot_message(validated_data):
             session_id = str(uuid.uuid4())
             session['chatbot_session'] = session_id
         
-        # Get response from chatbot with error handling
-        try:
-            response = chatbot_service.get_response(user_message)
-        except Exception as e:
-            logging.error(f"Chatbot service error: {e}")
-            response = "Desculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes ou entre em contato diretamente conosco."
+        # Get response from enhanced chatbot service
+        client_ip = request.environ.get('HTTP_X_FORWARDED_FOR', request.remote_addr)
+        chatbot_result = enhanced_chatbot_service.get_response(
+            user_message, 
+            session_id=session_id,
+            client_ip=client_ip
+        )
+        
+        # Handle different response types
+        if not chatbot_result.get('success', True):
+            error_type = chatbot_result.get('error_type', 'unknown')
+            error_message = chatbot_result.get('error', 'Erro desconhecido')
+            
+            if error_type == 'rate_limit':
+                return jsonify({'error': error_message}), 429
+            elif error_type == 'validation':
+                return jsonify({'error': error_message}), 400
+            else:
+                return jsonify({'error': error_message}), 500
+        
+        response = chatbot_result['response']
         
         # Save interaction to database with retry logic
         try:
@@ -296,7 +310,9 @@ def chatbot_message(validated_data):
         return jsonify({
             'response': response,
             'session_id': session_id,
-            'timestamp': datetime.now().isoformat()
+            'timestamp': datetime.now().isoformat(),
+            'source': chatbot_result.get('source', 'unknown'),
+            'response_time': chatbot_result.get('response_time', 0)
         })
         
     except Exception as e:
@@ -304,6 +320,62 @@ def chatbot_message(validated_data):
         return jsonify({
             'error': 'Erro interno do servidor',
             'message': 'Ocorreu um erro inesperado. Tente novamente mais tarde.'
+        }), 500
+
+
+@chatbot_bp.route('/api/health', methods=['GET'])
+@limiter.limit("10 per minute")
+def chatbot_health():
+    """Get chatbot health status and performance metrics"""
+    try:
+        health_data = enhanced_chatbot_service.health_check()
+        return jsonify(health_data)
+    except Exception as e:
+        logging.error(f"Chatbot health check error: {e}")
+        return jsonify({
+            'status': 'error',
+            'error': 'Falha na verificação de saúde do sistema'
+        }), 500
+
+
+@chatbot_bp.route('/api/stats', methods=['GET'])
+@limiter.limit("5 per minute")
+def chatbot_stats():
+    """Get chatbot performance statistics (admin only)"""
+    try:
+        # Basic authentication check (can be enhanced)
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer admin-'):
+            return jsonify({'error': 'Acesso não autorizado'}), 401
+        
+        stats = enhanced_chatbot_service.get_performance_stats()
+        return jsonify(stats)
+    except Exception as e:
+        logging.error(f"Chatbot stats error: {e}")
+        return jsonify({
+            'error': 'Erro ao obter estatísticas'
+        }), 500
+
+
+@chatbot_bp.route('/api/cache/clear', methods=['POST'])
+@limiter.limit("2 per hour")
+def clear_chatbot_cache():
+    """Clear chatbot cache (admin only)"""
+    try:
+        # Basic authentication check
+        auth_header = request.headers.get('Authorization')
+        if not auth_header or not auth_header.startswith('Bearer admin-'):
+            return jsonify({'error': 'Acesso não autorizado'}), 401
+        
+        enhanced_chatbot_service.clear_cache()
+        return jsonify({
+            'success': True,
+            'message': 'Cache limpo com sucesso'
+        })
+    except Exception as e:
+        logging.error(f"Cache clear error: {e}")
+        return jsonify({
+            'error': 'Erro ao limpar cache'
         }), 500
 
 
