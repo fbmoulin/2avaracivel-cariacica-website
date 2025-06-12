@@ -12,6 +12,12 @@
     <meta name="keywords" content="vara cível, cariacica, tribunal, justiça, espírito santo, processo">
     <meta name="author" content="Tribunal de Justiça do Espírito Santo">
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Vara Cível">
+    
     <title>{% block title %}2ª Vara Cível de Cariacica{% endblock %}</title>
     
     <!-- Bootstrap CSS -->
@@ -1654,6 +1660,7 @@
     <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
     <script src="{{ url_for('static', filename='js/accessibility-tests.js') }}"></script>
     <script src="{{ url_for('static', filename='js/accessibility-enhanced.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pwa-enhanced.js') }}"></script>
     <script src="{{ url_for('static', filename='js/voice-accessibility.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mobile-optimization.js') }}"></script>
     <script src="{{ url_for('static', filename='js/form-microinteractions.js') }}"></script>
