@@ -1476,6 +1476,52 @@
             color: #60a5fa !important;
         }
 
+        /* Location section text visibility fixes */
+        .location-section .card {
+            background-color: white !important;
+            color: #333 !important;
+        }
+        
+        .location-section .card-header {
+            background-color: white !important;
+            color: #2c5aa0 !important;
+        }
+        
+        .location-section .card-body {
+            background-color: white !important;
+            color: #333 !important;
+        }
+        
+        .location-section .card-body p {
+            color: #333 !important;
+        }
+        
+        .location-section .card-body h6 {
+            color: #2c5aa0 !important;
+        }
+        
+        .location-section .card-body strong {
+            color: #333 !important;
+        }
+        
+        .location-info-prominent .card {
+            background: white !important;
+            border: 2px solid #dee2e6 !important;
+        }
+        
+        .location-info-prominent .card * {
+            color: #333 !important;
+        }
+        
+        .location-info-prominent .card h5,
+        .location-info-prominent .card h6 {
+            color: #2c5aa0 !important;
+        }
+        
+        .location-info-prominent .card .text-primary {
+            color: #2c5aa0 !important;
+        }
+
         .footer-section hr {
             border-color: rgba(255, 255, 255, 0.2);
             margin: 30px 0 20px 0;
@@ -1739,6 +1785,40 @@
     });
     </script>
     
+    <!-- Force style refresh for visibility fixes -->
+    <script>
+    // Force immediate style application for text visibility
+    document.addEventListener('DOMContentLoaded', function() {
+        // Apply emergency text visibility fixes
+        const locationCards = document.querySelectorAll('.location-section .card, .location-info-prominent .card');
+        locationCards.forEach(card => {
+            card.style.backgroundColor = 'white';
+            card.style.color = '#333';
+            card.style.border = '2px solid #dee2e6';
+            
+            const texts = card.querySelectorAll('p, span, div:not(.card-header):not(.card-body)');
+            texts.forEach(text => {
+                text.style.color = '#333';
+            });
+            
+            const headers = card.querySelectorAll('h5, h6, .text-primary');
+            headers.forEach(header => {
+                header.style.color = '#2c5aa0';
+            });
+        });
+        
+        // Ensure accessibility button is visible
+        const accessBtn = document.getElementById('accessibility-toggle');
+        if (accessBtn) {
+            accessBtn.style.display = 'flex';
+            accessBtn.style.position = 'fixed';
+            accessBtn.style.bottom = '80px';
+            accessBtn.style.right = '20px';
+            accessBtn.style.zIndex = '9998';
+        }
+    });
+    </script>
+
     <!-- Custom JS -->
     <!-- Critical scripts - Load immediately -->
     <script src="{{ url_for('static', filename='js/performance-optimizer.js') }}"></script>
