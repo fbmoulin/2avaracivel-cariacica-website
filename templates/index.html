@@ -19,21 +19,23 @@
         </div>
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <p class="lead text-center">Tribunal de Justiça do Espírito Santo</p>
-                    <p class="mb-4 text-center">Oferecemos serviços judiciais com transparência, eficiência e acessibilidade para todos os cidadãos.</p>
-                    <div class="hero-buttons text-center">
-                        <a href="/servicos/" class="btn btn-primary btn-lg me-3">
-                            <i class="fas fa-list me-2"></i>Nossos Serviços
-                        </a>
-                        <a href="/servicos/consulta-processual" class="btn btn-outline-primary btn-lg">
-                            <i class="fas fa-search me-2"></i>Consultar Processo
-                        </a>
+                <div class="col-lg-6 col-12">
+                    <div class="hero-content">
+                        <p class="lead text-center mb-3">Tribunal de Justiça do Espírito Santo</p>
+                        <p class="mb-4 text-center">Oferecemos serviços judiciais com transparência, eficiência e acessibilidade para todos os cidadãos.</p>
+                        <div class="hero-buttons text-center d-flex flex-column flex-sm-row justify-content-center gap-3">
+                            <a href="/servicos/" class="btn btn-primary btn-lg" role="button" aria-label="Acessar página de serviços">
+                                <i class="fas fa-list me-2" aria-hidden="true"></i>Nossos Serviços
+                            </a>
+                            <a href="/servicos/consulta-processual" class="btn btn-outline-primary btn-lg" role="button" aria-label="Acessar consulta processual">
+                                <i class="fas fa-search me-2" aria-hidden="true"></i>Consultar Processo
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-6 col-12 d-none d-lg-block">
                     <div class="hero-icon-container text-center">
-                        <i class="fas fa-balance-scale hero-icon"></i>
+                        <i class="fas fa-balance-scale hero-icon" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -45,47 +47,81 @@
 <section class="quick-access-section py-5">
     <div class="container">
         <h2 class="text-center mb-5">Acesso Rápido</h2>
-        <div class="row">
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card quick-access-card h-100">
-                    <div class="card-body text-center">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3 col-12">
+                <div class="card quick-access-card h-100 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
                         <img src="{{ url_for('static', filename='images/icons/consulta_processual.png') }}" 
-                             alt="Consulta Processual" class="service-icon mb-3" style="width: 64px; height: 64px;">
+                             alt="Ícone consulta processual" class="service-icon mb-3" 
+                             style="width: 64px; height: 64px;" loading="lazy">
                         <h5 class="card-title">Consulta Processual</h5>
-                        <p class="card-text">Consulte o andamento do seu processo com o número CNJ.</p>
-                        <a href="/servicos/consulta-processual" class="btn btn-primary">Acessar</a>
+                        <p class="card-text flex-grow-1">Consulte o andamento do seu processo com o número CNJ.</p>
+                        <a href="/servicos/consulta-processual" class="btn btn-primary mt-auto" 
+                           role="button" aria-label="Acessar consulta processual">
+                            <i class="fas fa-search me-2" aria-hidden="true"></i>Acessar
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card quick-access-card h-100">
-                    <div class="card-body text-center">
+            <div class="col-md-6 col-lg-3 col-12">
+                <div class="card quick-access-card h-100 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
                         <img src="{{ url_for('static', filename='images/icons/agendamento.png') }}" 
-                             alt="Agendamento" class="service-icon mb-3" style="width: 64px; height: 64px;">
+                             alt="Ícone agendamento" class="service-icon mb-3" 
+                             style="width: 64px; height: 64px;" loading="lazy">
                         <h5 class="card-title">Agendamento</h5>
-                        <p class="card-text">Agende seu atendimento presencial ou virtual.</p>
-                        <a href="/servicos/agendamento" class="btn btn-primary">Agendar</a>
+                        <p class="card-text flex-grow-1">Agende seu atendimento presencial ou virtual.</p>
+                        <a href="/servicos/agendamento" class="btn btn-primary mt-auto" 
+                           role="button" aria-label="Acessar agendamento">
+                            <i class="fas fa-calendar-alt me-2" aria-hidden="true"></i>Agendar
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card quick-access-card h-100">
-                    <div class="card-body text-center">
+            <div class="col-md-6 col-lg-3 col-12">
+                <div class="card quick-access-card h-100 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
                         <img src="{{ url_for('static', filename='images/icons/balcao_virtual.png') }}" 
-                             alt="Audiências" class="service-icon mb-3" style="width: 64px; height: 64px;">
+                             alt="Ícone audiências" class="service-icon mb-3" 
+                             style="width: 64px; height: 64px;" loading="lazy">
                         <h5 class="card-title">Audiências</h5>
-                        <p class="card-text">Informações sobre audiências presenciais e virtuais.</p>
-                        <a href="/servicos/audiencias" class="btn btn-primary">Ver Mais</a>
+                        <p class="card-text flex-grow-1">Informações sobre audiências presenciais e virtuais.</p>
+                        <a href="/servicos/audiencias" class="btn btn-primary mt-auto" 
+                           role="button" aria-label="Acessar informações sobre audiências">
+                            <i class="fas fa-gavel me-2" aria-hidden="true"></i>Ver Mais
+                        </a>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 mb-4">
-                <div class="card quick-access-card h-100">
-                    <div class="card-body text-center">
-                        <i class="fas fa-file-text fa-3x text-primary mb-3"></i>
+            <div class="col-md-6 col-lg-3 col-12">
+                <div class="card quick-access-card h-100 shadow-sm">
+                    <div class="card-body text-center d-flex flex-column">
+                        <i class="fas fa-file-text fa-3x text-primary mb-3" aria-hidden="true"></i>
                         <h5 class="card-title">Certidões</h5>
-                        <p class="card-text">Solicite certidões e outros documentos oficiais.</p>
-                        <a href="/servicos/certidoes" class="btn btn-primary">Solicitar</a>
+                        <p class="card-text flex-grow-1">Solicite certidões e outros documentos oficiais.</p>
+                        <a href="/servicos/certidoes" class="btn btn-primary mt-auto" 
+                           role="button" aria-label="Solicitar certidões">
+                            <i class="fas fa-file-download me-2" aria-hidden="true"></i>Solicitar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Contact Actions -->
+        <div class="row mt-5 d-md-none">
+            <div class="col-12">
+                <div class="mobile-contact-section bg-light p-4 rounded">
+                    <h6 class="text-center mb-3">Contato Direto</h6>
+                    <div class="d-grid gap-2">
+                        <a href="tel:+552732468200" class="btn btn-outline-primary btn-lg" 
+                           role="button" aria-label="Ligar para o tribunal">
+                            <i class="fas fa-phone me-2" aria-hidden="true"></i>(27) 3246-8200
+                        </a>
+                        <a href="mailto:2varacivel.cariacica@tjes.jus.br" class="btn btn-outline-secondary btn-lg" 
+                           role="button" aria-label="Enviar email para o tribunal">
+                            <i class="fas fa-envelope me-2" aria-hidden="true"></i>Enviar Email
+                        </a>
                     </div>
                 </div>
             </div>
