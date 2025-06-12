@@ -16,6 +16,7 @@ from config import get_config
 from services.integration_service import setup_integration_services, integration_service
 from utils.request_middleware import RequestMiddleware
 from utils.workflow_optimizer import start_workflow_engine, stop_workflow_engine
+from utils.error_logger import setup_error_logging
 
 
 class Base(DeclarativeBase):
@@ -79,6 +80,9 @@ def create_app(config_name=None):
     # Initialize integration services
     setup_integration_services()
     
+    # Setup enhanced error logging
+    setup_error_logging(app)
+    
     # Setup request middleware
     request_middleware = RequestMiddleware()
     request_middleware.init_app(app)
@@ -121,21 +125,25 @@ def register_blueprints(app):
     """Register application blueprints"""
     try:
         from routes_optimized import main_bp, services_bp, chatbot_bp, admin_bp
+        from routes_error_monitoring import error_bp
         
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
         app.register_blueprint(admin_bp)
+        app.register_blueprint(error_bp)
         
         app.logger.info("All blueprints registered successfully")
     except ImportError as e:
         app.logger.error(f"Blueprint import error: {e}")
         # Fallback to original routes if optimized not available
         from routes import main_bp, services_bp, chatbot_bp
+        from routes_error_monitoring import error_bp
         
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
+        app.register_blueprint(error_bp)
 
 
 def setup_error_handlers(app):

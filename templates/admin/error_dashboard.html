@@ -1,0 +1,292 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Monitor de Erros - 2ª Vara Cível{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Monitor de Erros do Sistema</h1>
+                <div class="btn-group">
+                    <button class="btn btn-outline-primary" onclick="refreshDashboard()">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                    <button class="btn btn-outline-info" onclick="exportErrors()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
+                    <a href="{{ url_for('error_monitoring.clear_logs') }}" class="btn btn-outline-warning" 
+                       onclick="return confirm('Tem certeza que deseja limpar os logs?')">
+                        <i class="fas fa-trash"></i> Limpar Logs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Total de Erros
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ total_errors }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Erros Críticos
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ recent_critical|length }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-fire fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                Erros (24h)
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ summary_24h.total_errors }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clock fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Taxa/Hora
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{ "%.1f"|format(summary_24h.error_rate_per_hour) }}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Distribution Charts -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Distribuição por Tipo (24h)</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="errorTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Severidade dos Erros</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="severityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Critical Errors -->
+    {% if recent_critical %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">Erros Críticos Recentes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Horário</th>
+                                    <th>Tipo</th>
+                                    <th>Mensagem</th>
+                                    <th>Contexto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for error in recent_critical %}
+                                <tr>
+                                    <td>{{ error.timestamp[:19] }}</td>
+                                    <td><span class="badge badge-danger">{{ error.error_type }}</span></td>
+                                    <td>{{ error.error_message[:100] }}{% if error.error_message|length > 100 %}...{% endif %}</td>
+                                    <td>
+                                        {% if error.request and error.request.path %}
+                                            <small>{{ error.request.method }} {{ error.request.path }}</small>
+                                        {% else %}
+                                            <small>Sistema</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Ações Rápidas</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('error_monitoring.view_logs', type='error') }}" class="btn btn-outline-primary btn-block">
+                                <i class="fas fa-file-alt"></i> Logs de Erro
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('error_monitoring.view_logs', type='critical') }}" class="btn btn-outline-danger btn-block">
+                                <i class="fas fa-fire"></i> Logs Críticos
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('error_monitoring.error_stats') }}" class="btn btn-outline-info btn-block">
+                                <i class="fas fa-chart-bar"></i> Estatísticas
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('error_monitoring.test_error', type='general') }}" class="btn btn-outline-warning btn-block"
+                               onclick="return confirm('Gerar erro de teste?')">
+                                <i class="fas fa-bug"></i> Teste de Erro
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Error Type Distribution Chart
+const errorTypeCtx = document.getElementById('errorTypeChart').getContext('2d');
+const errorTypeChart = new Chart(errorTypeCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ summary_24h.error_types.keys()|list|tojson }},
+        datasets: [{
+            data: {{ summary_24h.error_types.values()|list|tojson }},
+            backgroundColor: [
+                '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+// Severity Chart
+const severityCtx = document.getElementById('severityChart').getContext('2d');
+const severityChart = new Chart(severityCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Crítico', 'Alto', 'Médio', 'Baixo'],
+        datasets: [{
+            label: 'Quantidade',
+            data: [
+                {{ summary_24h.severity_breakdown.CRITICAL }},
+                {{ summary_24h.severity_breakdown.HIGH }},
+                {{ summary_24h.severity_breakdown.MEDIUM }},
+                {{ summary_24h.severity_breakdown.LOW }}
+            ],
+            backgroundColor: ['#dc3545', '#fd7e14', '#ffc107', '#28a745']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+function refreshDashboard() {
+    location.reload();
+}
+
+function exportErrors() {
+    fetch('/admin/errors/export?hours=24')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Erros exportados: ' + data.filename);
+            } else {
+                alert('Erro na exportação: ' + data.error);
+            }
+        })
+        .catch(error => {
+            alert('Erro na exportação: ' + error);
+        });
+}
+
+// Auto-refresh every 30 seconds
+setInterval(function() {
+    // Update summary cards via AJAX
+    fetch('/admin/errors/api/summary?hours=1')
+        .then(response => response.json())
+        .then(data => {
+            // Update recent error count if significantly changed
+            if (data.total_errors > 0) {
+                console.log('New errors detected:', data.total_errors);
+            }
+        })
+        .catch(error => console.error('Auto-refresh error:', error));
+}, 30000);
+</script>
+{% endblock %}
