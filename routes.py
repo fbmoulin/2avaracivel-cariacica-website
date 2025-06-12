@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
+from app import csrf
 from services.content import ContentService
 from services.chatbot import ChatbotService
 from models import Contact, ProcessConsultation, AssessorMeeting, db
@@ -272,6 +273,7 @@ def confirmacao_assessor(token):
 
 # Chatbot routes
 @chatbot_bp.route('/api/message', methods=['POST'])
+@csrf.exempt
 def chatbot_message():
     """Handle chatbot messages"""
     try:
