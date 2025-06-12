@@ -24,7 +24,9 @@
             </div>
             <div class="col-lg-6">
                 <div class="hero-image">
-                    <i class="fas fa-balance-scale hero-icon"></i>
+                    <img src="{{ url_for('static', filename='images/banners/banner_principal.png') }}" 
+                         alt="2ª Vara Cível de Cariacica" 
+                         class="img-fluid rounded shadow-lg">
                 </div>
             </div>
         </div>
@@ -39,7 +41,8 @@
             <div class="col-md-6 col-lg-3 mb-4">
                 <div class="card quick-access-card h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                        <img src="{{ url_for('static', filename='images/icons/consulta_processual.png') }}" 
+                             alt="Consulta Processual" class="service-icon mb-3" style="width: 64px; height: 64px;">
                         <h5 class="card-title">Consulta Processual</h5>
                         <p class="card-text">Consulte o andamento do seu processo com o número CNJ.</p>
                         <a href="/servicos/consulta-processual" class="btn btn-primary">Acessar</a>
@@ -49,7 +52,8 @@
             <div class="col-md-6 col-lg-3 mb-4">
                 <div class="card quick-access-card h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-calendar fa-3x text-primary mb-3"></i>
+                        <img src="{{ url_for('static', filename='images/icons/agendamento.png') }}" 
+                             alt="Agendamento" class="service-icon mb-3" style="width: 64px; height: 64px;">
                         <h5 class="card-title">Agendamento</h5>
                         <p class="card-text">Agende seu atendimento presencial ou virtual.</p>
                         <a href="/servicos/agendamento" class="btn btn-primary">Agendar</a>
@@ -59,7 +63,8 @@
             <div class="col-md-6 col-lg-3 mb-4">
                 <div class="card quick-access-card h-100">
                     <div class="card-body text-center">
-                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <img src="{{ url_for('static', filename='images/icons/balcao_virtual.png') }}" 
+                             alt="Audiências" class="service-icon mb-3" style="width: 64px; height: 64px;">
                         <h5 class="card-title">Audiências</h5>
                         <p class="card-text">Informações sobre audiências presenciais e virtuais.</p>
                         <a href="/servicos/audiencias" class="btn btn-primary">Ver Mais</a>
