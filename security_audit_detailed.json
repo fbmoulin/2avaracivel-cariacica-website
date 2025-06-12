@@ -1,0 +1,101 @@
+{
+  "audit_timestamp": "2025-06-12T15:14:43.561459",
+  "initial_security_score": 100,
+  "findings": [
+    {
+      "category": "Authentication Security",
+      "issues": [
+        "\u2713 Secure session cookies enabled",
+        "\u2713 HttpOnly session cookies enabled",
+        "\u2713 CSRF protection enabled",
+        "\u26a0 Session cookies not marked as secure",
+        "\u26a0 HttpOnly session cookies not enabled",
+        "\u274c CSRF protection not enabled"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "Input Validation",
+      "issues": [
+        "\u2713 Input sanitization functions implemented",
+        "\u2713 Email validation implemented",
+        "\u2713 Phone validation implemented",
+        "\u2713 Input sanitization functions implemented",
+        "\u2713 Email validation implemented",
+        "\u2713 Phone validation implemented",
+        "\u2713 Malicious pattern detection implemented"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "SQL Injection Protection",
+      "issues": [
+        "\u2713 Parameterized queries found in performance_monitor.py",
+        "\u2713 Parameterized queries found in run_optimized_workflows.py",
+        "\u2713 Parameterized queries found in security_audit_report.py",
+        "\u2713 Parameterized queries found in scheduler_service.py",
+        "\u2713 Parameterized queries found in database_service_optimized.py",
+        "\u2713 Parameterized queries found in database_service.py",
+        "\u2713 Parameterized queries found in health_monitor.py",
+        "\u2713 No raw SQL injection vulnerabilities detected",
+        "\u2713 SQLAlchemy parameterized queries in use"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "XSS Protection",
+      "issues": [
+        "\u2713 Jinja2 auto-escaping in use",
+        "\u2713 Content Security Policy implemented"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "Rate Limiting",
+      "issues": [
+        "\u2713 Rate limiting implemented in utils/security_middleware.py"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "HTTPS Security",
+      "issues": [
+        "\u2713 HSTS header configured",
+        "\u26a0 HSTS header not found",
+        "\u2713 Proxy handling configured"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "Secret Management",
+      "issues": [
+        "\u2713 Environment variables used for secrets",
+        "\u2713 No hardcoded secrets detected"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "Error Handling",
+      "issues": [
+        "\u2713 Custom error handlers in routes.py",
+        "\u2713 Custom error handlers in app_factory.py"
+      ],
+      "recommendations": []
+    },
+    {
+      "category": "File Upload Security",
+      "issues": [
+        "\u2713 File size limits configured",
+        "\u2713 File size limits configured",
+        "\u2713 File type restrictions implemented",
+        "\u2713 File size limits configured",
+        "\u2713 Secure filename validation implemented",
+        "\u2713 File size limits configured",
+        "\u2713 File type restrictions implemented"
+      ],
+      "recommendations": []
+    }
+  ],
+  "final_security_score": 70,
+  "security_grade": "C - Fair Security"
+}
