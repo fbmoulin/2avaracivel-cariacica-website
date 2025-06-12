@@ -75,8 +75,8 @@ window.FormMicroInteractions = window.FormMicroInteractions || class FormMicroIn
             .form-field.invalid input,
             .form-field.invalid textarea,
             .form-field.invalid select {
-                border-color: #dc3545;
-                background-color: #fff8f8;
+                border-color: #d97706;
+                background-color: #fffbf5;
                 animation: shake 0.5s ease-in-out;
             }
             
@@ -136,9 +136,9 @@ window.FormMicroInteractions = window.FormMicroInteractions || class FormMicroIn
             }
             
             .validation-message.error {
-                color: #dc3545;
-                background-color: rgba(220, 53, 69, 0.1);
-                border: 1px solid rgba(220, 53, 69, 0.3);
+                color: #d97706;
+                background-color: rgba(217, 119, 6, 0.1);
+                border: 1px solid rgba(217, 119, 6, 0.3);
             }
             
             .validation-message.warning {
@@ -163,7 +163,7 @@ window.FormMicroInteractions = window.FormMicroInteractions || class FormMicroIn
             }
             
             .field-icon.invalid {
-                color: #dc3545;
+                color: #d97706;
                 animation: shake 0.5s ease;
             }
             
@@ -289,7 +289,7 @@ window.FormMicroInteractions = window.FormMicroInteractions || class FormMicroIn
                 transition: all 0.3s ease;
             }
             
-            .strength-weak { background: #dc3545; width: 25%; }
+            .strength-weak { background: #d97706; width: 25%; }
             .strength-fair { background: #ffc107; width: 50%; }
             .strength-good { background: #fd7e14; width: 75%; }
             .strength-strong { background: #198754; width: 100%; }
