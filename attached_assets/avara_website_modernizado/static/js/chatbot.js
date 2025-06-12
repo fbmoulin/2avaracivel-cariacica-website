@@ -246,17 +246,36 @@ class Chatbot {
         const urlRegex = /(https?:\/\/[^\s]+)/g;
         const emailRegex = /([\w.-]+@[\w.-]+\.\w+)/g;
         const phoneRegex = /(\(?\d{2}\)?\s?\d{4,5}-?\d{4})/g;
+        const actionLinkRegex = /\*\*\[([^\]]+)\]\(([^)]+)\)\*\*/g;
         
         let lastIndex = 0;
-        const parts = [];
-        
-        // Find all matches and their positions
         const matches = [];
         let match;
         
-        while ((match = urlRegex.exec(text)) !== null) {
-            matches.push({ type: 'url', match: match[0], index: match.index });
+        // Find action links first (priority)
+        while ((match = actionLinkRegex.exec(text)) !== null) {
+            matches.push({ 
+                type: 'action_link', 
+                match: match[0], 
+                text: match[1], 
+                url: match[2], 
+                index: match.index 
+            });
         }
+        
+        // Find other patterns
+        while ((match = urlRegex.exec(text)) !== null) {
+            // Skip if this URL is part of an action link
+            const isPartOfActionLink = matches.some(m => 
+                m.type === 'action_link' && 
+                match.index >= m.index && 
+                match.index < m.index + m.match.length
+            );
+            if (!isPartOfActionLink) {
+                matches.push({ type: 'url', match: match[0], index: match.index });
+            }
+        }
+        
         while ((match = emailRegex.exec(text)) !== null) {
             matches.push({ type: 'email', match: match[0], index: match.index });
         }
@@ -268,16 +287,22 @@ class Chatbot {
         matches.sort((a, b) => a.index - b.index);
         
         // Build content with safe elements
-        matches.forEach(({ type, match, index }) => {
+        matches.forEach(({ type, match, text: linkText, url, index }) => {
             // Add text before this match
             if (index > lastIndex) {
                 const textPart = text.substring(lastIndex, index);
-                container.appendChild(document.createTextNode(textPart));
+                this.addTextWithLineBreaks(container, textPart);
             }
             
             // Add formatted element
             let element;
-            if (type === 'url') {
+            if (type === 'action_link') {
+                element = document.createElement('a');
+                element.href = url;
+                element.className = 'btn btn-primary btn-sm me-2 mb-2';
+                element.innerHTML = `<i class="fas fa-calendar-plus me-1"></i>${linkText}`;
+                element.style.cssText = 'text-decoration: none; color: white;';
+            } else if (type === 'url') {
                 element = document.createElement('a');
                 element.href = match;
                 element.target = '_blank';
@@ -299,17 +324,45 @@ class Chatbot {
         // Add remaining text
         if (lastIndex < text.length) {
             const remainingText = text.substring(lastIndex);
-            // Handle line breaks safely
-            const lines = remainingText.split('\n');
-            lines.forEach((line, i) => {
-                if (i > 0) {
-                    container.appendChild(document.createElement('br'));
-                }
-                if (line) {
-                    container.appendChild(document.createTextNode(line));
-                }
-            });
+            this.addTextWithLineBreaks(container, remainingText);
         }
+    }
+    
+    addTextWithLineBreaks(container, text) {
+        // Handle line breaks and markdown-style formatting
+        const lines = text.split('\n');
+        lines.forEach((line, i) => {
+            if (i > 0) {
+                container.appendChild(document.createElement('br'));
+            }
+            if (line) {
+                // Handle bold text
+                const boldRegex = /\*\*([^*]+)\*\*/g;
+                let lastIdx = 0;
+                let boldMatch;
+                
+                while ((boldMatch = boldRegex.exec(line)) !== null) {
+                    // Add text before bold
+                    if (boldMatch.index > lastIdx) {
+                        const beforeText = line.substring(lastIdx, boldMatch.index);
+                        container.appendChild(document.createTextNode(beforeText));
+                    }
+                    
+                    // Add bold text
+                    const boldElement = document.createElement('strong');
+                    boldElement.textContent = boldMatch[1];
+                    container.appendChild(boldElement);
+                    
+                    lastIdx = boldMatch.index + boldMatch[0].length;
+                }
+                
+                // Add remaining text
+                if (lastIdx < line.length) {
+                    const remainingText = line.substring(lastIdx);
+                    container.appendChild(document.createTextNode(remainingText));
+                }
+            }
+        });
     }
 
     showTypingIndicator() {
