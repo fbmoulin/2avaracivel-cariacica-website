@@ -13,7 +13,7 @@ from email import encoders
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 from sqlalchemy import func
-from models import Contact, ChatMessage, ProcessConsultation, HearingSchedule, NewsItem, db
+from models import Contact, ChatMessage, ProcessConsultation, db
 
 
 class EmailService:

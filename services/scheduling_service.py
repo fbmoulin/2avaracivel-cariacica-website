@@ -6,7 +6,7 @@ import uuid
 import logging
 from datetime import datetime, timedelta, time, date
 from typing import List, Dict, Optional, Tuple
-from models import HearingSchedule, AvailableTimeSlot, db
+from models import db
 from services.database_service import DatabaseService
 import json
 import secrets

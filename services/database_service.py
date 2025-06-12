@@ -6,7 +6,7 @@ from sqlalchemy import text, func
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError, DisconnectionError, TimeoutError
 from flask import current_app
 from app_factory import db
-from models import Contact, NewsItem, ProcessConsultation, ChatMessage
+from models import Contact, ProcessConsultation, ChatMessage
 from services.integration_service import RetryManager
 from datetime import datetime, timedelta
 import logging

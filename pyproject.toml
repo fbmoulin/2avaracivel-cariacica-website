@@ -17,4 +17,5 @@ dependencies = [
     "redis>=6.2.0",
     "schedule>=1.2.2",
     "psutil>=7.0.0",
+    "requests>=2.32.4",
 ]
