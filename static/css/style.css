@@ -144,8 +144,9 @@ a:focus {
 }
 
 .btn-outline-primary {
-    color: var(--primary-color) !important;
+    color: white !important;
     border-color: var(--primary-color);
+    background-color: var(--primary-color);
     font-weight: 600;
 }
 
@@ -550,7 +551,7 @@ img.loaded {
 }
 
 .quick-access-card:hover .service-icon-container {
-    background: white;
+    background: var(--primary-color);
     transform: scale(1.15);
     box-shadow: 0 8px 25px rgba(30, 64, 175, 0.2);
     border-color: transparent;
@@ -564,7 +565,7 @@ img.loaded {
 
 .quick-access-card:hover .service-icon-container i {
     transform: scale(1.1);
-    color: var(--primary-color) !important;
+    color: white !important;
     filter: drop-shadow(0 4px 8px rgba(30, 64, 175, 0.3));
 }
 
@@ -705,8 +706,8 @@ img.loaded {
 
 .btn-outline-primary {
     border: 2px solid var(--primary-color);
-    color: var(--primary-color);
-    background-color: transparent;
+    color: white;
+    background-color: var(--primary-color);
 }
 
 .btn-outline-primary:hover {
@@ -778,8 +779,8 @@ img.loaded {
 /* Accordion */
 .accordion-button {
     font-weight: 600;
-    color: var(--text-primary);
-    background-color: white;
+    color: white;
+    background-color: var(--primary-color);
     border: none;
     border-radius: 6px !important;
     padding: 1.25rem 1.5rem;
@@ -803,7 +804,7 @@ img.loaded {
 
 .accordion-body {
     padding: 1.5rem;
-    background-color: white;
+    background-color: var(--light-color);
 }
 
 /* Tables */
