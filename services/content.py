@@ -105,22 +105,26 @@ class ContentService:
     
     def get_news(self):
         """Get news from database or fallback to JSON"""
-        try:
-            # Try to get from database first
-            news_items = NewsItem.query.filter_by(is_active=True).order_by(NewsItem.published_at.desc()).all()
-            if news_items:
-                return [
-                    {
-                        'id': item.id,
-                        'title': item.title,
-                        'content': item.content,
-                        'summary': item.summary,
-                        'published_at': item.published_at.strftime('%d/%m/%Y')
-                    }
-                    for item in news_items
-                ]
-        except Exception as e:
-            print(f"Error loading news from database: {e}")
+        from flask import has_app_context
+        
+        # Only try database if we have app context
+        if has_app_context():
+            try:
+                # Try to get from database first
+                news_items = NewsItem.query.filter_by(is_active=True).order_by(NewsItem.published_at.desc()).all()
+                if news_items:
+                    return [
+                        {
+                            'id': item.id,
+                            'title': item.title,
+                            'content': item.content,
+                            'summary': item.summary,
+                            'published_at': item.published_at.strftime('%d/%m/%Y')
+                        }
+                        for item in news_items
+                    ]
+            except Exception as e:
+                print(f"Error loading news from database: {e}")
         
         # Fallback to JSON file
         try:
