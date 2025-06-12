@@ -155,15 +155,7 @@ window.VoiceAccessibilityManager = window.VoiceAccessibilityManager || class Voi
     }
 
     createAccessibilityControls() {
-        // Create the main accessibility toggle button
-        const accessibilityToggle = document.createElement('button');
-        accessibilityToggle.id = 'accessibility-toggle';
-        accessibilityToggle.className = 'accessibility-toggle-btn';
-        accessibilityToggle.innerHTML = `
-            <i class="fas fa-universal-access"></i>
-            <span>Acessibilidade</span>
-        `;
-        accessibilityToggle.title = 'Abrir controles de acessibilidade';
+        // Accessibility controls integrated into main navigation - no floating button needed
 
         // Create the main controls container
         const controlsContainer = document.createElement('div');
@@ -314,20 +306,11 @@ window.VoiceAccessibilityManager = window.VoiceAccessibilityManager || class Voi
             </div>
         `;
 
-        document.body.appendChild(accessibilityToggle);
-        document.body.appendChild(controlsContainer);
-        this.setupControlsEventListeners();
+        // Controls container removed - accessibility features integrated into main interface
     }
 
     setupControlsEventListeners() {
-        // Toggle accessibility panel
-        document.getElementById('accessibility-toggle').addEventListener('click', () => {
-            this.toggleAccessibilityPanel();
-        });
-
-        document.getElementById('close-accessibility').addEventListener('click', () => {
-            this.toggleAccessibilityPanel();
-        });
+        // Accessibility controls removed - features available through main navigation
 
         // Voice controls
         document.getElementById('toggle-voice').addEventListener('click', () => {
