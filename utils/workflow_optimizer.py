@@ -15,6 +15,11 @@ import threading
 
 logger = logging.getLogger(__name__)
 
+def start_workflow_engine():
+    """Start the workflow optimization engine"""
+    optimizer = WorkflowOptimizer()
+    return optimizer.start_monitoring()
+
 
 class WorkflowOptimizer:
     """Comprehensive workflow automation and optimization system"""
