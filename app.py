@@ -49,6 +49,9 @@ def create_app():
     db.init_app(app)
     csrf.init_app(app)
     
+    # Exempt chatbot API from CSRF protection
+    csrf.exempt('chatbot.chatbot_message')
+    
     # Initialize middleware and monitoring
     try:
         from utils.request_middleware import RequestMiddleware
