@@ -143,6 +143,82 @@
     </div>
 </section>
 
+<!-- Location Map Section - Prominent Display -->
+<section class="location-section py-5 bg-primary text-white" id="mapa-localizacao">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="text-white mb-3"><i class="fas fa-map-marker-alt me-3"></i>Localização do Fórum</h2>
+                <p class="lead text-white-50">Encontre-nos facilmente no centro de Cariacica</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="map-container-prominent rounded shadow-lg">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3740.5866527829267!2d-40.41947928505058!3d-20.348951986383577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xb81ecb0e1e8f5b%3A0x8f5e5c5c5c5c5c5c!2sRua%20Expedito%20Garcia%2C%20Centro%2C%20Cariacica%20-%20ES!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
+                        width="100%" 
+                        height="450" 
+                        style="border:0; border-radius: 0.75rem;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Localização do Fórum de Cariacica"
+                        aria-label="Mapa mostrando a localização do Fórum de Cariacica na Rua Expedito Garcia">
+                    </iframe>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="location-info-prominent">
+                    <div class="card bg-white text-dark shadow-lg">
+                        <div class="card-header bg-white text-primary border-0">
+                            <h5 class="mb-0 fw-bold"><i class="fas fa-building me-2"></i>Informações de Acesso</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <h6 class="text-primary fw-bold mb-2"><i class="fas fa-map-marker-alt me-2"></i>Endereço</h6>
+                                <p class="mb-0">
+                                    <strong>2ª Vara Cível de Cariacica</strong><br>
+                                    Rua Expedito Garcia, s/n<br>
+                                    Centro, Cariacica - ES<br>
+                                    CEP: 29140-000
+                                </p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="text-primary fw-bold mb-2"><i class="fas fa-clock me-2"></i>Horário</h6>
+                                <p class="mb-0">
+                                    Segunda a Sexta-feira<br>
+                                    <strong class="text-primary">12h às 18h</strong>
+                                </p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <h6 class="text-primary fw-bold mb-2"><i class="fas fa-phone me-2"></i>Contato</h6>
+                                <p class="mb-0">
+                                    <a href="tel:+552732468200" class="text-decoration-none text-primary fw-bold">
+                                        (27) 3246-8200
+                                    </a>
+                                </p>
+                            </div>
+                            
+                            <div class="d-grid gap-2">
+                                <a href="https://www.google.com/maps/dir//Rua+Expedito+Garcia,+Centro,+Cariacica+-+ES" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer"
+                                   class="btn btn-primary btn-lg"
+                                   aria-label="Abrir direções no Google Maps em nova aba">
+                                    <i class="fas fa-directions me-2"></i>Como Chegar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Information Section -->
 <section class="info-section py-5 bg-light">
     <div class="container">
@@ -183,77 +259,6 @@
                         <p><strong>Telefone:</strong><br>(27) 3246-8200</p>
                         <p><strong>Email:</strong><br>2varacivel.cariacica@tjes.jus.br</p>
                         <a href="{{ url_for('main.contact') }}" class="btn btn-primary w-100">Formulário de Contato</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Location Map Section -->
-<section class="location-section py-5" id="mapa-localizacao">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h2 class="text-center mb-5">Localização do Fórum</h2>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="map-container rounded shadow">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3740.5866527829267!2d-40.41947928505058!3d-20.348951986383577!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xb81ecb0e1e8f5b%3A0x8f5e5c5c5c5c5c5c!2sRua%20Expedito%20Garcia%2C%20Centro%2C%20Cariacica%20-%20ES!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr"
-                        width="100%" 
-                        height="400" 
-                        style="border:0; border-radius: 0.5rem;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade"
-                        title="Localização do Fórum de Cariacica"
-                        aria-label="Mapa mostrando a localização do Fórum de Cariacica na Rua Expedito Garcia">
-                    </iframe>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="location-info">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Endereço Completo</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-3">
-                                <strong>2ª Vara Cível de Cariacica</strong><br>
-                                Rua Expedito Garcia, s/n<br>
-                                Centro, Cariacica - ES<br>
-                                CEP: 29140-000
-                            </p>
-                            
-                            <h6><i class="fas fa-clock text-primary me-2"></i>Horário de Funcionamento</h6>
-                            <p class="mb-3">
-                                Segunda a Sexta-feira<br>
-                                <strong>12h às 18h</strong>
-                            </p>
-                            
-                            <h6><i class="fas fa-car text-primary me-2"></i>Como Chegar</h6>
-                            <p class="mb-3">
-                                <small>O fórum está localizado no centro de Cariacica, próximo aos principais pontos de referência da cidade. Há estacionamento disponível nas proximidades.</small>
-                            </p>
-                            
-                            <div class="d-grid gap-2">
-                                <a href="https://www.google.com/maps/dir//Rua+Expedito+Garcia,+Centro,+Cariacica+-+ES" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer"
-                                   class="btn btn-primary"
-                                   aria-label="Abrir direções no Google Maps em nova aba">
-                                    <i class="fas fa-directions me-2"></i>Como Chegar
-                                </a>
-                                <a href="tel:+552732468200" 
-                                   class="btn btn-outline-primary"
-                                   aria-label="Ligar para o tribunal">
-                                    <i class="fas fa-phone me-2"></i>(27) 3246-8200
-                                </a>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
