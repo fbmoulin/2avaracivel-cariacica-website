@@ -1,0 +1,286 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Logs de Erro - 2ª Vara Cível{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">Logs de Erro - {{ log_type|title }}</h1>
+                <div class="btn-group">
+                    <a href="{{ url_for('error_monitoring.dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Voltar
+                    </a>
+                    <button class="btn btn-outline-primary" onclick="refreshLogs()">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                    <button class="btn btn-outline-info" onclick="downloadLogs()">
+                        <i class="fas fa-download"></i> Baixar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Type Tabs -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link {% if log_type == 'error' %}active{% endif %}" 
+                       href="{{ url_for('error_monitoring.view_logs', type='error') }}">
+                        <i class="fas fa-exclamation-triangle text-warning"></i> Erros
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if log_type == 'critical' %}active{% endif %}" 
+                       href="{{ url_for('error_monitoring.view_logs', type='critical') }}">
+                        <i class="fas fa-fire text-danger"></i> Críticos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if log_type == 'debug' %}active{% endif %}" 
+                       href="{{ url_for('error_monitoring.view_logs', type='debug') }}">
+                        <i class="fas fa-bug text-info"></i> Debug
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if log_type == 'alerts' %}active{% endif %}" 
+                       href="{{ url_for('error_monitoring.view_logs', type='alerts') }}">
+                        <i class="fas fa-bell text-primary"></i> Alertas
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Log Stats -->
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <div class="card border-left-info shadow-sm">
+                <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                        Total de Linhas
+                    </div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">{{ total_lines }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-left-primary shadow-sm">
+                <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        Exibindo
+                    </div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">{{ log_lines|length }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-left-success shadow-sm">
+                <div class="card-body py-2">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                        Tipo de Log
+                    </div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">{{ log_type|title }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Content -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Conteúdo do Log</h6>
+                    <div class="form-group mb-0">
+                        <select class="form-control form-control-sm" onchange="changeLogLines(this.value)">
+                            <option value="100">Últimas 100 linhas</option>
+                            <option value="500">Últimas 500 linhas</option>
+                            <option value="1000">Últimas 1000 linhas</option>
+                            <option value="5000">Últimas 5000 linhas</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    {% if log_lines %}
+                    <div class="log-container" style="height: 600px; overflow-y: auto; background-color: #f8f9fc;">
+                        <pre class="mb-0 p-3" style="font-size: 12px; line-height: 1.4;">{% for line in log_lines %}{{ line }}{% endfor %}</pre>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-alt fa-3x text-gray-300 mb-3"></i>
+                        <h5 class="text-gray-500">Nenhum log encontrado</h5>
+                        <p class="text-gray-400">Não há logs {{ log_type }} disponíveis no momento.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    {% if log_lines %}
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Filtros e Busca</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="searchInput">Buscar no Log:</label>
+                                <input type="text" class="form-control" id="searchInput" 
+                                       placeholder="Digite para buscar..." onkeyup="searchLogs()">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="levelFilter">Filtrar por Nível:</label>
+                                <select class="form-control" id="levelFilter" onchange="filterLogs()">
+                                    <option value="">Todos</option>
+                                    <option value="ERROR">ERROR</option>
+                                    <option value="WARNING">WARNING</option>
+                                    <option value="INFO">INFO</option>
+                                    <option value="DEBUG">DEBUG</option>
+                                    <option value="CRITICAL">CRITICAL</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <div>
+                                    <button class="btn btn-outline-secondary btn-block" onclick="clearFilters()">
+                                        <i class="fas fa-times"></i> Limpar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+let originalLogContent = '';
+
+document.addEventListener('DOMContentLoaded', function() {
+    const logContainer = document.querySelector('.log-container pre');
+    if (logContainer) {
+        originalLogContent = logContainer.innerHTML;
+        // Auto-scroll to bottom
+        const container = document.querySelector('.log-container');
+        container.scrollTop = container.scrollHeight;
+    }
+});
+
+function refreshLogs() {
+    location.reload();
+}
+
+function downloadLogs() {
+    const logType = '{{ log_type }}';
+    const url = `/admin/errors/download/app_${logType}.log`;
+    window.location.href = url;
+}
+
+function changeLogLines(lines) {
+    const currentUrl = new URL(window.location);
+    currentUrl.searchParams.set('lines', lines);
+    window.location.href = currentUrl.toString();
+}
+
+function searchLogs() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const logContainer = document.querySelector('.log-container pre');
+    
+    if (!logContainer) return;
+    
+    if (!searchTerm) {
+        logContainer.innerHTML = originalLogContent;
+        return;
+    }
+    
+    const lines = originalLogContent.split('\n');
+    const filteredLines = lines.filter(line => 
+        line.toLowerCase().includes(searchTerm)
+    );
+    
+    // Highlight search terms
+    const highlightedLines = filteredLines.map(line => {
+        const regex = new RegExp(`(${searchTerm})`, 'gi');
+        return line.replace(regex, '<mark>$1</mark>');
+    });
+    
+    logContainer.innerHTML = highlightedLines.join('\n');
+}
+
+function filterLogs() {
+    const levelFilter = document.getElementById('levelFilter').value;
+    const logContainer = document.querySelector('.log-container pre');
+    
+    if (!logContainer) return;
+    
+    if (!levelFilter) {
+        logContainer.innerHTML = originalLogContent;
+        return;
+    }
+    
+    const lines = originalLogContent.split('\n');
+    const filteredLines = lines.filter(line => 
+        line.includes(levelFilter)
+    );
+    
+    logContainer.innerHTML = filteredLines.join('\n');
+}
+
+function clearFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('levelFilter').value = '';
+    const logContainer = document.querySelector('.log-container pre');
+    if (logContainer) {
+        logContainer.innerHTML = originalLogContent;
+    }
+}
+
+// Auto-refresh every 30 seconds for real-time monitoring
+setInterval(function() {
+    if (document.visibilityState === 'visible') {
+        // Only refresh if no active search/filter
+        const searchInput = document.getElementById('searchInput');
+        const levelFilter = document.getElementById('levelFilter');
+        
+        if ((!searchInput || !searchInput.value) && (!levelFilter || !levelFilter.value)) {
+            fetch(window.location.href)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newLogContent = doc.querySelector('.log-container pre');
+                    
+                    if (newLogContent) {
+                        const currentLogContainer = document.querySelector('.log-container pre');
+                        if (currentLogContainer && newLogContent.innerHTML !== originalLogContent) {
+                            originalLogContent = newLogContent.innerHTML;
+                            currentLogContainer.innerHTML = originalLogContent;
+                            
+                            // Auto-scroll to bottom for new content
+                            const container = document.querySelector('.log-container');
+                            container.scrollTop = container.scrollHeight;
+                        }
+                    }
+                })
+                .catch(error => console.error('Auto-refresh error:', error));
+        }
+    }
+}, 30000);
+</script>
+{% endblock %}
