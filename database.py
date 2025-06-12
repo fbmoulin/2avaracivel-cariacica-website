@@ -18,8 +18,8 @@ db = SQLAlchemy(model_class=Base)
 def configure_database(app):
     """Configure database with optimized settings"""
     
-    # Enhanced database configuration
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///court_site.db")
+    # Force SQLite for development to avoid connection issues
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///court_site.db"
     app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
         "pool_recycle": 300,
         "pool_pre_ping": True,
