@@ -90,21 +90,30 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8">
-                <h2>Sobre a 2ª Vara Cível</h2>
-                <p>A 2ª Vara Cível de Cariacica é uma unidade jurisdicional do Tribunal de Justiça do Espírito Santo (TJES), responsável por processar e julgar ações cíveis de acordo com sua competência territorial e material.</p>
-                
-                <div class="row mt-4">
-                    <div class="col-md-6">
-                        <h4><i class="fas fa-clock text-primary me-2"></i>Horário de Funcionamento</h4>
-                        <p>Segunda a Sexta-feira<br><strong>12h às 18h</strong></p>
+                <div class="row">
+                    <div class="col-md-8">
+                        <h2>Sobre a 2ª Vara Cível</h2>
+                        <p>A 2ª Vara Cível de Cariacica é uma unidade jurisdicional do Tribunal de Justiça do Espírito Santo (TJES), responsável por processar e julgar ações cíveis de acordo com sua competência territorial e material.</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h4><i class="fas fa-clock text-primary me-2"></i>Horário de Funcionamento</h4>
+                                <p>Segunda a Sexta-feira<br><strong>12h às 18h</strong></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h4><i class="fas fa-map-marker-alt text-primary me-2"></i>Localização</h4>
+                                <p>Rua Expedito Garcia, s/n<br>Centro, Cariacica - ES</p>
+                            </div>
+                        </div>
+                        
+                        <a href="{{ url_for('main.about') }}" class="btn btn-outline-primary">Saiba Mais</a>
                     </div>
-                    <div class="col-md-6">
-                        <h4><i class="fas fa-map-marker-alt text-primary me-2"></i>Localização</h4>
-                        <p>Rua Expedito Garcia, s/n<br>Centro, Cariacica - ES</p>
+                    <div class="col-md-4">
+                        <img src="{{ url_for('static', filename='images/institutional/forum_cariacica.png') }}" 
+                             alt="Fórum de Cariacica" 
+                             class="img-fluid rounded shadow">
                     </div>
                 </div>
-                
-                <a href="{{ url_for('main.about') }}" class="btn btn-outline-primary">Saiba Mais</a>
             </div>
             <div class="col-lg-4">
                 <div class="card">

@@ -470,7 +470,8 @@
     <!-- Chatbot -->
     <div id="chatbot-container" class="chatbot-container">
         <button id="chatbot-toggle" class="chatbot-toggle" aria-label="Abrir assistente virtual">
-            <i class="fas fa-comments"></i>
+            <img src="{{ url_for('static', filename='images/chatbot/chatbot_avatar.png') }}" 
+                 alt="Assistente Virtual" style="width: 24px; height: 24px; border-radius: 50%;">
         </button>
         <div id="chatbot-window" class="chatbot-window" style="display: none;">
             <div class="chatbot-header">
