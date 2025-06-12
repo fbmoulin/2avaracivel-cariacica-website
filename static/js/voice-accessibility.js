@@ -261,6 +261,44 @@ class VoiceAccessibilityManager {
                         </div>
                     </div>
 
+                    <!-- Compliance Information -->
+                    <div class="control-section">
+                        <h7><i class="fas fa-certificate me-2"></i>Conformidade e Certificações</h7>
+                        <div class="compliance-info">
+                            <div class="compliance-item">
+                                <div class="compliance-badge">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>CNJ Certificado</span>
+                                </div>
+                                <p class="compliance-text">
+                                    Este portal está em conformidade com as <strong>Resoluções CNJ nº 230/2016</strong> 
+                                    e <strong>CNJ nº 411/2021</strong>, que estabelecem diretrizes de acessibilidade 
+                                    digital para websites do Poder Judiciário.
+                                </p>
+                            </div>
+                            <div class="compliance-item">
+                                <div class="compliance-badge">
+                                    <i class="fas fa-universal-access"></i>
+                                    <span>WCAG 2.1 AA</span>
+                                </div>
+                                <p class="compliance-text">
+                                    Desenvolvido seguindo as <strong>Diretrizes de Acessibilidade para Conteúdo Web (WCAG) 2.1</strong> 
+                                    nível AA, garantindo acesso universal aos serviços judiciais.
+                                </p>
+                            </div>
+                            <div class="compliance-item">
+                                <div class="compliance-badge">
+                                    <i class="fas fa-law"></i>
+                                    <span>Lei 13.146/2015</span>
+                                </div>
+                                <p class="compliance-text">
+                                    Em conformidade com o <strong>Estatuto da Pessoa com Deficiência (Lei Brasileira de Inclusão)</strong>, 
+                                    assegurando igualdade de condições no acesso à justiça.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Status Indicators -->
                     <div class="status-section">
                         <div id="listening-indicator" class="status-indicator" style="display: none;">
