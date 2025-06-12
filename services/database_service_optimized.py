@@ -151,15 +151,23 @@ class OptimizedDatabaseService:
             if not result.fetchone():
                 return False, "Health check query returned no result"
             
-            # Test connection pool status
+            # Test connection pool status safely
             pool = db.engine.pool
-            pool_status = {
-                'size': pool.size(),
-                'checked_in': pool.checkedin(),
-                'checked_out': pool.checkedout(),
-                'overflow': pool.overflow(),
-                'invalid': pool.invalid()
-            }
+            try:
+                pool_status = {
+                    'size': pool.size(),
+                    'checked_in': pool.checkedin(),
+                    'checked_out': pool.checkedout(),
+                    'overflow': pool.overflow() if hasattr(pool, 'overflow') else 0
+                }
+            except AttributeError as pool_error:
+                # Handle different pool implementations
+                pool_status = {
+                    'size': getattr(pool, '_pool_size', 'unknown'),
+                    'checked_in': 'unknown',
+                    'checked_out': 'unknown',
+                    'overflow': 0
+                }
             
             logger.debug(f"Connection pool status: {pool_status}")
             

@@ -168,15 +168,22 @@ class OptimizedContentService:
         if not news_data:
             return self._get_default_news()
         
-        # Process news items
+        # Process news items - handle both array and object formats
         processed_news = []
-        for item in news_data.get('noticias', []):
+        
+        # Check if news_data is a list (array) or dict with 'noticias' key
+        if isinstance(news_data, list):
+            news_items = news_data
+        else:
+            news_items = news_data.get('noticias', [])
+        
+        for item in news_items:
             processed_item = {
-                'id': len(processed_news) + 1,
-                'titulo': item.get('titulo', ''),
-                'resumo': item.get('resumo', ''),
-                'conteudo': item.get('conteudo', ''),
-                'data_publicacao': item.get('data_publicacao', datetime.utcnow().isoformat()),
+                'id': item.get('id', len(processed_news) + 1),
+                'titulo': item.get('title', item.get('titulo', '')),
+                'resumo': item.get('summary', item.get('resumo', '')),
+                'conteudo': item.get('content', item.get('conteudo', '')),
+                'data_publicacao': item.get('published_at', item.get('data_publicacao', datetime.utcnow().isoformat())),
                 'ativo': item.get('ativo', True),
                 'categoria': item.get('categoria', 'geral')
             }
