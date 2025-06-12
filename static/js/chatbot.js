@@ -330,6 +330,9 @@ class Chatbot {
         if (this.messages.length === 0) {
             setTimeout(() => {
                 this.addMessage('Olá! Sou o assistente virtual da 2ª Vara Cível de Cariacica. Como posso ajudá-lo hoje?', 'bot');
+                setTimeout(() => {
+                    this.addQuickResponses();
+                }, 500);
             }, 1000);
         }
     }
@@ -415,11 +418,13 @@ class Chatbot {
     // Quick responses for common questions
     addQuickResponses() {
         const quickResponses = [
-            'Horário de funcionamento',
-            'Localização',
-            'Consulta processual',
-            'Agendamento',
-            'Contato'
+            '🕐 Horário de funcionamento',
+            '📍 Localização da vara',
+            '🔍 Consulta processual',
+            '📅 Agendamento de atendimento',
+            '📞 Informações de contato',
+            '⚖️ Tipos de audiência',
+            '📄 Solicitação de documentos'
         ];
 
         const messagesContainer = document.getElementById('chatbot-messages');
