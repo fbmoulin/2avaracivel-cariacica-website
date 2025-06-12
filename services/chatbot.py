@@ -101,7 +101,7 @@ class ChatbotService:
         
         return best_match if best_score > 0 else None
     
-    def get_response(self, user_message):
+    def get_response(self, user_message, session_id=None):
         """Get chatbot response for user message"""
         try:
             # Check for predefined responses first
@@ -217,3 +217,16 @@ INSTRUÇÕES:
         • Documentos e certidões
         
         Como posso ajudá-lo hoje?"""
+
+
+def get_chatbot_response(message: str, session_id: str = None) -> str:
+    """
+    Public function to get chatbot response
+    Used by routes and external modules
+    """
+    try:
+        chatbot = ChatbotService()
+        return chatbot.get_response(message, session_id)
+    except Exception as e:
+        logging.error(f"Error in get_chatbot_response: {e}")
+        return "Desculpe, ocorreu um erro temporário. Tente novamente em alguns momentos."
