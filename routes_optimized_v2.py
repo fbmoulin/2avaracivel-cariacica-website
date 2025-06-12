@@ -85,7 +85,7 @@ def index():
     """Optimized homepage with caching and performance monitoring"""
     try:
         # Get cached content or load fresh data
-        from services.content import get_homepage_content
+        from services.content_optimized import get_homepage_content
         content = get_homepage_content()
         
         return render_template('index.html', **content)
@@ -116,7 +116,7 @@ def judge():
 def faq():
     """FAQ page with optimized data loading"""
     try:
-        from services.content import get_faq_data
+        from services.content_optimized import get_faq_data
         faq_data = get_faq_data()
         return render_template('faq.html', faq_data=faq_data)
     except Exception as e:
@@ -162,7 +162,7 @@ def contact():
 def news():
     """News page with optimized loading"""
     try:
-        from services.content import get_news_data
+        from services.content_optimized import get_news_data
         news_data = get_news_data()
         return render_template('news.html', news_data=news_data)
     except Exception as e:

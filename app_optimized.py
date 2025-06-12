@@ -214,8 +214,8 @@ def initialize_services(app: Flask):
     
     # Initialize cache service
     try:
-        from services.cache_service import cache_service
-        cache_service.initialize()
+        from services.cache_service_optimized import cache_service
+        # Cache service is auto-initialized
         logging.info("Cache service initialized")
     except ImportError as e:
         logging.warning(f"Cache service not available: {e}")
@@ -237,13 +237,22 @@ def register_blueprints(app: Flask):
     
     # Register main blueprints
     try:
-        from routes import main_bp, services_bp, chatbot_bp
+        from routes_optimized_v2 import main_bp, services_bp, chatbot_bp
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
         logging.info("Main blueprints registered")
     except ImportError as e:
         logging.error(f"Failed to register main blueprints: {e}")
+        # Fallback to original routes
+        try:
+            from routes import main_bp, services_bp, chatbot_bp
+            app.register_blueprint(main_bp)
+            app.register_blueprint(services_bp)
+            app.register_blueprint(chatbot_bp)
+            logging.info("Fallback blueprints registered")
+        except ImportError as e2:
+            logging.error(f"Failed to register fallback blueprints: {e2}")
     
     # Register admin blueprint
     try:

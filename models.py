@@ -1,4 +1,4 @@
-from app import db
+from app_optimized import db
 from datetime import datetime, timedelta
 
 class Contact(db.Model):
