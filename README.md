@@ -26,9 +26,10 @@ O sistema da 2ª Vara Cível de Cariacica representa a modernização completa d
 <td width="50%">
 
 **🤖 Inteligência Artificial**
-- Chatbot com OpenAI GPT-4
+- Chatbot com OpenAI GPT-4o ✅ ATIVO
 - Respostas contextuais em tempo real
-- Processamento de linguagem natural
+- Cache inteligente para performance
+- Sistema robusto com fallback
 - Suporte 24/7 automatizado
 
 **🎯 Acessibilidade Avançada**
@@ -88,7 +89,7 @@ O sistema da 2ª Vara Cível de Cariacica representa a modernização completa d
 | **Frontend** | **Backend** | **Database** | **AI/ML** |
 |:---:|:---:|:---:|:---:|
 | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) | ![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white) | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) | ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white) |
-| ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) | ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) | ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-brown?style=for-the-badge) | ![GPT-4](https://img.shields.io/badge/GPT--4-darkgreen?style=for-the-badge) |
+| ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) | ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) | ![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-brown?style=for-the-badge) | ![GPT-4o](https://img.shields.io/badge/GPT--4o-darkgreen?style=for-the-badge) |
 | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) | ![Gunicorn](https://img.shields.io/badge/Gunicorn-499848?style=for-the-badge&logo=gunicorn&logoColor=white) | ![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white) | ![NLP](https://img.shields.io/badge/NLP-orange?style=for-the-badge) |
 | ![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white) | ![RESTful](https://img.shields.io/badge/REST-blue?style=for-the-badge) | | |
 
