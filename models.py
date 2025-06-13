@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 
 class Contact(db.Model):
     """Model for contact form submissions"""
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), nullable=False)
@@ -16,6 +17,7 @@ class Contact(db.Model):
 
 class NewsItem(db.Model):
     """Model for news and announcements"""
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
@@ -28,8 +30,11 @@ class NewsItem(db.Model):
 
 class ProcessConsultation(db.Model):
     """Model for process consultation requests"""
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     process_number = db.Column(db.String(50), nullable=False)
+    requester_name = db.Column(db.String(100), nullable=False)
+    requester_cpf = db.Column(db.String(14), nullable=False)
     consulted_at = db.Column(db.DateTime, default=datetime.utcnow)
     ip_address = db.Column(db.String(45), nullable=True)
     
@@ -38,6 +43,7 @@ class ProcessConsultation(db.Model):
 
 class ChatMessage(db.Model):
     """Model for chatbot interactions"""
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     user_message = db.Column(db.Text, nullable=False)
     bot_response = db.Column(db.Text, nullable=False)
@@ -46,6 +52,23 @@ class ChatMessage(db.Model):
     
     def __repr__(self):
         return f'<ChatMessage {self.id}>'
+
+class AssessorMeeting(db.Model):
+    """Model for advisor meeting appointments"""
+    __table_args__ = {'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=True)
+    preferred_date = db.Column(db.Date, nullable=False)
+    preferred_time = db.Column(db.Time, nullable=False)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=True)
+    status = db.Column(db.String(20), default='pending')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<AssessorMeeting {self.name} - {self.preferred_date}>'
 
 
 class HearingSchedule(db.Model):
