@@ -108,8 +108,9 @@
                                     <option value="">Selecione o tipo de atendimento</option>
                                     <option value="presencial">🏛️ Presencial - Na sede da Vara</option>
                                     <option value="videoconferencia">💻 Videoconferência - Online</option>
+                                    <option value="gabinete">📋 Atendimento no Gabinete</option>
                                 </select>
-                                <small class="text-muted">Escolha entre atendimento presencial ou por videoconferência</small>
+                                <small class="text-muted">Escolha entre atendimento presencial, videoconferência ou gabinete</small>
                             </div>
                         </div>
 
@@ -129,6 +130,19 @@
                                 <p class="mb-2"><strong>Requisitos técnicos:</strong> Computador/celular com câmera e microfone</p>
                                 <p class="mb-2"><strong>Conexão:</strong> Internet estável (mínimo 5 Mbps)</p>
                                 <p class="mb-0"><strong>Link da reunião:</strong> Será enviado por email após confirmação</p>
+                            </div>
+                            
+                            <div id="gabinete-info" class="alert alert-warning" style="display: none;">
+                                <h6><i class="fas fa-clipboard-list me-2"></i>Atendimento no Gabinete</h6>
+                                <p class="mb-2"><strong>Finalidade:</strong> Levar ou obter informações do processo, pedir celeridade no andamento ou demonstrar urgência na decisão pleiteada</p>
+                                <p class="mb-2"><strong>Atendimento por:</strong> Equipe do Gabinete ou pelo Juiz</p>
+                                <p class="mb-2"><strong>Tipos de serviço:</strong></p>
+                                <ul class="mb-2">
+                                    <li>Protocolo de Documentos (entrega de petições, documentos e outros papéis processuais)</li>
+                                    <li>Solicitação de Certidões (pedido de certidões processuais e outros documentos oficiais)</li>
+                                    <li>Esclarecimentos (dúvidas sobre processos, procedimentos e documentação)</li>
+                                </ul>
+                                <p class="mb-0"><strong>Local:</strong> Gabinete da 2ª Vara Cível - Rua Expedito Garcia, s/n - Centro, Cariacica - ES</p>
                             </div>
                         </div>
 
@@ -271,6 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const meetingInfo = document.getElementById('meeting-info');
     const presencialInfo = document.getElementById('presencial-info');
     const videoconferenciaInfo = document.getElementById('videoconferencia-info');
+    const gabineteInfo = document.getElementById('gabinete-info');
     
     meetingTypeSelect.addEventListener('change', function(e) {
         const selectedType = e.target.value;
@@ -278,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide all info panels first
         presencialInfo.style.display = 'none';
         videoconferenciaInfo.style.display = 'none';
+        gabineteInfo.style.display = 'none';
         
         if (selectedType === 'presencial') {
             meetingInfo.style.display = 'block';
@@ -285,6 +301,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (selectedType === 'videoconferencia') {
             meetingInfo.style.display = 'block';
             videoconferenciaInfo.style.display = 'block';
+        } else if (selectedType === 'gabinete') {
+            meetingInfo.style.display = 'block';
+            gabineteInfo.style.display = 'block';
         } else {
             meetingInfo.style.display = 'none';
         }

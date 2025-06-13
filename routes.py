@@ -222,8 +222,8 @@ def agendar_assessor():
             return redirect(url_for('services.agendamento_assessor'))
         
         # Validate meeting type
-        if meeting_type not in ['presencial', 'videoconferencia']:
-            flash('Tipo de reunião inválido. Selecione presencial ou videoconferência.', 'error')
+        if meeting_type not in ['presencial', 'videoconferencia', 'gabinete']:
+            flash('Tipo de reunião inválido. Selecione presencial, videoconferência ou gabinete.', 'error')
             return redirect(url_for('services.agendamento_assessor'))
         
         # Parse preferred date
@@ -260,6 +260,8 @@ def agendar_assessor():
         # Success message based on meeting type
         if meeting_type == 'videoconferencia':
             flash(f'Solicitação de videoconferência enviada com sucesso! Você receberá um email com o link da reunião em {email}.', 'success')
+        elif meeting_type == 'gabinete':
+            flash(f'Solicitação de atendimento no gabinete enviada com sucesso! Você receberá confirmação por email em {email}.', 'success')
         else:
             flash(f'Agendamento presencial solicitado com sucesso! Você receberá confirmação por email em {email}.', 'success')
         
