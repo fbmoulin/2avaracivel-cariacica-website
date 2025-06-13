@@ -1,5 +1,7 @@
 import re
 import html
+import secrets
+import hashlib
 from urllib.parse import quote
 
 def sanitize_input(input_string):
@@ -10,8 +12,16 @@ def sanitize_input(input_string):
     # Remove HTML tags and escape special characters
     cleaned = html.escape(str(input_string).strip())
     
-    # Remove potentially dangerous characters
-    cleaned = re.sub(r'[<>"\']', '', cleaned)
+    # Remove potentially dangerous patterns
+    dangerous_patterns = [
+        r'<script.*?</script>',
+        r'javascript:',
+        r'on\w+\s*=',
+        r'<iframe.*?</iframe>'
+    ]
+    
+    for pattern in dangerous_patterns:
+        cleaned = re.sub(pattern, '', cleaned, flags=re.IGNORECASE)
     
     return cleaned
 
@@ -22,6 +32,55 @@ def validate_email(email):
     
     email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     return re.match(email_pattern, email) is not None
+
+def validate_cpf(cpf):
+    """Validate Brazilian CPF number"""
+    if not cpf:
+        return False
+    
+    # Remove formatting
+    cpf = re.sub(r'[^0-9]', '', str(cpf))
+    
+    # Check length
+    if len(cpf) != 11:
+        return False
+    
+    # Check for invalid patterns (all same digits)
+    if cpf == cpf[0] * 11:
+        return False
+    
+    # Calculate first check digit
+    sum1 = sum(int(cpf[i]) * (10 - i) for i in range(9))
+    digit1 = 11 - (sum1 % 11)
+    if digit1 >= 10:
+        digit1 = 0
+    
+    # Calculate second check digit
+    sum2 = sum(int(cpf[i]) * (11 - i) for i in range(10))
+    digit2 = 11 - (sum2 % 11)
+    if digit2 >= 10:
+        digit2 = 0
+    
+    # Validate check digits
+    return cpf[9] == str(digit1) and cpf[10] == str(digit2)
+
+def generate_csrf_token():
+    """Generate a secure CSRF token"""
+    return secrets.token_urlsafe(32)
+
+def validate_process_number(process_number):
+    """Validate Brazilian legal process number format"""
+    if not process_number:
+        return False
+    
+    # Remove formatting
+    clean_number = re.sub(r'[^0-9]', '', str(process_number))
+    
+    # Check basic format (CNJ standard: 20 digits)
+    if len(clean_number) != 20:
+        return False
+    
+    return True
 
 def validate_phone(phone):
     """Validate phone number format (Brazilian)"""

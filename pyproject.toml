@@ -1,27 +1,185 @@
-[project]
-name = "cariacica-court-website"
+[tool.poetry]
+name = "vara-civil-cariacica"
 version = "2.0.0"
-description = "Sistema web otimizado para a 2ª Vara Cível de Cariacica com arquitetura empresarial escalável, monitoramento em tempo real e recursos de IA"
-requires-python = ">=3.11"
-dependencies = [
-    "email-validator>=2.2.0",
-    "flask>=3.1.1",
-    "flask-sqlalchemy>=3.1.1",
-    "gunicorn>=23.0.0",
-    "openai>=1.85.0",
-    "psycopg2-binary>=2.9.10",
-    "werkzeug>=3.1.3",
-    "sqlalchemy>=2.0.41",
-    "flask-caching>=2.3.1",
-    "flask-limiter>=3.12",
-    "redis>=6.2.0",
-    "schedule>=1.2.2",
-    "psutil>=7.0.0",
-    "requests>=2.32.4",
-    "flask-wtf>=1.2.2",
-    "pillow>=11.2.1",
-    "asyncio>=3.4.3",
-    "aiodns>=3.4.0",
-    "aiohttp>=3.12.12",
-    "poetry>=2.1.3",
+description = "Digital judicial platform for 2ª Vara Cível de Cariacica with AI-powered features"
+authors = ["Court Development Team <dev@cariacica.court.br>"]
+readme = "README.md"
+homepage = "https://vara-cariacica.court.br"
+repository = "https://github.com/court/vara-civil-cariacica"
+documentation = "https://docs.vara-cariacica.court.br"
+keywords = ["judicial", "court", "flask", "ai", "accessibility"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Framework :: Flask",
+    "Intended Audience :: Legal Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Office/Business :: Legal",
+    "Topic :: Software Development :: Libraries :: Application Frameworks"
 ]
+packages = [{include = "services"}, {include = "utils"}, {include = "templates"}, {include = "static"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^3.0.0"
+flask-sqlalchemy = "^3.1.1"
+flask-wtf = "^1.2.1"
+flask-caching = "^2.1.0"
+flask-limiter = "^3.5.0"
+psycopg2-binary = "^2.9.9"
+sqlalchemy = "^2.0.23"
+werkzeug = "^3.0.1"
+gunicorn = "^21.2.0"
+redis = "^5.0.1"
+requests = "^2.31.0"
+openai = "^1.6.1"
+email-validator = "^2.1.0"
+pillow = "^10.1.0"
+schedule = "^1.2.0"
+psutil = "^5.9.6"
+aiohttp = "^3.9.1"
+aiodns = "^3.1.1"
+asyncio = "^3.4.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-flask = "^1.3.0"
+pytest-cov = "^4.1.0"
+black = "^23.11.0"
+flake8 = "^6.1.0"
+isort = "^5.12.0"
+mypy = "^1.7.1"
+pre-commit = "^3.5.0"
+bandit = "^1.7.5"
+safety = "^2.3.5"
+sphinx = "^7.2.6"
+sphinx-rtd-theme = "^1.3.0"
+
+[tool.poetry.group.test.dependencies]
+factory-boy = "^3.3.0"
+faker = "^20.1.0"
+httpx = "^0.25.2"
+pytest-mock = "^3.12.0"
+pytest-asyncio = "^0.21.1"
+
+[tool.poetry.group.monitoring.dependencies]
+prometheus-client = "^0.19.0"
+sentry-sdk = {extras = ["flask"], version = "^1.38.0"}
+newrelic = "^9.2.0"
+
+[tool.poetry.scripts]
+court-app = "main:main"
+court-dev = "main:run_development_server"
+court-prod = "main_optimized_final:main"
+court-test = "pytest:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["services", "utils", "models"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+    "security: marks tests as security tests",
+    "accessibility: marks tests as accessibility tests"
+]
+
+[tool.coverage.run]
+source = [".", "services", "utils"]
+omit = [
+    "*/tests/*",
+    "*/venv/*",
+    "*/.venv/*",
+    "*/migrations/*",
+    "setup.py",
+    "*/conftest.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:"
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "migrations"]
+skips = ["B101", "B601"]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203", "W503"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "docs/source/conf.py",
+    "old",
+    "build",
+    "dist",
+    ".venv",
+    "venv",
+    "migrations"
+]
+
+[tool.poetry.extras]
+monitoring = ["prometheus-client", "sentry-sdk", "newrelic"]
+testing = ["pytest", "pytest-flask", "pytest-cov", "factory-boy", "faker"]
+dev = ["black", "flake8", "isort", "mypy", "pre-commit", "bandit", "safety"]
+docs = ["sphinx", "sphinx-rtd-theme"]
+all = ["prometheus-client", "sentry-sdk", "newrelic", "pytest", "pytest-flask", "pytest-cov", "factory-boy", "faker", "black", "flake8", "isort", "mypy", "pre-commit", "bandit", "safety", "sphinx", "sphinx-rtd-theme"]
