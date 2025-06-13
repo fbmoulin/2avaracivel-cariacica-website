@@ -197,9 +197,9 @@ def agendamento_assessor():
 
 @services_bp.route('/agendar-assessor', methods=['POST'])
 def agendar_assessor():
-    """Handle assessor meeting scheduling form submission"""
+    """Handle assessor meeting scheduling form submission - supports videoconference and in-person"""
     try:
-        # Get form data
+        # Extract and sanitize form data
         full_name = sanitize_input(request.form.get('full_name', ''))
         document = sanitize_input(request.form.get('document', ''))
         email = sanitize_input(request.form.get('email', ''))
@@ -207,36 +207,38 @@ def agendar_assessor():
         process_number = sanitize_input(request.form.get('process_number', ''))
         meeting_type = sanitize_input(request.form.get('meeting_type', ''))
         meeting_subject = sanitize_input(request.form.get('meeting_subject', ''))
-        preferred_date_str = request.form.get('preferred_date', '')
-        preferred_time = sanitize_input(request.form.get('preferred_time', ''))
+        preferred_date = request.form.get('preferred_date', '')
+        preferred_time = request.form.get('preferred_time', '')
         alternative_times = sanitize_input(request.form.get('alternative_times', ''))
         
         # Validate required fields
-        if not all([full_name, document, email, phone, meeting_type, meeting_subject, preferred_date_str, preferred_time]):
-            flash('Por favor, preencha todos os campos obrigatórios.', 'error')
+        if not all([full_name, document, email, phone, meeting_type, meeting_subject, preferred_date, preferred_time]):
+            flash('Todos os campos obrigatórios devem ser preenchidos.', 'error')
             return redirect(url_for('services.agendamento_assessor'))
         
-        # Validate email
+        # Validate email format
         if not validate_email(email):
-            flash('Por favor, insira um email válido.', 'error')
+            flash('Email inválido. Verifique o formato.', 'error')
             return redirect(url_for('services.agendamento_assessor'))
         
-        # Parse date
+        # Validate meeting type
+        if meeting_type not in ['presencial', 'videoconferencia']:
+            flash('Tipo de reunião inválido. Selecione presencial ou videoconferência.', 'error')
+            return redirect(url_for('services.agendamento_assessor'))
+        
+        # Parse preferred date
         try:
-            preferred_date = datetime.strptime(preferred_date_str, '%Y-%m-%d').date()
+            preferred_date_obj = datetime.strptime(preferred_date, '%Y-%m-%d').date()
         except ValueError:
-            flash('Data inválida. Por favor, selecione uma data válida.', 'error')
+            flash('Data inválida. Verifique o formato.', 'error')
             return redirect(url_for('services.agendamento_assessor'))
         
-        # Check if date is not in the past
-        if preferred_date < date.today():
-            flash('Não é possível agendar para datas passadas.', 'error')
+        # Check if date is in the future
+        if preferred_date_obj <= date.today():
+            flash('A data deve ser futura.', 'error')
             return redirect(url_for('services.agendamento_assessor'))
         
-        # Generate confirmation token
-        confirmation_token = str(uuid.uuid4())
-        
-        # Create meeting request
+        # Create meeting record
         meeting = AssessorMeeting(
             full_name=full_name,
             document=document,
@@ -245,28 +247,29 @@ def agendar_assessor():
             process_number=process_number if process_number else None,
             meeting_type=meeting_type,
             meeting_subject=meeting_subject,
-            preferred_date=preferred_date,
+            preferred_date=preferred_date_obj,
             preferred_time=preferred_time,
             alternative_times=alternative_times if alternative_times else None,
-            confirmation_token=confirmation_token,
+            confirmation_token=str(uuid.uuid4()),
             status='pending'
         )
         
-        # Save to database
         db.session.add(meeting)
         db.session.commit()
         
-        # Success message
-        flash('Solicitação de reunião enviada com sucesso! Entraremos em contato em breve para confirmar o agendamento.', 'success')
+        # Success message based on meeting type
+        if meeting_type == 'videoconferencia':
+            flash(f'Solicitação de videoconferência enviada com sucesso! Você receberá um email com o link da reunião em {email}.', 'success')
+        else:
+            flash(f'Agendamento presencial solicitado com sucesso! Você receberá confirmação por email em {email}.', 'success')
         
-        # Log the meeting request
-        logging.info(f"Assessor meeting request created: {full_name} - {preferred_date} at {preferred_time}")
+        logging.info(f"Meeting scheduled: {meeting_type} for {full_name} on {preferred_date}")
         
-        return redirect(url_for('services.confirmacao_assessor', token=confirmation_token))
+        return redirect(url_for('services.agendamento_assessor'))
         
     except Exception as e:
-        logging.error(f"Error creating assessor meeting request: {e}")
-        flash('Erro ao processar solicitação. Tente novamente ou entre em contato conosco.', 'error')
+        logging.error(f"Error scheduling meeting: {e}")
+        flash('Erro ao processar agendamento. Tente novamente mais tarde.', 'error')
         return redirect(url_for('services.agendamento_assessor'))
 
 @services_bp.route('/confirmacao-assessor/<token>')

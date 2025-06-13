@@ -54,21 +54,61 @@ class ChatMessage(db.Model):
         return f'<ChatMessage {self.id}>'
 
 class AssessorMeeting(db.Model):
-    """Model for advisor meeting appointments"""
+    """Model for advisor meeting appointments - supports both videoconference and in-person"""
     __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
+    
+    # Personal Information
+    full_name = db.Column(db.String(100), nullable=False)
+    document = db.Column(db.String(20), nullable=False)  # CPF or RG
     email = db.Column(db.String(120), nullable=False)
-    phone = db.Column(db.String(20), nullable=True)
+    phone = db.Column(db.String(20), nullable=False)
+    
+    # Meeting Details
+    process_number = db.Column(db.String(50), nullable=True)
+    meeting_type = db.Column(db.String(20), nullable=False)  # 'presencial' or 'videoconferencia'
+    meeting_subject = db.Column(db.Text, nullable=False)
+    
+    # Scheduling
     preferred_date = db.Column(db.Date, nullable=False)
-    preferred_time = db.Column(db.Time, nullable=False)
-    subject = db.Column(db.String(200), nullable=False)
-    message = db.Column(db.Text, nullable=True)
-    status = db.Column(db.String(20), default='pending')
+    preferred_time = db.Column(db.String(10), nullable=False)
+    alternative_times = db.Column(db.Text, nullable=True)
+    
+    # Meeting Information (when scheduled)
+    scheduled_date = db.Column(db.DateTime, nullable=True)
+    assessor_name = db.Column(db.String(100), nullable=True)
+    meeting_room = db.Column(db.String(50), nullable=True)  # For in-person meetings
+    meeting_link = db.Column(db.String(500), nullable=True)  # For video conferences
+    
+    # Status and Metadata
+    status = db.Column(db.String(20), default='pending')  # 'pending', 'scheduled', 'confirmed', 'completed', 'cancelled'
+    notes = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Administrative
+    confirmation_token = db.Column(db.String(100), nullable=True)
+    reminder_sent = db.Column(db.Boolean, default=False)
     
     def __repr__(self):
-        return f'<AssessorMeeting {self.name} - {self.preferred_date}>'
+        return f'<AssessorMeeting {self.full_name} - {self.preferred_date}>'
+    
+    def to_dict(self):
+        """Convert to dictionary for JSON serialization"""
+        return {
+            'id': self.id,
+            'full_name': self.full_name,
+            'email': self.email,
+            'phone': self.phone,
+            'process_number': self.process_number,
+            'meeting_type': self.meeting_type,
+            'meeting_subject': self.meeting_subject,
+            'preferred_date': self.preferred_date.strftime('%d/%m/%Y') if self.preferred_date else None,
+            'preferred_time': self.preferred_time,
+            'scheduled_date': self.scheduled_date.strftime('%d/%m/%Y às %H:%M') if self.scheduled_date else None,
+            'status': self.status,
+            'created_at': self.created_at.strftime('%d/%m/%Y às %H:%M')
+        }
 
 
 class HearingSchedule(db.Model):
