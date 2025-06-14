@@ -147,6 +147,20 @@
                                 <p class="mb-2"><strong>Observação:</strong> Para protocolo de documentos e solicitações de certidões, dirija-se ao Cartório</p>
                                 <p class="mb-0"><strong>Local:</strong> Gabinete da 2ª Vara Cível - Rua Expedito Garcia, s/n - Centro, Cariacica - ES</p>
                             </div>
+                            
+                            <div id="cartorio-info" class="alert alert-info" style="display: none;">
+                                <h6><i class="fas fa-file-alt me-2"></i>Serviços do Cartório</h6>
+                                <p class="mb-2"><strong>Finalidade:</strong> Protocolo de documentos e solicitação de certidões processuais</p>
+                                <p class="mb-2"><strong>Tipos de serviço do Cartório:</strong></p>
+                                <ul class="mb-2">
+                                    <li>Protocolo de Documentos (entrega de petições, documentos e outros papéis processuais)</li>
+                                    <li>Solicitação de Certidões (pedido de certidões processuais e outros documentos oficiais)</li>
+                                    <li>Juntada de documentos aos autos</li>
+                                    <li>Expedição de mandados e intimações</li>
+                                </ul>
+                                <p class="mb-2"><strong>Documentos necessários:</strong> RG ou CNH original, documentos a serem protocolados</p>
+                                <p class="mb-0"><strong>Local:</strong> Cartório da 2ª Vara Cível - Rua Expedito Garcia, s/n - Centro, Cariacica - ES</p>
+                            </div>
                         </div>
 
                         <!-- Meeting Details -->
@@ -289,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const presencialInfo = document.getElementById('presencial-info');
     const videoconferenciaInfo = document.getElementById('videoconferencia-info');
     const gabineteInfo = document.getElementById('gabinete-info');
+    const cartorioInfo = document.getElementById('cartorio-info');
     
     meetingTypeSelect.addEventListener('change', function(e) {
         const selectedType = e.target.value;
@@ -297,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         presencialInfo.style.display = 'none';
         videoconferenciaInfo.style.display = 'none';
         gabineteInfo.style.display = 'none';
+        cartorioInfo.style.display = 'none';
         
         if (selectedType === 'presencial') {
             meetingInfo.style.display = 'block';
@@ -307,6 +323,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (selectedType === 'gabinete') {
             meetingInfo.style.display = 'block';
             gabineteInfo.style.display = 'block';
+        } else if (selectedType === 'cartorio') {
+            meetingInfo.style.display = 'block';
+            cartorioInfo.style.display = 'block';
         } else {
             meetingInfo.style.display = 'none';
         }

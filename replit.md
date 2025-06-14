@@ -33,13 +33,17 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 ## Recent Changes
 
 ### June 2025 - Enhanced Appointment System
-- Upgraded AssessorMeeting model to support both video conference and in-person appointments
-- Added dynamic UI with meeting type selection and information panels
+- Upgraded AssessorMeeting model to support four distinct service types
+- Added dynamic UI with meeting type selection and detailed information panels
 - Implemented comprehensive form validation for appointment scheduling
 - Enhanced database schema with 21 fields including meeting_type, meeting_link, meeting_room
-- Created visual indicators (🏛️ for in-person, 💻 for video conference)
+- Created visual indicators and service descriptions for all appointment types:
+  - 🏛️ Presencial - General in-person meetings at court location
+  - 💻 Videoconferência - Online meetings via Teams/Google Meet
+  - 📋 Atendimento no Gabinete - Office visits for process information and urgency requests
+  - 📄 Serviços do Cartório - Registry services for document protocol and certifications
 - Added JavaScript functionality for dynamic information display
-- Successfully tested appointment creation and database storage
+- Successfully tested appointment creation and database storage for all service types
 
 ### January 2025 - Debug Resolution
 - Fixed ProcessConsultation model field names (requester_name, requester_cpf)
