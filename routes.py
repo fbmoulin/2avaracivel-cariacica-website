@@ -456,7 +456,7 @@ def system_status():
         return jsonify({'error': 'Unable to load status'}), 500
 
 @main_bp.route('/consulta', methods=['GET', 'POST'])
-def process_consultation():
+def consultation_page():
     """Process consultation page"""
     if request.method == 'POST':
         try:

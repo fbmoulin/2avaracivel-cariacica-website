@@ -63,6 +63,11 @@ class ChatMessage(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     session_id = db.Column(db.String(100), nullable=True)
     
+    def __init__(self, user_message, bot_response, session_id=None):
+        self.user_message = user_message
+        self.bot_response = bot_response
+        self.session_id = session_id
+    
     def __repr__(self):
         return f'<ChatMessage {self.id}>'
 
