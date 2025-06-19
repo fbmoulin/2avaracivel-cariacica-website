@@ -315,22 +315,101 @@ def chat():
 
 @chatbot_bp.route('/api/message', methods=['POST'])
 def chatbot_message():
-    """Handle chatbot messages"""
+    """Enhanced chatbot message handling with debugging"""
     try:
         data = request.get_json()
         user_message = data.get('message', '')
+        session_id = data.get('session_id', request.remote_addr)
         
         if not user_message:
             return jsonify({'error': 'Mensagem não pode estar vazia'}), 400
         
-        # Get bot response
+        # Get bot response with enhanced error handling
         response = chatbot_service.get_response(user_message)
+        
+        # Return enhanced response with metadata if debug mode
+        if chatbot_service.debug_mode:
+            metrics = chatbot_service.get_performance_metrics()
+            return jsonify({
+                'response': response,
+                'debug': {
+                    'response_time': metrics.get('average_response_time', 0),
+                    'openai_available': metrics.get('openai_available', False),
+                    'total_requests': metrics.get('total_requests', 0)
+                }
+            })
         
         return jsonify({'response': response})
         
     except Exception as e:
         logging.error(f"Chatbot error: {e}")
+        chatbot_service.performance_metrics['errors'] += 1
+        chatbot_service.performance_metrics['last_error'] = str(e)
         return jsonify({'error': 'Erro interno do servidor'}), 500
+
+@chatbot_bp.route('/api/health', methods=['GET'])
+def chatbot_health():
+    """Get chatbot health status and metrics"""
+    try:
+        health_status = chatbot_service.get_health_status()
+        return jsonify(health_status)
+    except Exception as e:
+        logging.error(f"Error getting chatbot health: {e}")
+        return jsonify({'error': 'Erro ao obter status do chatbot'}), 500
+
+@chatbot_bp.route('/api/metrics', methods=['GET'])
+def chatbot_metrics():
+    """Get detailed chatbot performance metrics"""
+    try:
+        metrics = chatbot_service.get_performance_metrics()
+        return jsonify(metrics)
+    except Exception as e:
+        logging.error(f"Error getting chatbot metrics: {e}")
+        return jsonify({'error': 'Erro ao obter métricas do chatbot'}), 500
+
+@chatbot_bp.route('/api/debug/enable', methods=['POST', 'GET'])
+def enable_debug():
+    """Enable chatbot debug mode"""
+    try:
+        chatbot_service.enable_debug_mode()
+        return jsonify({'message': 'Debug mode enabled', 'debug_mode': True})
+    except Exception as e:
+        logging.error(f"Error enabling debug mode: {e}")
+        return jsonify({'error': 'Erro ao ativar modo debug'}), 500
+
+@chatbot_bp.route('/api/debug/disable', methods=['POST', 'GET'])
+def disable_debug():
+    """Disable chatbot debug mode"""
+    try:
+        chatbot_service.disable_debug_mode()
+        return jsonify({'message': 'Debug mode disabled', 'debug_mode': False})
+    except Exception as e:
+        logging.error(f"Error disabling debug mode: {e}")
+        return jsonify({'error': 'Erro ao desativar modo debug'}), 500
+
+@chatbot_bp.route('/api/reset', methods=['POST', 'GET'])
+def reset_metrics():
+    """Reset chatbot performance metrics"""
+    try:
+        chatbot_service.reset_metrics()
+        return jsonify({'message': 'Metrics reset successfully'})
+    except Exception as e:
+        logging.error(f"Error resetting metrics: {e}")
+        return jsonify({'error': 'Erro ao resetar métricas'}), 500
+
+@chatbot_bp.route('/debug')
+def chatbot_debug_panel():
+    """Chatbot debug panel interface"""
+    try:
+        health_status = chatbot_service.get_health_status()
+        metrics = chatbot_service.get_performance_metrics()
+        return render_template('chatbot_debug.html', 
+                             health=health_status, 
+                             metrics=metrics)
+    except Exception as e:
+        logging.error(f"Error loading debug panel: {e}")
+        flash('Erro ao carregar painel de debug', 'error')
+        return redirect(url_for('main.index'))
 
 # System monitoring routes
 @main_bp.route('/admin/status')

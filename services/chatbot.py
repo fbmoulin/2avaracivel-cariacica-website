@@ -377,6 +377,119 @@ Para esclarecimentos gerais, posso agendar uma reunião com nossos assessores ju
         • Documentos e certidões
         
         Como posso ajudá-lo hoje?"""
+    
+    def debug_log(self, message: str, level: str = 'info') -> None:
+        """Enhanced logging with debug mode support"""
+        if self.debug_mode:
+            timestamp = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+            debug_message = f"[CHATBOT {level.upper()}] {timestamp}: {message}"
+            
+            if level == 'error':
+                logging.error(debug_message)
+            elif level == 'warning':
+                logging.warning(debug_message)
+            else:
+                logging.info(debug_message)
+    
+    def update_response_time(self, response_time: float) -> None:
+        """Update average response time metric"""
+        current_avg = self.performance_metrics['average_response_time']
+        total_requests = self.performance_metrics['total_requests']
+        
+        if total_requests == 1:
+            self.performance_metrics['average_response_time'] = response_time
+        else:
+            # Calculate new average
+            self.performance_metrics['average_response_time'] = (
+                (current_avg * (total_requests - 1) + response_time) / total_requests
+            )
+    
+    def get_performance_metrics(self) -> Dict[str, Any]:
+        """Get current performance metrics"""
+        uptime = datetime.now() - self.performance_metrics['start_time']
+        
+        return {
+            'total_requests': self.performance_metrics['total_requests'],
+            'openai_requests': self.performance_metrics['openai_requests'],
+            'fallback_responses': self.performance_metrics['fallback_responses'],
+            'error_count': self.performance_metrics['errors'],
+            'success_rate': (
+                (self.performance_metrics['total_requests'] - self.performance_metrics['errors']) / 
+                max(1, self.performance_metrics['total_requests']) * 100
+            ),
+            'average_response_time': round(self.performance_metrics['average_response_time'], 3),
+            'uptime_seconds': uptime.total_seconds(),
+            'openai_available': self.openai_client is not None,
+            'last_error': self.performance_metrics['last_error'],
+            'conversation_context_size': len(self.conversation_context)
+        }
+    
+    def get_health_status(self) -> Dict[str, Any]:
+        """Get comprehensive health status"""
+        metrics = self.get_performance_metrics()
+        
+        # Determine health status
+        if metrics['error_count'] == 0:
+            health_status = 'excellent'
+        elif metrics['success_rate'] > 95:
+            health_status = 'good'
+        elif metrics['success_rate'] > 80:
+            health_status = 'fair'
+        else:
+            health_status = 'poor'
+        
+        return {
+            'status': health_status,
+            'openai_status': 'active' if self.openai_client else 'inactive',
+            'debug_mode': self.debug_mode,
+            'metrics': metrics,
+            'recommendations': self.get_health_recommendations(metrics)
+        }
+    
+    def get_health_recommendations(self, metrics: Dict[str, Any]) -> List[str]:
+        """Generate health recommendations based on metrics"""
+        recommendations = []
+        
+        if metrics['success_rate'] < 90:
+            recommendations.append("High error rate detected - check OpenAI API connectivity")
+        
+        if metrics['average_response_time'] > 5.0:
+            recommendations.append("Response times are slow - consider optimizing API calls")
+        
+        if not metrics['openai_available']:
+            recommendations.append("OpenAI API not available - running in fallback mode")
+        
+        if metrics['total_requests'] == 0:
+            recommendations.append("No requests processed yet - system ready")
+        
+        if not recommendations:
+            recommendations.append("System performing optimally")
+        
+        return recommendations
+    
+    def reset_metrics(self) -> None:
+        """Reset performance metrics"""
+        self.performance_metrics = {
+            'total_requests': 0,
+            'openai_requests': 0,
+            'fallback_responses': 0,
+            'errors': 0,
+            'average_response_time': 0,
+            'last_error': None,
+            'start_time': datetime.now()
+        }
+        self.conversation_context = []
+        self.debug_log("Performance metrics reset")
+    
+    def enable_debug_mode(self) -> None:
+        """Enable debug mode"""
+        self.debug_mode = True
+        self.debug_log("Debug mode enabled")
+    
+    def disable_debug_mode(self) -> None:
+        """Disable debug mode"""
+        self.debug_log("Debug mode disabled")
+        self.debug_mode = False
 
 
 def get_chatbot_response(message: str, session_id: str = None) -> str:

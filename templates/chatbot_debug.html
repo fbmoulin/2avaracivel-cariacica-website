@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Debug Panel - 2ª Vara Cível de Cariacica</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .debug-panel {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .metric-card {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #00ff00;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff41;
+        }
+        .metric-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .status-excellent { color: #00ff00; }
+        .status-good { color: #ffff00; }
+        .status-fair { color: #ff8800; }
+        .status-poor { color: #ff0000; }
+        .btn-debug {
+            background: #333;
+            border: 1px solid #555;
+            color: #00ff00;
+            margin: 5px;
+        }
+        .btn-debug:hover {
+            background: #444;
+            color: #00ff41;
+        }
+        .log-output {
+            background: #000;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            padding: 15px;
+            border-radius: 5px;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .recommendation {
+            background: rgba(255, 255, 0, 0.1);
+            border-left: 4px solid #ffff00;
+            padding: 10px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body class="debug-panel">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">
+                    <i class="fas fa-robot"></i> Chatbot Debug Panel
+                </h1>
+                <p class="text-center text-muted">Sistema de monitoramento e debug do assistente virtual</p>
+            </div>
+        </div>
+
+        <!-- Status Overview -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="metric-card text-center">
+                    <div class="metric-value status-{{ health.status }}">
+                        {{ health.status.upper() }}
+                    </div>
+                    <div class="metric-label">Status Geral</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card text-center">
+                    <div class="metric-value">
+                        {{ metrics.total_requests }}
+                    </div>
+                    <div class="metric-label">Total de Requisições</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card text-center">
+                    <div class="metric-value">
+                        {{ "%.1f"|format(metrics.success_rate) }}%
+                    </div>
+                    <div class="metric-label">Taxa de Sucesso</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="metric-card text-center">
+                    <div class="metric-value">
+                        {{ "%.3f"|format(metrics.average_response_time) }}s
+                    </div>
+                    <div class="metric-label">Tempo Médio de Resposta</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Metrics -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="metric-card">
+                    <h3><i class="fas fa-chart-line"></i> Métricas Detalhadas</h3>
+                    <table class="table table-dark table-borderless">
+                        <tr>
+                            <td>OpenAI Requests:</td>
+                            <td class="text-end">{{ metrics.openai_requests }}</td>
+                        </tr>
+                        <tr>
+                            <td>Fallback Responses:</td>
+                            <td class="text-end">{{ metrics.fallback_responses }}</td>
+                        </tr>
+                        <tr>
+                            <td>Error Count:</td>
+                            <td class="text-end">{{ metrics.error_count }}</td>
+                        </tr>
+                        <tr>
+                            <td>Uptime:</td>
+                            <td class="text-end">{{ "%.0f"|format(metrics.uptime_seconds) }}s</td>
+                        </tr>
+                        <tr>
+                            <td>Context Size:</td>
+                            <td class="text-end">{{ metrics.conversation_context_size }}</td>
+                        </tr>
+                        <tr>
+                            <td>OpenAI Status:</td>
+                            <td class="text-end">
+                                <span class="{% if metrics.openai_available %}status-excellent{% else %}status-poor{% endif %}">
+                                    {{ "Active" if metrics.openai_available else "Inactive" }}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="metric-card">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Status e Recomendações</h3>
+                    {% for recommendation in health.recommendations %}
+                    <div class="recommendation">
+                        <i class="fas fa-lightbulb"></i> {{ recommendation }}
+                    </div>
+                    {% endfor %}
+                    
+                    {% if metrics.last_error %}
+                    <div class="mt-3">
+                        <strong>Último Erro:</strong>
+                        <pre class="text-danger">{{ metrics.last_error }}</pre>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Controls -->
+        <div class="row">
+            <div class="col-12">
+                <div class="metric-card">
+                    <h3><i class="fas fa-cogs"></i> Controles de Debug</h3>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <button class="btn btn-debug" onclick="toggleDebugMode()">
+                                <i class="fas fa-bug"></i>
+                                {{ "Disable" if health.debug_mode else "Enable" }} Debug Mode
+                            </button>
+                            <button class="btn btn-debug" onclick="resetMetrics()">
+                                <i class="fas fa-redo"></i> Reset Metrics
+                            </button>
+                            <button class="btn btn-debug" onclick="testChatbot()">
+                                <i class="fas fa-play"></i> Test Chatbot
+                            </button>
+                            <button class="btn btn-debug" onclick="refreshData()">
+                                <i class="fas fa-sync"></i> Refresh Data
+                            </button>
+                            <button class="btn btn-debug" onclick="exportLogs()">
+                                <i class="fas fa-download"></i> Export Logs
+                            </button>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <span class="badge bg-secondary">
+                                Debug Mode: {{ "ON" if health.debug_mode else "OFF" }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Test Interface -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="metric-card">
+                    <h3><i class="fas fa-terminal"></i> Live Test Interface</h3>
+                    <div class="mb-3">
+                        <input type="text" class="form-control bg-dark text-light" id="testMessage" 
+                               placeholder="Digite uma mensagem para testar o chatbot..." 
+                               onkeypress="if(event.key==='Enter') sendTestMessage()">
+                    </div>
+                    <div class="log-output" id="testOutput">
+                        > Sistema pronto para teste. Digite uma mensagem acima e pressione Enter.
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="metric-card">
+                    <h3><i class="fas fa-heartbeat"></i> Health Monitor</h3>
+                    <div id="healthMonitor">
+                        <div class="mb-2">
+                            <strong>Last Check:</strong> <span id="lastCheck">--</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Response Time:</strong> <span id="responseTime">--</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Status:</strong> <span id="currentStatus">{{ health.status }}</span>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" role="progressbar" 
+                                 style="width: {{ metrics.success_rate }}%" 
+                                 aria-valuenow="{{ metrics.success_rate }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                                {{ "%.1f"|format(metrics.success_rate) }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="{{ url_for('main.index') }}" class="btn btn-outline-light">
+                    <i class="fas fa-home"></i> Voltar ao Site
+                </a>
+                <a href="{{ url_for('main.chatbot') }}" class="btn btn-outline-light">
+                    <i class="fas fa-comments"></i> Chatbot Normal
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Debug Panel JavaScript Functions
+        function addToOutput(message, type = 'info') {
+            const output = document.getElementById('testOutput');
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'error' ? 'text-danger' : type === 'success' ? 'text-success' : '';
+            output.innerHTML += `\n<span class="${className}">[${timestamp}] ${message}</span>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        async function sendTestMessage() {
+            const input = document.getElementById('testMessage');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            addToOutput(`> ${message}`, 'info');
+            input.value = '';
+            
+            const startTime = Date.now();
+            
+            try {
+                const response = await fetch('/chatbot/api/message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+                
+                const responseTime = Date.now() - startTime;
+                document.getElementById('responseTime').textContent = `${responseTime}ms`;
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addToOutput(`< ${data.response}`, 'success');
+                    
+                    if (data.debug) {
+                        addToOutput(`[DEBUG] OpenAI: ${data.debug.openai_available}, Requests: ${data.debug.total_requests}`, 'info');
+                    }
+                } else {
+                    const error = await response.text();
+                    addToOutput(`ERROR: ${error}`, 'error');
+                }
+            } catch (error) {
+                addToOutput(`NETWORK ERROR: ${error.message}`, 'error');
+            }
+            
+            document.getElementById('lastCheck').textContent = new Date().toLocaleTimeString();
+        }
+
+        async function toggleDebugMode() {
+            const isDebugOn = {{ 'true' if health.debug_mode else 'false' }};
+            const endpoint = isDebugOn ? '/chatbot/api/debug/disable' : '/chatbot/api/debug/enable';
+            
+            try {
+                const response = await fetch(endpoint, { method: 'GET' });
+                const data = await response.json();
+                addToOutput(`Debug mode ${data.debug_mode ? 'enabled' : 'disabled'}`, 'success');
+                setTimeout(() => location.reload(), 1000);
+            } catch (error) {
+                addToOutput(`Error toggling debug mode: ${error.message}`, 'error');
+            }
+        }
+
+        async function resetMetrics() {
+            try {
+                const response = await fetch('/chatbot/api/reset', { method: 'GET' });
+                const data = await response.json();
+                addToOutput('Metrics reset successfully', 'success');
+                setTimeout(() => location.reload(), 1000);
+            } catch (error) {
+                addToOutput(`Error resetting metrics: ${error.message}`, 'error');
+            }
+        }
+
+        function testChatbot() {
+            const testMessages = [
+                'Olá',
+                'Horário de funcionamento?',
+                'Como agendar uma reunião?',
+                'Informações de contato'
+            ];
+            
+            testMessages.forEach((msg, index) => {
+                setTimeout(() => {
+                    document.getElementById('testMessage').value = msg;
+                    sendTestMessage();
+                }, index * 2000);
+            });
+        }
+
+        function refreshData() {
+            addToOutput('Refreshing page data...', 'info');
+            location.reload();
+        }
+
+        function exportLogs() {
+            const output = document.getElementById('testOutput').textContent;
+            const blob = new Blob([output], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chatbot-debug-${new Date().toISOString().slice(0,10)}.log`;
+            a.click();
+            URL.revokeObjectURL(url);
+            addToOutput('Debug logs exported', 'success');
+        }
+
+        // Auto-refresh health monitor every 30 seconds
+        setInterval(async () => {
+            try {
+                const response = await fetch('/chatbot/api/health');
+                const health = await response.json();
+                document.getElementById('currentStatus').textContent = health.status;
+                document.getElementById('lastCheck').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.log('Health check failed:', error);
+            }
+        }, 30000);
+
+        // Initialize
+        addToOutput('Debug panel initialized. Use Ctrl+Shift+D in the main site to toggle chatbot debug mode.', 'success');
+    </script>
+</body>
+</html>
