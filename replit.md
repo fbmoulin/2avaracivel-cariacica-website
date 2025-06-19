@@ -32,6 +32,18 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Enhanced Chatbot Debugging and Performance System (Complete)
+- Created comprehensive chatbot debugging system with advanced error handling and performance monitoring
+- Implemented enhanced chatbot service with conversation context, metrics tracking, and health monitoring
+- Added debugging API endpoints (/api/health, /api/metrics, /api/debug/*) with comprehensive status reporting
+- Built professional debug panel interface with real-time testing, metrics visualization, and health monitoring
+- Enhanced chatbot UI with improved styling, typing indicators, retry mechanisms, and offline support
+- Added performance tracking (response times, success rates, error counting, OpenAI availability monitoring)
+- Implemented conversation context management with 10-message history for better responses
+- Created advanced debugging features including Ctrl+Shift+D toggle, export logs, and live testing interface
+- Added comprehensive health recommendations system and automatic metric calculations
+- Integrated enhanced chatbot implementation with enterprise-grade error recovery and fallback systems
+
 ### June 2025 - Duplicate Accessibility Buttons Fix (Complete)
 - Fixed duplicate accessibility buttons issue by removing legacy accessibility panel
 - Cleaned up old HTML structure and CSS styles for legacy accessibility controls
