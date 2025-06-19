@@ -61,12 +61,29 @@ footer .text-white {
     color: rgba(255, 255, 255, 0.9) !important;
 }
 
-/* Force proper contrast on all problematic elements */
-body p, body h5, body h6, body a {
-    color: inherit !important;
+/* Specific fixes for console-identified elements */
+.footer-section .legal-notices p,
+.footer-section .legal-notices h6,
+.footer-section .developer-attribution p,
+.footer-section .developer-attribution h6,
+.footer-section .tech-credits p {
+    color: white !important;
 }
 
-body .footer-section p, body .footer-section h5, body .footer-section h6, body .footer-section a {
+.footer-section .text-center p.small.text-muted,
+.footer-section .mb-1,
+.footer-section .mb-2,
+.footer-section .mb-3 {
+    color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Force override for all footer text elements */
+footer.footer-section p,
+footer.footer-section h5, 
+footer.footer-section h6,
+footer.footer-section a,
+footer.footer-section .small,
+footer.footer-section .text-muted {
     color: white !important;
 }
 

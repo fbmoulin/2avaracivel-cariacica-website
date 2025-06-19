@@ -54,6 +54,9 @@
     <!-- Emergency Fixes CSS - Critical for WCAG compliance -->
     <link href="{{ url_for('static', filename='css/emergency-fixes.css') }}" rel="stylesheet" id="emergency-fixes-css">
     
+    <!-- Footer Contrast Fix CSS - Critical for footer accessibility -->
+    <link href="{{ url_for('static', filename='css/footer-contrast-fix.css') }}" rel="stylesheet" id="footer-contrast-css">
+    
     <!-- Non-critical CSS - Defer loading -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link href="{{ url_for('static', filename='css/modern-consolidated.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -1419,6 +1422,28 @@
         .footer-section hr {
             border-color: rgba(255, 255, 255, 0.2);
             margin: 30px 0 20px 0;
+        }
+
+        /* Critical footer contrast override - maximum specificity */
+        footer.footer-section p,
+        footer.footer-section h5,
+        footer.footer-section h6,
+        footer.footer-section span,
+        footer.footer-section .small,
+        footer.footer-section .text-muted,
+        footer.footer-section .mb-1,
+        footer.footer-section .mb-2,
+        footer.footer-section .mb-3,
+        footer.footer-section a {
+            color: white !important;
+            background: transparent !important;
+        }
+
+        footer.footer-section .legal-notices *,
+        footer.footer-section .developer-attribution *,
+        footer.footer-section .tech-credits *,
+        footer.footer-section .text-center * {
+            color: rgba(255, 255, 255, 0.95) !important;
         }
 
         .footer-section h5 {
