@@ -23,6 +23,21 @@ footer.footer-section a {
     background: transparent !important;
 }
 
+/* Critical fix for Forum address visibility */
+footer.footer-section .col-md-4 p {
+    color: white !important;
+    font-weight: 500 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+    background: transparent !important;
+}
+
+/* Enhanced contrast for contact information */
+footer.footer-section .col-md-4 h5 {
+    color: white !important;
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
 /* Text utility class overrides */
 footer.footer-section .text-muted,
 footer.footer-section .small,
