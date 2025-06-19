@@ -1,20 +1,32 @@
 import os
 import json
 import logging
+import time
+import re
+from datetime import datetime, timedelta
+from functools import lru_cache
+from typing import Dict, List, Optional, Any
 from openai import OpenAI
 from services.integration_service import RetryManager, with_integration, integration_service
-import time
-from functools import lru_cache
-from datetime import datetime, timedelta
-import re
 
 class ChatbotService:
-    """Service for handling chatbot interactions"""
+    """Enhanced Service for handling chatbot interactions with debugging capabilities"""
     
     def __init__(self):
         self.openai_client = None
+        self.debug_mode = os.environ.get('CHATBOT_DEBUG', 'false').lower() == 'true'
+        self.performance_metrics = {
+            'total_requests': 0,
+            'openai_requests': 0,
+            'fallback_responses': 0,
+            'errors': 0,
+            'average_response_time': 0,
+            'last_error': None,
+            'start_time': datetime.now()
+        }
         self.setup_openai()
         self.predefined_responses = self.load_predefined_responses()
+        self.conversation_context = []
     
     def setup_openai(self):
         """Initialize OpenAI client with robust error handling"""
