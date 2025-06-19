@@ -1,0 +1,818 @@
+/**
+ * Refined Accessibility CSS - Optimized Styles
+ * 2ª Vara Cível de Cariacica - Complete accessibility styling system
+ */
+
+/* === Core Variables === */
+:root {
+  --accessibility-primary: #1e40af;
+  --accessibility-secondary: #3b82f6;
+  --accessibility-success: #059669;
+  --accessibility-warning: #d97706;
+  --accessibility-danger: #dc2626;
+  --accessibility-light: #f8fafc;
+  --accessibility-dark: #1e293b;
+  --accessibility-focus: #fbbf24;
+  
+  --accessibility-font-size: 16px;
+  --accessibility-contrast: 100%;
+  --accessibility-motion: 1;
+  
+  --accessibility-border-radius: 8px;
+  --accessibility-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --accessibility-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  --accessibility-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --accessibility-transition-fast: all 0.15s ease;
+}
+
+/* === Skip Links === */
+.skip-links-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--accessibility-primary);
+  color: white;
+  padding: 8px 16px;
+  text-decoration: none;
+  border-radius: 0 0 var(--accessibility-border-radius) var(--accessibility-border-radius);
+  font-weight: 600;
+  font-size: 14px;
+  transition: var(--accessibility-transition);
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+  z-index: 10001;
+}
+
+.skip-link:hover {
+  background: var(--accessibility-secondary);
+  transform: translateY(-1px);
+}
+
+/* === Floating Toggle === */
+.accessibility-floating-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  background: var(--accessibility-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: var(--accessibility-shadow-lg);
+  transition: var(--accessibility-transition);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.accessibility-floating-toggle:hover {
+  background: var(--accessibility-secondary);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 25px 35px -5px rgba(0, 0, 0, 0.15);
+}
+
+.accessibility-floating-toggle:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+.accessibility-floating-toggle.compact {
+  bottom: 15px;
+  right: 15px;
+  width: 48px;
+  height: 48px;
+  font-size: 18px;
+}
+
+/* === Main Panel === */
+.accessibility-panel {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 420px;
+  height: 100vh;
+  background: white;
+  box-shadow: var(--accessibility-shadow-lg);
+  z-index: 10000;
+  transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+}
+
+.accessibility-panel.visible {
+  right: 0;
+}
+
+.accessibility-panel.compact {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* === Panel Header === */
+.accessibility-panel-header {
+  background: var(--accessibility-primary);
+  color: white;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.accessibility-panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.panel-close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--accessibility-border-radius);
+  transition: var(--accessibility-transition);
+}
+
+.panel-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.panel-close-btn:focus {
+  outline: 2px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+/* === Panel Content === */
+.accessibility-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+
+.accessibility-section {
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.accessibility-section:last-child {
+  border-bottom: none;
+}
+
+.accessibility-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--accessibility-dark);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.accessibility-section h3 i {
+  color: var(--accessibility-primary);
+  width: 20px;
+}
+
+/* === Font Size Controls === */
+.font-size-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.control-btn {
+  background: var(--accessibility-light);
+  border: 2px solid #e2e8f0;
+  color: var(--accessibility-dark);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: var(--accessibility-border-radius);
+  cursor: pointer;
+  transition: var(--accessibility-transition);
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.control-btn:hover {
+  background: #e2e8f0;
+  border-color: var(--accessibility-primary);
+}
+
+.control-btn:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+.font-size-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+#current-font-size {
+  font-weight: 600;
+  color: var(--accessibility-primary);
+  font-size: 16px;
+}
+
+#font-size-slider {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+#font-size-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--accessibility-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--accessibility-transition);
+}
+
+#font-size-slider::-webkit-slider-thumb:hover {
+  background: var(--accessibility-secondary);
+  transform: scale(1.1);
+}
+
+#font-size-slider:focus::-webkit-slider-thumb {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+/* === Toggle Controls === */
+.visual-controls,
+.navigation-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toggle-btn {
+  width: 48px;
+  height: 24px;
+  background: #cbd5e1;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: var(--accessibility-transition);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.toggle-btn[aria-checked="true"] {
+  background: var(--accessibility-success);
+}
+
+.toggle-btn.active {
+  background: var(--accessibility-success);
+}
+
+.toggle-btn:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+.toggle-switch {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: var(--accessibility-transition);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+}
+
+.toggle-btn[aria-checked="true"] .toggle-switch,
+.toggle-btn.active .toggle-switch {
+  transform: translateX(24px);
+}
+
+.control-group label {
+  font-weight: 500;
+  color: var(--accessibility-dark);
+  cursor: pointer;
+  flex: 1;
+}
+
+/* === Action Buttons === */
+.action-btn {
+  background: var(--accessibility-light);
+  border: 1px solid #e2e8f0;
+  color: var(--accessibility-dark);
+  padding: 12px 16px;
+  border-radius: var(--accessibility-border-radius);
+  cursor: pointer;
+  transition: var(--accessibility-transition);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.action-btn:hover {
+  background: #f1f5f9;
+  border-color: var(--accessibility-primary);
+}
+
+.action-btn:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+.action-btn i {
+  color: var(--accessibility-primary);
+}
+
+/* === Quick Actions === */
+.quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.quick-actions .action-btn {
+  justify-content: center;
+  text-align: center;
+}
+
+/* === Advanced Section === */
+.advanced-section .section-toggle {
+  background: none;
+  border: none;
+  color: var(--accessibility-dark);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.advanced-section .section-toggle:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+  border-radius: var(--accessibility-border-radius);
+}
+
+.toggle-icon {
+  transition: transform 0.2s ease;
+  margin-left: auto;
+}
+
+.advanced-content {
+  margin-top: 16px;
+}
+
+.advanced-content .control-group {
+  margin-bottom: 16px;
+}
+
+.advanced-content label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--accessibility-dark);
+}
+
+.advanced-content input[type="range"] {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.advanced-content select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--accessibility-border-radius);
+  background: white;
+  color: var(--accessibility-dark);
+}
+
+.advanced-content select:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+  border-color: var(--accessibility-primary);
+}
+
+/* === Keyboard Shortcuts === */
+.keyboard-shortcuts {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--accessibility-light);
+  border-radius: var(--accessibility-border-radius);
+}
+
+.keyboard-shortcuts h4 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: var(--accessibility-dark);
+}
+
+.keyboard-shortcuts ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.keyboard-shortcuts li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.keyboard-shortcuts kbd {
+  background: #e2e8f0;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accessibility-dark);
+}
+
+/* === Panel Footer === */
+.accessibility-panel-footer {
+  padding: 20px;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.btn-secondary {
+  background: var(--accessibility-light);
+  border: 1px solid #e2e8f0;
+  color: var(--accessibility-dark);
+  padding: 10px 16px;
+  border-radius: var(--accessibility-border-radius);
+  cursor: pointer;
+  transition: var(--accessibility-transition);
+  font-weight: 500;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-secondary:hover {
+  background: #f1f5f9;
+  border-color: var(--accessibility-primary);
+}
+
+.btn-secondary:focus {
+  outline: 3px solid var(--accessibility-focus);
+  outline-offset: 2px;
+}
+
+/* === Test Results === */
+.test-results {
+  margin-top: 20px;
+  padding: 16px;
+  background: var(--accessibility-light);
+  border-radius: var(--accessibility-border-radius);
+}
+
+.test-results h4 {
+  margin: 0 0 16px 0;
+  color: var(--accessibility-dark);
+}
+
+.score-display {
+  text-align: center;
+  padding: 16px;
+  border-radius: var(--accessibility-border-radius);
+  margin-bottom: 16px;
+}
+
+.score-display.excellent {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.score-display.good {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.score-display.needs-improvement {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.score-number {
+  display: block;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.score-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.results-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.result-item.ok {
+  border-left: 4px solid var(--accessibility-success);
+}
+
+.result-item.warning {
+  border-left: 4px solid var(--accessibility-warning);
+}
+
+.result-item.error {
+  border-left: 4px solid var(--accessibility-danger);
+}
+
+.result-status {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.result-item.ok .result-status {
+  color: var(--accessibility-success);
+}
+
+.result-item.warning .result-status {
+  color: var(--accessibility-warning);
+}
+
+.result-item.error .result-status {
+  color: var(--accessibility-danger);
+}
+
+/* === Focus Indicators === */
+.enhanced-focus *:focus-visible {
+  outline: 3px solid var(--accessibility-primary) !important;
+  outline-offset: 2px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 0 6px rgba(30, 64, 175, 0.2) !important;
+}
+
+.focus-indicator {
+  position: absolute;
+  pointer-events: none;
+  border: 2px dashed var(--accessibility-primary);
+  border-radius: 4px;
+  background: rgba(30, 64, 175, 0.1);
+  z-index: 9998;
+  transition: var(--accessibility-transition);
+}
+
+.focus-debug-mode .focus-indicator {
+  border-color: var(--accessibility-danger);
+  background: rgba(220, 38, 38, 0.1);
+}
+
+/* === High Contrast Mode === */
+.high-contrast {
+  filter: contrast(var(--accessibility-contrast));
+}
+
+.high-contrast * {
+  background: white !important;
+  color: black !important;
+  border-color: black !important;
+}
+
+.high-contrast .accessibility-floating-toggle,
+.high-contrast .accessibility-panel-header,
+.high-contrast .toggle-btn[aria-checked="true"],
+.high-contrast .action-btn:hover {
+  background: black !important;
+  color: white !important;
+}
+
+.high-contrast .accessibility-panel {
+  border: 3px solid black !important;
+}
+
+/* === Dark Mode === */
+.dark-mode {
+  --accessibility-light: #1e293b;
+  --accessibility-dark: #f8fafc;
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.dark-mode .accessibility-panel {
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+.dark-mode .accessibility-section {
+  border-color: #334155;
+}
+
+.dark-mode .control-btn {
+  background: #334155;
+  border-color: #475569;
+  color: #f8fafc;
+}
+
+.dark-mode .test-results {
+  background: #334155;
+}
+
+/* === Reduced Motion === */
+.reduced-motion,
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* === Screen Reader Only === */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0.25rem 0.5rem;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  background: var(--accessibility-primary);
+  color: white;
+  border-radius: 4px;
+}
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+  .accessibility-panel {
+    width: 100%;
+    right: -100%;
+  }
+  
+  .accessibility-floating-toggle {
+    bottom: 15px;
+    right: 15px;
+    width: 48px;
+    height: 48px;
+  }
+  
+  .font-size-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .quick-actions {
+    grid-template-columns: 1fr;
+  }
+  
+  .accessibility-panel-footer {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .accessibility-section {
+    padding: 16px;
+  }
+  
+  .accessibility-panel-header {
+    padding: 16px;
+  }
+  
+  .accessibility-panel-footer {
+    padding: 16px;
+  }
+}
+
+/* === Print Styles === */
+@media print {
+  .accessibility-floating-toggle,
+  .accessibility-panel,
+  .skip-links-container {
+    display: none !important;
+  }
+}
+
+/* === Animation Keyframes === */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.accessibility-panel.visible {
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.test-results {
+  animation: fadeIn 0.3s ease;
+}
+
+/* === Custom Scrollbar === */
+.accessibility-panel-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.accessibility-panel-content::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.accessibility-panel-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.accessibility-panel-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
