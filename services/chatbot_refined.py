@@ -232,8 +232,8 @@ class PredefinedResponseStrategy(ResponseStrategy):
                 'confidence': 0.9
             },
             'documentos': {
-                'response': '📄 **Documentos e Certidões**\n\n**📜 Disponíveis:**\n• Certidões de objeto e pé\n• Cartas de sentença\n• Documentos processuais\n• Cópias autenticadas\n\n**🌐 Alguns serviços online**\n**🏛️ Atendimento presencial** para casos específicos\n\n📞 **Solicitar**: (27) 3246-8200\n💰 **Taxas**: Consulte valores no atendimento',
-                'keywords': ['documento', 'documentos', 'certidao', 'certidão', 'papel', 'carta', 'cópia'],
+                'response': '📄 **Documentos Processuais**\n\n**📜 Disponíveis:**\n• Cartas de sentença\n• Documentos processuais\n• Cópias autenticadas\n\n**🌐 Alguns serviços online**\n**🏛️ Atendimento presencial** para casos específicos\n\n📞 **Solicitar**: (27) 3246-8200\n💰 **Taxas**: Consulte valores no atendimento',
+                'keywords': ['documento', 'documentos', 'papel', 'carta', 'cópia'],
                 'confidence': 0.85
             },
             'mediacao': {

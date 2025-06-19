@@ -170,10 +170,7 @@ def create_app():
     def hearings():
         return render_template('services/audiencias.html')
     
-    @app.route('/servicos/certidoes')
-    @cache.cached(timeout=600)
-    def certificates():
-        return render_template('services/certidoes.html')
+
     
     @app.route('/balcao-virtual')
     def virtual_counter_redirect():
@@ -201,7 +198,7 @@ def create_app():
             'telefone': 'Telefone: (27) 3136-3600',
             'processo': 'Para consultar processos, use o serviço de Consulta Processual.',
             'agendamento': 'Para agendar atendimento, acesse o serviço de Agendamento.',
-            'certidao': 'Para solicitar certidões, acesse o serviço correspondente.'
+            'balcao': 'Para atendimento virtual, acesse o balcão virtual.'
         }
         
         response = "Como posso ajudá-lo? Posso fornecer informações sobre horários, endereço, telefone e serviços disponíveis."
