@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-06-19T16:35:12.946734",
+  "fixes_applied": [
+    "Image dimensions fixed to prevent CLS",
+    "Container heights fixed",
+    "Good load time: 0.01s",
+    "ARIA accessibility labels present",
+    "Skip navigation implemented"
+  ],
+  "issues": [
+    "Missing emergency fixes CSS on /",
+    "Page /sobre/ returned 404",
+    "Page /contato/ returned 404",
+    "Missing emergency fixes CSS on /servicos/"
+  ],
+  "status": "\ud83d\udd34 NEEDS ATTENTION",
+  "summary": {
+    "fixes_count": 5,
+    "issues_count": 4
+  }
+}

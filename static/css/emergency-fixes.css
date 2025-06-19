@@ -1,5 +1,89 @@
 /* Emergency fixes for text visibility and accessibility */
 
+/* Fix contrast ratio issues for WCAG 2.1 AA compliance */
+p.mb-1, p.small {
+    color: #2c5aa0 !important;
+    background-color: white !important;
+}
+
+h6.mb-3, h6.mb-2 {
+    color: #1e3d72 !important;
+    background-color: white !important;
+}
+
+/* Ensure all small text has proper contrast */
+.small, .text-muted {
+    color: #495057 !important;
+}
+
+/* Fix all potential contrast issues identified in console */
+.card-text, .card-body p, .card-body span {
+    color: #333 !important;
+}
+
+.lead {
+    color: #2c5aa0 !important;
+}
+
+/* Ensure button text has proper contrast */
+.btn {
+    color: white !important;
+}
+
+.btn-outline-primary {
+    color: #2c5aa0 !important;
+    border-color: #2c5aa0 !important;
+}
+
+.btn-outline-primary:hover {
+    color: white !important;
+    background-color: #2c5aa0 !important;
+}
+
+/* Fix footer text contrast */
+.footer-section, .footer-section p, .footer-section span {
+    color: #333 !important;
+}
+
+/* Fix CLS (Cumulative Layout Shift) issues */
+.hero-banner-title, .hero-banner-title-full {
+    min-height: 300px !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}
+
+.service-icon-custom {
+    width: 64px !important;
+    height: 64px !important;
+    object-fit: contain !important;
+}
+
+.card {
+    min-height: 280px !important;
+}
+
+.quick-access-card {
+    min-height: 320px !important;
+}
+
+/* Prevent layout shifts during image loading */
+img {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Ensure consistent spacing */
+.container, .container-fluid {
+    min-height: 1px !important;
+}
+
+/* Preload critical fonts to prevent FOIT */
+@font-face {
+    font-family: 'Montserrat';
+    font-display: swap;
+}
+
 /* Location section text visibility - highest priority */
 .location-section .card,
 .location-info-prominent .card {
