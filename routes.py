@@ -112,6 +112,16 @@ def news():
     news_items = content_service.get_news()
     return render_template('news.html', news=news_items)
 
+@main_bp.route('/consulta-processual', methods=['GET', 'POST'])
+def process_consultation_main():
+    """Process consultation service - main route redirect"""
+    return redirect(url_for('services.process_consultation'))
+
+@main_bp.route('/agendamento', methods=['GET', 'POST'])
+def scheduling_main():
+    """Scheduling service - main route redirect"""
+    return redirect(url_for('services.scheduling'))
+
 # Services routes
 @services_bp.route('/')
 def services_index():
@@ -124,9 +134,62 @@ def hearings():
     """Hearings information page"""
     return render_template('services/hearings.html')
 
-@services_bp.route('/agendamento')
+@services_bp.route('/agendamento', methods=['GET', 'POST'])
 def scheduling():
-    """Scheduling service page"""
+    """Scheduling service page with form handling"""
+    if request.method == 'POST':
+        # Get form data
+        nome = sanitize_input(request.form.get('nome', ''))
+        email = sanitize_input(request.form.get('email', ''))
+        telefone = sanitize_input(request.form.get('telefone', ''))
+        cpf = sanitize_input(request.form.get('cpf', ''))
+        data_preferencia = sanitize_input(request.form.get('data_preferencia', ''))
+        horario_preferencia = sanitize_input(request.form.get('horario_preferencia', ''))
+        tipo_atendimento = sanitize_input(request.form.get('tipo_atendimento', ''))
+        numero_processo = sanitize_input(request.form.get('numero_processo', ''))
+        observacoes = sanitize_input(request.form.get('observacoes', ''))
+        
+        # Basic validation
+        if not all([nome, email, telefone, cpf, data_preferencia, horario_preferencia, tipo_atendimento]):
+            flash('Todos os campos obrigatórios devem ser preenchidos.', 'error')
+            return render_template('services/scheduling.html')
+        
+        if not validate_email(email):
+            flash('Por favor, forneça um email válido.', 'error')
+            return render_template('services/scheduling.html')
+        
+        try:
+            # Convert date string to date object
+            from datetime import datetime
+            preferred_date = datetime.strptime(data_preferencia, '%Y-%m-%d').date()
+            
+            # Create scheduling request with correct field mapping
+            scheduling_request = AssessorMeeting(
+                full_name=nome,
+                document=cpf,
+                email=email,
+                phone=telefone,
+                meeting_type='presencial',
+                meeting_subject=f"Atendimento: {tipo_atendimento}",
+                preferred_date=preferred_date,
+                preferred_time=horario_preferencia,
+                process_number=numero_processo if numero_processo else None,
+                status='pending'
+            )
+            
+            # Add observacoes to notes if provided
+            if observacoes:
+                scheduling_request.notes = observacoes
+            db.session.add(scheduling_request)
+            db.session.commit()
+            
+            flash('Solicitação de agendamento enviada com sucesso! Entraremos em contato em breve.', 'success')
+            return redirect(url_for('services.scheduling'))
+            
+        except Exception as e:
+            logging.error(f"Error saving scheduling request: {e}")
+            flash('Erro ao processar solicitação. Tente novamente mais tarde.', 'error')
+    
     return render_template('services/scheduling.html')
 
 @services_bp.route('/balcao-virtual')
