@@ -163,6 +163,8 @@ def process_consultation():
             # Log the consultation
             consultation = ProcessConsultation(
                 process_number=process_number,
+                requester_name=sanitize_input(request.form.get('requester_name', 'Anonymous')),
+                requester_cpf=sanitize_input(request.form.get('requester_cpf', '000.000.000-00')),
                 ip_address=request.remote_addr
             )
             db.session.add(consultation)

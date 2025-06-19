@@ -103,6 +103,11 @@ def optimize_database_performance():
 def check_database_health():
     """Check database connection health"""
     try:
+        from flask import has_app_context
+        
+        if not has_app_context():
+            return False, "Database connection error: Working outside of application context."
+        
         # Simple connection test
         db.session.execute(text("SELECT 1"))
         db.session.commit()
