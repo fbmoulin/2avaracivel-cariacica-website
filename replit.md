@@ -38,6 +38,15 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Zoom Audio Tutorial Fix (Complete)
+- Fixed broken Zoom audio configuration tutorials that weren't functioning
+- Created new working tutorial template with embedded CSS styling
+- Removed problematic JavaScript dependencies causing failures
+- Updated tutorial routes to use functional version
+- Maintained animated GIF tutorial and step-by-step visual guides
+- Added troubleshooting tips and support contact information
+- Ensured responsive design and accessibility compliance
+
 ### June 2025 - Scheduling Service Types Update (Complete)
 - Removed "Solicitação de Certidões" box from scheduling page per user request
 - Replaced "Protocolo de Documentos" with "Pedido de análise de processo com urgência"
