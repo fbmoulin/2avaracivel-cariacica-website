@@ -33,6 +33,13 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Virtual Desk Service Modification (Complete)
+- Modified "Balcão Virtual" page to redirect to TJES official virtual counter
+- Replaced "Como Utilizar" section with direct link to https://www.tjes.jus.br/balcao-virtual/
+- Removed entire form section as virtual counter application already exists
+- Simplified page structure while maintaining informational content about services
+- Application updated and tested successfully
+
 ### June 2025 - Certidões Service Removal and Accessibility Fixes (Complete)
 - Removed "certidões" service from the services section per user request
 - Eliminated certidões route from routes.py and all template references
