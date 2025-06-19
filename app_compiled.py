@@ -55,42 +55,19 @@ class Contact(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20))
-    subject = db.Column(db.String(200), nullable=False)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def __init__(self, name, email, phone, subject, message):
-        self.name = name
-        self.email = email
-        self.phone = phone
-        self.subject = subject
-        self.message = message
 
 class ProcessConsultation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     process_number = db.Column(db.String(50), nullable=False)
     requester_name = db.Column(db.String(100), nullable=False)
     requester_cpf = db.Column(db.String(14), nullable=False)
-    ip_address = db.Column(db.String(45), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def __init__(self, process_number, requester_name, requester_cpf, ip_address=None):
-        self.process_number = process_number
-        self.requester_name = requester_name
-        self.requester_cpf = requester_cpf
-        self.ip_address = ip_address
 
 class ChatMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.String(100), nullable=False)
-    user_message = db.Column(db.Text, nullable=False)
-    bot_response = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    def __init__(self, user_message, bot_response, session_id=None):
-        self.user_message = user_message
-        self.bot_response = bot_response
-        self.session_id = session_id
     message = db.Column(db.Text, nullable=False)
     response = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -137,7 +114,6 @@ def create_app():
                 name=request.form.get('name', '').strip(),
                 email=request.form.get('email', '').strip(),
                 phone=request.form.get('phone', '').strip(),
-                subject=request.form.get('subject', 'Contato').strip(),
                 message=request.form.get('message', '').strip()
             )
             db.session.add(contact)
@@ -152,8 +128,7 @@ def create_app():
             consultation = ProcessConsultation(
                 process_number=request.form.get('process_number', '').strip(),
                 requester_name=request.form.get('name', '').strip(),
-                requester_cpf=request.form.get('cpf', '').strip(),
-                ip_address=request.remote_addr
+                requester_cpf=request.form.get('cpf', '').strip()
             )
             db.session.add(consultation)
             db.session.commit()
@@ -195,7 +170,10 @@ def create_app():
     def hearings():
         return render_template('services/audiencias.html')
     
-
+    @app.route('/servicos/certidoes')
+    @cache.cached(timeout=600)
+    def certificates():
+        return render_template('services/certidoes.html')
     
     @app.route('/balcao-virtual')
     def virtual_counter_redirect():
@@ -212,7 +190,7 @@ def create_app():
     @app.route('/chat', methods=['POST'])
     @limiter.limit("10 per minute")
     def chat():
-        message = (request.json or {}).get('message', '').strip()
+        message = request.json.get('message', '').strip()
         if not message:
             return jsonify({'error': 'Mensagem vazia'}), 400
         
@@ -223,7 +201,7 @@ def create_app():
             'telefone': 'Telefone: (27) 3136-3600',
             'processo': 'Para consultar processos, use o serviço de Consulta Processual.',
             'agendamento': 'Para agendar atendimento, acesse o serviço de Agendamento.',
-            'balcao': 'Para atendimento virtual, acesse o balcão virtual.'
+            'certidao': 'Para solicitar certidões, acesse o serviço correspondente.'
         }
         
         response = "Como posso ajudá-lo? Posso fornecer informações sobre horários, endereço, telefone e serviços disponíveis."
@@ -236,9 +214,9 @@ def create_app():
         # Save chat message
         try:
             chat_msg = ChatMessage(
-                user_message=message,
-                bot_response=response,
-                session_id=request.remote_addr
+                session_id=request.remote_addr,
+                message=message,
+                response=response
             )
             db.session.add(chat_msg)
             db.session.commit()

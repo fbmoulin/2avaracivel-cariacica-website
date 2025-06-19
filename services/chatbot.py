@@ -108,8 +108,8 @@ class ChatbotService:
                 'keywords': ['agendamento', 'agendar', 'marcar', 'atendimento', 'horario']
             },
             'documentos': {
-                'response': 'Documentos Processuais:\n📄 Cartas de sentença\n🏛️ Documentos processuais\n📞 Solicite pelo telefone (27) 3246-8200\n\n💰 Consulte taxas e prazos no atendimento.',
-                'keywords': ['documento', 'documentos', 'papel', 'carta']
+                'response': 'Documentos e Certidões:\n📋 Certidões de objeto e pé\n📄 Cartas de sentença\n🏛️ Documentos processuais\n📞 Solicite pelo telefone (27) 3246-8200\n\n💰 Consulte taxas e prazos no atendimento.',
+                'keywords': ['documento', 'documentos', 'certidao', 'certidão', 'papel', 'carta']
             },
             'reuniao_assessor': {
                 'response': 'Agendamento de Reunião com Assessores:\n👥 Reuniões disponíveis com assessores judiciais\n📅 Horários: 12h às 18h, segunda a sexta\n⏰ Duração típica: 30-60 minutos\n🎥 Atendimento presencial ou virtual pelo app Zoom\n📋 Necessário: dados do processo e identificação\n\n🔗 Para agendar, clique aqui: [AGENDAR_REUNIAO_ASSESSOR]',
