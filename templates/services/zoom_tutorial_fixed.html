@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Tutorial: Configuração de Áudio do Zoom - 2ª Vara Cível de Cariacica{% endblock %}
+
+{% block head %}
+<meta name="description" content="Tutorial completo para configurar áudio no Zoom para audiências virtuais da 2ª Vara Cível de Cariacica.">
+<meta name="keywords" content="zoom, áudio, configuração, audiência virtual, tribunal, cariacica">
+<style>
+/* Tutorial Styles */
+.tutorial-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.tutorial-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.tutorial-title {
+    color: #1e40af;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.tutorial-subtitle {
+    color: #6b7280;
+    font-size: 1.125rem;
+    line-height: 1.6;
+}
+
+.tutorial-content {
+    margin: 2rem 0;
+}
+
+.gif-container {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+.tutorial-gif {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.step-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.step-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.step-title {
+    color: #1e40af;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.step-description {
+    color: #4b5563;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.step-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-top: 1rem;
+}
+
+.tutorial-note {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 6px;
+}
+
+.tutorial-note h4 {
+    color: #1e40af;
+    margin-bottom: 0.75rem;
+}
+
+.tutorial-note p {
+    color: #374151;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .tutorial-container {
+        padding: 1rem;
+    }
+    
+    .tutorial-title {
+        font-size: 2rem;
+    }
+    
+    .step-container {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Início</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('services.services_index') }}">Serviços</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('services.hearings') }}">Audiências</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Tutorial Zoom</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="tutorial-container">
+        <header class="tutorial-header">
+            <h1 class="tutorial-title">Como Configurar o Áudio no Zoom</h1>
+            <p class="tutorial-subtitle">
+                Tutorial completo para garantir a melhor qualidade de áudio em suas audiências virtuais na 2ª Vara Cível de Cariacica
+            </p>
+        </header>
+
+        <div class="tutorial-content">
+            <!-- Tutorial GIF -->
+            <div class="gif-container">
+                <h3 style="color: #1e40af; margin-bottom: 1rem;">Tutorial Animado</h3>
+                <img src="{{ url_for('static', filename='images/zoom_tutorial_gif/tutorial_zoom_audio_pt.gif') }}" 
+                     alt="Tutorial animado mostrando configuração de áudio no Zoom" 
+                     class="tutorial-gif"
+                     loading="lazy">
+            </div>
+
+            <!-- Step by Step -->
+            <div class="step-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3 class="step-title">Acessar Configurações</h3>
+                    <p class="step-description">
+                        Clique no ícone de engrenagem (configurações) no canto superior direito da janela do Zoom.
+                    </p>
+                    <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_1_pt.png') }}" 
+                         alt="Passo 1 - Clique no ícone de configurações" 
+                         class="step-image">
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3 class="step-title">Selecionar Áudio</h3>
+                    <p class="step-description">
+                        Na janela de configurações, clique na aba "Áudio" no menu lateral esquerdo.
+                    </p>
+                    <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_2_pt.png') }}" 
+                         alt="Passo 2 - Selecione a aba Áudio" 
+                         class="step-image">
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3 class="step-title">Testar Dispositivos</h3>
+                    <p class="step-description">
+                        Use os botões "Testar Microfone" e "Testar Alto-falante" para verificar se os dispositivos estão funcionando corretamente.
+                    </p>
+                    <img src="{{ url_for('static', filename='images/zoom_tutorial/zoom_audio_config_3_pt.png') }}" 
+                         alt="Passo 3 - Teste microfone e alto-falantes" 
+                         class="step-image">
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="tutorial-note">
+                <h4><i class="fas fa-lightbulb me-2"></i>Dicas Importantes</h4>
+                <ul style="margin: 0; padding-left: 1.5rem;">
+                    <li>Teste seu áudio antes de entrar na audiência</li>
+                    <li>Use fones de ouvido para melhor qualidade de áudio</li>
+                    <li>Verifique se o microfone não está no mudo</li>
+                    <li>Mantenha-se em um ambiente silencioso</li>
+                    <li>Se tiver problemas, reinicie o Zoom e teste novamente</li>
+                </ul>
+            </div>
+
+            <!-- Support Contact -->
+            <div class="tutorial-note" style="background: #f0f9ff; border-left-color: #06b6d4;">
+                <h4 style="color: #0891b2;"><i class="fas fa-headset me-2"></i>Precisa de Ajuda?</h4>
+                <p>
+                    Se você ainda tem dificuldades com a configuração de áudio, entre em contato conosco:
+                    <br><strong>Telefone:</strong> (27) 3246-8200
+                    <br><strong>Email:</strong> 2varacivel.cariacica@tjes.jus.br
+                    <br><strong>Horário:</strong> Segunda a Sexta, 12h às 18h
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
