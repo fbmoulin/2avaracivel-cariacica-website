@@ -11,6 +11,27 @@ h6.mb-3, h6.mb-2 {
     background-color: white !important;
 }
 
+/* Fix footer elements with white on white issue */
+.footer-section h5, .footer-section h6 {
+    color: #1e3d72 !important;
+    background-color: white !important;
+}
+
+.footer-section p, .footer-section a {
+    color: #333 !important;
+    background-color: white !important;
+}
+
+/* Fix all elements with 1.00:1 contrast ratio */
+footer h5, footer h6, footer p, footer a {
+    color: #333 !important;
+    background-color: white !important;
+}
+
+footer .text-white {
+    color: #333 !important;
+}
+
 /* Ensure all small text has proper contrast */
 .small, .text-muted {
     color: #495057 !important;

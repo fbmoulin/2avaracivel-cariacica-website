@@ -144,10 +144,7 @@ def tutorial_zoom_accessible():
     """Enhanced accessibility version of Zoom tutorial"""
     return render_template('services/zoom_tutorial.html')
 
-@services_bp.route('/certidoes')
-def certificates():
-    """Certificates service page"""
-    return render_template('services/certificates.html')
+
 
 @services_bp.route('/consulta-processual', methods=['GET', 'POST'])
 def process_consultation():
