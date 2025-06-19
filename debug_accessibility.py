@@ -38,9 +38,9 @@ class AccessibilityDebugger:
         # Test main pages for contrast issues
         test_pages = [
             "/",
-            "/sobre/",
-            "/contato/",
-            "/servicos/"
+            "/sobre",
+            "/contato",
+            "/servicos"
         ]
         
         for page in test_pages:
