@@ -57,6 +57,9 @@
     <!-- Footer Contrast Fix CSS - Critical for footer accessibility -->
     <link href="{{ url_for('static', filename='css/footer-contrast-fix.css') }}" rel="stylesheet" id="footer-contrast-css">
     
+    <!-- Ultra Contrast Footer CSS - Maximum visibility -->
+    <link href="{{ url_for('static', filename='css/ultra-contrast-footer.css') }}" rel="stylesheet" id="ultra-contrast-footer-css">
+    
     <!-- Non-critical CSS - Defer loading -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link href="{{ url_for('static', filename='css/modern-consolidated.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -1446,25 +1449,56 @@
             color: rgba(255, 255, 255, 0.95) !important;
         }
 
-        /* CRITICAL: Forum address contrast fix */
-        footer.footer-section .col-md-4:first-child p {
+        /* ULTRA HIGH CONTRAST: All footer text */
+        footer.footer-section,
+        footer.footer-section * {
             color: #ffffff !important;
-            font-weight: 600 !important;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
-            background: rgba(0, 0, 0, 0.1) !important;
-            padding: 8px 12px !important;
-            border-radius: 6px !important;
-            margin-bottom: 12px !important;
+            background: transparent !important;
         }
 
-        /* Contact section heading */
-        footer.footer-section .col-md-4:first-child h5 {
+        /* Enhanced footer background for better contrast */
+        footer.footer-section {
+            background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+            position: relative !important;
+        }
+
+        footer.footer-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3) !important;
+            z-index: 1;
+        }
+
+        footer.footer-section .container {
+            position: relative !important;
+            z-index: 2 !important;
+        }
+
+        /* All footer text - maximum contrast */
+        footer.footer-section p,
+        footer.footer-section h5,
+        footer.footer-section h6,
+        footer.footer-section a,
+        footer.footer-section span,
+        footer.footer-section li,
+        footer.footer-section .small,
+        footer.footer-section .text-muted {
             color: #ffffff !important;
-            font-weight: 700 !important;
-            background: linear-gradient(135deg, #2c5aa0, #1e3d72) !important;
-            padding: 10px 15px !important;
-            border-radius: 8px !important;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+            font-weight: 500 !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+
+        /* Contact information specific styling */
+        footer.footer-section .col-md-4 p {
+            background: rgba(0, 0, 0, 0.2) !important;
+            padding: 8px 12px !important;
+            border-radius: 4px !important;
+            margin-bottom: 10px !important;
+            border-left: 3px solid #60a5fa !important;
         }
 
         .footer-section h5 {
