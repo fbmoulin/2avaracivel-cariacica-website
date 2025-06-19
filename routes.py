@@ -173,6 +173,7 @@ def process_consultation():
             # Try integration with TJES if available
             if API_SERVICE_AVAILABLE:
                 try:
+                    from services.api_service import tjes_integration
                     tjes_result = tjes_integration.search_process(process_number)
                     if tjes_result.get('success'):
                         flash('Processo encontrado no sistema TJES. Informações atualizadas.', 'success')
@@ -305,8 +306,9 @@ def chat():
         if not user_message:
             return jsonify({'error': 'Mensagem não pode estar vazia'}), 400
         
-        # Get bot response
-        response = chatbot_service.get_response(user_message)
+        # Get bot response using refined chatbot service
+        refined_chatbot = get_refined_chatbot()
+        response = refined_chatbot.get_response(user_message)
         
         return jsonify({'response': response})
         
@@ -470,7 +472,8 @@ def process_consultation():
             # Save consultation request
             consultation = ProcessConsultation(
                 process_number=process_number,
-                created_at=datetime.utcnow()
+                requester_name='Anonymous',
+                requester_cpf='000.000.000-00'
             )
             
             db.session.add(consultation)
@@ -508,13 +511,14 @@ def schedule_meeting():
             
             # Save meeting request
             meeting = AssessorMeeting(
-                name=name,
+                full_name=name,
+                document='000.000.000-00',  # Default CPF
                 email=email,
                 phone=phone,
                 meeting_type=meeting_type,
+                meeting_subject=message,
                 preferred_date=datetime.strptime(preferred_date, '%Y-%m-%d').date() if preferred_date else None,
-                message=message,
-                created_at=datetime.utcnow()
+                preferred_time='09:00'  # Default time
             )
             
             db.session.add(meeting)

@@ -12,6 +12,13 @@ class Contact(db.Model):
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    def __init__(self, name, email, phone, subject, message):
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.subject = subject
+        self.message = message
+    
     def __repr__(self):
         return f'<Contact {self.name} - {self.subject}>'
 
@@ -37,6 +44,12 @@ class ProcessConsultation(db.Model):
     requester_cpf = db.Column(db.String(14), nullable=False)
     consulted_at = db.Column(db.DateTime, default=datetime.utcnow)
     ip_address = db.Column(db.String(45), nullable=True)
+    
+    def __init__(self, process_number, requester_name, requester_cpf, ip_address=None):
+        self.process_number = process_number
+        self.requester_name = requester_name
+        self.requester_cpf = requester_cpf
+        self.ip_address = ip_address
     
     def __repr__(self):
         return f'<ProcessConsultation {self.process_number}>'
@@ -89,6 +102,22 @@ class AssessorMeeting(db.Model):
     # Administrative
     confirmation_token = db.Column(db.String(100), nullable=True)
     reminder_sent = db.Column(db.Boolean, default=False)
+    
+    def __init__(self, full_name, document, email, phone, meeting_type, meeting_subject, 
+                 preferred_date, preferred_time, process_number=None, alternative_times=None, 
+                 confirmation_token=None, status='pending'):
+        self.full_name = full_name
+        self.document = document
+        self.email = email
+        self.phone = phone
+        self.process_number = process_number
+        self.meeting_type = meeting_type
+        self.meeting_subject = meeting_subject
+        self.preferred_date = preferred_date
+        self.preferred_time = preferred_time
+        self.alternative_times = alternative_times
+        self.confirmation_token = confirmation_token
+        self.status = status
     
     def __repr__(self):
         return f'<AssessorMeeting {self.full_name} - {self.preferred_date}>'
