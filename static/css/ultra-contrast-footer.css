@@ -113,3 +113,43 @@ footer.footer-section .developer-attribution {
     border-radius: 8px !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
+
+/* CRITICAL FIX: Developer attribution text visibility */
+footer.footer-section .developer-attribution .lex-name,
+footer.footer-section .developer-attribution .lex-logo,
+footer.footer-section .lex-brand p,
+footer.footer-section .lex-brand span {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 18px !important;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    display: inline-block !important;
+    margin: 4px 0 !important;
+}
+
+/* Enhanced visibility for "Soluções Jurídicas Inteligentes" */
+footer.footer-section .developer-attribution .small.text-muted {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+    background: rgba(96, 165, 250, 0.2) !important;
+    padding: 6px 10px !important;
+    border-radius: 4px !important;
+    border-left: 3px solid #60a5fa !important;
+}
+
+/* Tech credits specific fix */
+footer.footer-section .tech-credits .small {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    padding: 8px 12px !important;
+    border-radius: 4px !important;
+    border-left: 2px solid #60a5fa !important;
+    margin: 4px 0 !important;
+    display: block !important;
+}
