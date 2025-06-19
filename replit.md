@@ -32,6 +32,13 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Duplicate Accessibility Buttons Fix (Complete)
+- Fixed duplicate accessibility buttons issue by removing legacy accessibility panel
+- Cleaned up old HTML structure and CSS styles for legacy accessibility controls
+- Maintained refined modular accessibility system with enterprise-grade features
+- Verified single accessibility toggle button functionality with comprehensive panel
+- Confirmed all 16 accessibility features working correctly with keyboard shortcuts
+
 ### June 2025 - Accessibility System Refinement and Refactoring (Complete)
 - Refined accessibility system into enterprise-grade modular architecture with 8 specialized components (175.9 KB total)
 - Created AccessibilityCore v2.1.0 with event-driven system, performance monitoring, and module management
