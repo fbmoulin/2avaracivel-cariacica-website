@@ -36,6 +36,7 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 ### June 2025 - Virtual Desk Service Modification (Complete)
 - Modified "Balcão Virtual" page to redirect to TJES official virtual counter
 - Replaced "Como Utilizar" section with direct link to https://www.tjes.jus.br/balcao-virtual/
+- Added prominent "Acesse o Balcão Virtual" button with external link icon
 - Removed entire form section as virtual counter application already exists
 - Simplified page structure while maintaining informational content about services
 - Application updated and tested successfully
