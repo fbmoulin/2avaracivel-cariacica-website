@@ -49,6 +49,13 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 - Test suite: test_optimized_system.py with comprehensive verification capabilities
 - Documentation: optimization_report.py with detailed analysis and metrics
 
+### June 2025 - Forum Address Correction (Complete)
+- Updated forum address from "Rua Expedito Garcia, s/n" to correct address: "Av. Meridional, 211- Alto Lage, Cariacica/ES"
+- Modified address in templates/index.html, templates/contact.html, and templates/base.html footer
+- Updated Google Maps links to reflect new address location
+- Maintained consistent formatting and styling across all templates
+- Removed "Disponibilidade" box from virtual desk page as requested
+
 ### June 2025 - Virtual Desk Content Update with TJES Launch Information (Complete)
 - Updated "Balcão Virtual" page with comprehensive TJES launch announcement content
 - Restructured page to highlight new virtual counter features and capabilities
