@@ -33,6 +33,15 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Certidões Service Removal and Accessibility Fixes (Complete)
+- Removed "certidões" service from the services section per user request
+- Eliminated certidões route from routes.py and all template references
+- Removed certidões from main navigation dropdown and services index
+- Updated virtual desk services list to exclude certidão references
+- Fixed contrast ratio issues showing 1.00:1 warnings in console logs
+- Enhanced emergency CSS fixes for footer elements and WCAG 2.1 AA compliance
+- Application tested and confirmed working properly after changes
+
 ### June 2025 - Critical Application Startup Issues Resolved (Complete)
 - Fixed Flask reloader hanging during startup by disabling use_reloader in main.py
 - Resolved critical SQLAlchemy model constructor errors by adding proper __init__ methods to all models
