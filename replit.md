@@ -38,6 +38,12 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Certidões Service Removal from Scheduling (Complete)
+- Removed "Solicitação de Certidões" box from scheduling page per user request
+- Eliminated certidões option from appointment type dropdown menu
+- Cleaned up scheduling interface to focus on remaining service types
+- Maintained consistent layout with other scheduling options
+
 ### June 2025 - Schedule Information Standardization (Complete)
 - Simplified all schedule information across the entire application
 - Standardized format to "Segunda a Sexta, 12h às 18h" in all templates and services
