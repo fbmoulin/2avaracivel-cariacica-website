@@ -32,6 +32,16 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Critical Application Startup Issues Resolved (Complete)
+- Fixed Flask reloader hanging during startup by disabling use_reloader in main.py
+- Resolved critical SQLAlchemy model constructor errors by adding proper __init__ methods to all models
+- Fixed database context issues in health check functions preventing proper initialization
+- Corrected undefined variable references (chatbot_service, tjes_integration) in routes.py
+- Created reliable startup script (run_app.py) that bypasses reloader problems
+- Application now starts successfully with all core components operational
+- Database configuration, blueprint registration, and table creation all functioning properly
+- Server running successfully on port 5000 with PostgreSQL optimization applied
+
 ### June 2025 - Complete Chatbot Refactoring and Architecture Refinement (Complete)
 - Completely refactored chatbot system with advanced modular architecture using strategy pattern
 - Created RefinedChatbotService with 4 specialized response strategies: MeetingScheduling, Predefined, OpenAI, and Fallback
