@@ -30,7 +30,10 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 - `database.py`: Database configuration and health checks
 - `models.py`: SQLAlchemy data models with extend_existing
 - `routes.py`: Route definitions
-- `services/chatbot.py`: OpenAI integration
+- `services/chatbot_refined.py`: Advanced OpenAI integration with conversation management
+- `services/integration_service.py`: Centralized service integration management
+- `services/scheduling_service.py`: Appointment and meeting scheduling
+- `services/cache_service.py`: Application caching layer
 - `utils/security.py`: Security functions
 
 ## Recent Changes
