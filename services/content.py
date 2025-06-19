@@ -99,12 +99,6 @@ class ContentService:
                 "descricao": "Atendimento online para dúvidas e solicitações",
                 "icon": "monitor",
                 "url": "/servicos/balcao-virtual"
-            },
-            {
-                "nome": "Certidões",
-                "descricao": "Solicite certidões e documentos oficiais",
-                "icon": "file-text",
-                "url": "/servicos/certidoes"
             }
         ]
     
