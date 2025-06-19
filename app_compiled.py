@@ -209,7 +209,8 @@ def create_app():
     @app.route('/chat', methods=['POST'])
     @limiter.limit("10 per minute")
     def chat():
-        message = request.json.get('message', '').strip()
+        json_data = request.get_json() or {}
+        message = json_data.get('message', '').strip()
         if not message:
             return jsonify({'error': 'Mensagem vazia'}), 400
         
