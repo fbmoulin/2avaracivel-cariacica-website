@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 from database import db
 from services.content import ContentService
-from services.chatbot import ChatbotService
+from services.chatbot_refined import get_refined_chatbot
 from models import Contact, ProcessConsultation, AssessorMeeting
 from utils.security import sanitize_input, validate_email
 import logging
@@ -31,7 +31,6 @@ chatbot_bp = Blueprint('chatbot', __name__, url_prefix='/chatbot')
 
 # Initialize services
 content_service = ContentService()
-chatbot_service = ChatbotService()
 
 # Main routes
 @main_bp.route('/')
@@ -315,7 +314,7 @@ def chat():
 
 @chatbot_bp.route('/api/message', methods=['POST'])
 def chatbot_message():
-    """Enhanced chatbot message handling with debugging"""
+    """Enhanced chatbot message handling with refined service"""
     try:
         data = request.get_json()
         user_message = data.get('message', '')
@@ -324,44 +323,46 @@ def chatbot_message():
         if not user_message:
             return jsonify({'error': 'Mensagem não pode estar vazia'}), 400
         
-        # Get bot response with enhanced error handling
-        response = chatbot_service.get_response(user_message)
+        # Get refined chatbot instance
+        chatbot = get_refined_chatbot()
         
-        # Return enhanced response with metadata if debug mode
-        if chatbot_service.debug_mode:
-            metrics = chatbot_service.get_performance_metrics()
-            return jsonify({
-                'response': response,
-                'debug': {
-                    'response_time': metrics.get('average_response_time', 0),
-                    'openai_available': metrics.get('openai_available', False),
-                    'total_requests': metrics.get('total_requests', 0)
-                }
-            })
+        # Get detailed response with metadata
+        response_obj = chatbot.get_detailed_response(user_message, session_id)
         
-        return jsonify({'response': response})
+        # Return enhanced response with comprehensive metadata
+        return jsonify({
+            'response': response_obj.content,
+            'response_type': response_obj.response_type.value,
+            'confidence_score': response_obj.confidence_score,
+            'response_time': response_obj.response_time,
+            'suggestions': response_obj.suggestions,
+            'metadata': response_obj.metadata,
+            'context_used': response_obj.context_used,
+            'openai_tokens_used': response_obj.openai_tokens_used,
+            'fallback_reason': response_obj.fallback_reason
+        })
         
     except Exception as e:
-        logging.error(f"Chatbot error: {e}")
-        chatbot_service.performance_metrics['errors'] += 1
-        chatbot_service.performance_metrics['last_error'] = str(e)
+        logging.error(f"Refined chatbot error: {e}")
         return jsonify({'error': 'Erro interno do servidor'}), 500
 
 @chatbot_bp.route('/api/health', methods=['GET'])
 def chatbot_health():
-    """Get chatbot health status and metrics"""
+    """Get refined chatbot health status and metrics"""
     try:
-        health_status = chatbot_service.get_health_status()
+        chatbot = get_refined_chatbot()
+        health_status = chatbot.get_health_status()
         return jsonify(health_status)
     except Exception as e:
-        logging.error(f"Error getting chatbot health: {e}")
+        logging.error(f"Error getting refined chatbot health: {e}")
         return jsonify({'error': 'Erro ao obter status do chatbot'}), 500
 
 @chatbot_bp.route('/api/metrics', methods=['GET'])
 def chatbot_metrics():
-    """Get detailed chatbot performance metrics"""
+    """Get detailed refined chatbot performance metrics"""
     try:
-        metrics = chatbot_service.get_performance_metrics()
+        chatbot = get_refined_chatbot()
+        metrics = chatbot.get_analytics()
         return jsonify(metrics)
     except Exception as e:
         logging.error(f"Error getting chatbot metrics: {e}")
@@ -369,9 +370,10 @@ def chatbot_metrics():
 
 @chatbot_bp.route('/api/debug/enable', methods=['POST', 'GET'])
 def enable_debug():
-    """Enable chatbot debug mode"""
+    """Enable refined chatbot debug mode"""
     try:
-        chatbot_service.enable_debug_mode()
+        chatbot = get_refined_chatbot()
+        chatbot.enable_debug_mode()
         return jsonify({'message': 'Debug mode enabled', 'debug_mode': True})
     except Exception as e:
         logging.error(f"Error enabling debug mode: {e}")
@@ -379,9 +381,10 @@ def enable_debug():
 
 @chatbot_bp.route('/api/debug/disable', methods=['POST', 'GET'])
 def disable_debug():
-    """Disable chatbot debug mode"""
+    """Disable refined chatbot debug mode"""
     try:
-        chatbot_service.disable_debug_mode()
+        chatbot = get_refined_chatbot()
+        chatbot.disable_debug_mode()
         return jsonify({'message': 'Debug mode disabled', 'debug_mode': False})
     except Exception as e:
         logging.error(f"Error disabling debug mode: {e}")
@@ -389,9 +392,10 @@ def disable_debug():
 
 @chatbot_bp.route('/api/reset', methods=['POST', 'GET'])
 def reset_metrics():
-    """Reset chatbot performance metrics"""
+    """Reset refined chatbot performance metrics"""
     try:
-        chatbot_service.reset_metrics()
+        chatbot = get_refined_chatbot()
+        chatbot.reset_analytics()
         return jsonify({'message': 'Metrics reset successfully'})
     except Exception as e:
         logging.error(f"Error resetting metrics: {e}")
@@ -399,15 +403,16 @@ def reset_metrics():
 
 @chatbot_bp.route('/debug')
 def chatbot_debug_panel():
-    """Chatbot debug panel interface"""
+    """Refined chatbot debug panel interface"""
     try:
-        health_status = chatbot_service.get_health_status()
-        metrics = chatbot_service.get_performance_metrics()
-        return render_template('chatbot_debug.html', 
+        chatbot = get_refined_chatbot()
+        health_status = chatbot.get_health_status()
+        metrics = chatbot.get_analytics()
+        return render_template('chatbot_debug_refined.html', 
                              health=health_status, 
                              metrics=metrics)
     except Exception as e:
-        logging.error(f"Error loading debug panel: {e}")
+        logging.error(f"Error loading refined debug panel: {e}")
         flash('Erro ao carregar painel de debug', 'error')
         return redirect(url_for('main.index'))
 
