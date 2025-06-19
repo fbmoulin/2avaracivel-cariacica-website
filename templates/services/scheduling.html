@@ -54,8 +54,16 @@
                     <div class="col-md-6">
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5 class="card-title"><i class="fas fa-file-text text-primary me-2"></i>Protocolo de Documentos</h5>
-                                <p class="card-text">Entrega de petições, documentos e outros papéis processuais.</p>
+                                <h5 class="card-title"><i class="fas fa-exclamation-triangle text-primary me-2"></i>Pedido de análise de processo com urgência</h5>
+                                <p class="card-text">Solicitação de análise prioritária para processos que requerem tramitação urgente.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="fas fa-tachometer-alt text-primary me-2"></i>Pedido de celeridade na análise do processo</h5>
+                                <p class="card-text">Requerimento para acelerar a análise e tramitação de processos em andamento.</p>
                             </div>
                         </div>
                     </div>
@@ -187,10 +195,10 @@
                         <label for="tipo_atendimento" class="form-label">Tipo de Atendimento *</label>
                         <select class="form-select" id="tipo_atendimento" name="tipo_atendimento" required>
                             <option value="">Selecione o tipo de atendimento</option>
-                            <option value="protocolo">Protocolo de Documentos</option>
+                            <option value="urgencia">Pedido de análise de processo com urgência</option>
 
                             <option value="esclarecimento">Esclarecimentos</option>
-                            <option value="orientacao">Orientação Jurídica</option>
+                            <option value="celeridade">Pedido de celeridade na análise do processo</option>
                             <option value="outro">Outro</option>
                         </select>
                         <div class="invalid-feedback">Por favor, selecione o tipo de atendimento.</div>
