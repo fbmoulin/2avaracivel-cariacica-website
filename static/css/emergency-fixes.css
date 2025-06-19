@@ -51,6 +51,25 @@ footer .text-white {
     color: #2c5aa0 !important;
 }
 
+/* Critical fix for footer elements showing 1.00:1 contrast */
+.footer-section p, .footer-section h5, .footer-section h6, .footer-section a {
+    color: white !important;
+    background-color: transparent !important;
+}
+
+.footer-section .small, .footer-section .text-muted {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Force proper contrast on all problematic elements */
+body p, body h5, body h6, body a {
+    color: inherit !important;
+}
+
+body .footer-section p, body .footer-section h5, body .footer-section h6, body .footer-section a {
+    color: white !important;
+}
+
 /* Ensure button text has proper contrast */
 .btn {
     color: white !important;

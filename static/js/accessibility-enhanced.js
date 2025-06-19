@@ -477,13 +477,13 @@ class EnhancedAccessibilityManager {
         
         if (this.accessibilitySettings.voiceGuidance) {
             // Initialize voice guidance if available
-            if (window.voiceAccessibility) {
-                window.voiceAccessibility.enable();
+            if (window.voiceAccessibility && !window.voiceAccessibility.isEnabled) {
+                window.voiceAccessibility.toggleVoiceGuidance();
             }
             this.announce('Guia de voz ativado');
         } else {
-            if (window.voiceAccessibility) {
-                window.voiceAccessibility.disable();
+            if (window.voiceAccessibility && window.voiceAccessibility.isEnabled) {
+                window.voiceAccessibility.toggleVoiceGuidance();
             }
             this.announce('Guia de voz desativado');
         }
