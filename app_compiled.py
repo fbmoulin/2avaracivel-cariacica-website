@@ -114,6 +114,7 @@ def create_app():
                 name=request.form.get('name', '').strip(),
                 email=request.form.get('email', '').strip(),
                 phone=request.form.get('phone', '').strip(),
+                subject=request.form.get('subject', 'Contato').strip(),
                 message=request.form.get('message', '').strip()
             )
             db.session.add(contact)
@@ -128,7 +129,8 @@ def create_app():
             consultation = ProcessConsultation(
                 process_number=request.form.get('process_number', '').strip(),
                 requester_name=request.form.get('name', '').strip(),
-                requester_cpf=request.form.get('cpf', '').strip()
+                requester_cpf=request.form.get('cpf', '').strip(),
+                ip_address=request.remote_addr
             )
             db.session.add(consultation)
             db.session.commit()
@@ -187,7 +189,7 @@ def create_app():
     @app.route('/chat', methods=['POST'])
     @limiter.limit("10 per minute")
     def chat():
-        message = request.json.get('message', '').strip()
+        message = (request.json or {}).get('message', '').strip()
         if not message:
             return jsonify({'error': 'Mensagem vazia'}), 400
         
@@ -211,9 +213,9 @@ def create_app():
         # Save chat message
         try:
             chat_msg = ChatMessage(
-                session_id=request.remote_addr,
-                message=message,
-                response=response
+                user_message=message,
+                bot_response=response,
+                session_id=request.remote_addr
             )
             db.session.add(chat_msg)
             db.session.commit()

@@ -456,8 +456,8 @@ def system_status():
         return jsonify({'error': 'Unable to load status'}), 500
 
 @main_bp.route('/consulta', methods=['GET', 'POST'])
-def process_consultation():
-    """Process consultation page"""
+def process_consultation_main():
+    """Process consultation page - main route"""
     if request.method == 'POST':
         try:
             process_number = sanitize_input(request.form.get('numero_processo', ''))
