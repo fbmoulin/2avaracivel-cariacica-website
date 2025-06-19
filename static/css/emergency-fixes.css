@@ -3,33 +3,38 @@
 /* Fix contrast ratio issues for WCAG 2.1 AA compliance */
 p.mb-1, p.small {
     color: #2c5aa0 !important;
-    background-color: white !important;
+    background-color: transparent !important;
 }
 
 h6.mb-3, h6.mb-2 {
     color: #1e3d72 !important;
-    background-color: white !important;
+    background-color: transparent !important;
 }
 
-/* Fix footer elements with white on white issue */
+/* Fix footer elements - ensure proper dark background with white text */
+.footer-section {
+    background: linear-gradient(135deg, #1a2b4c, #2c3e50) !important;
+    color: white !important;
+}
+
 .footer-section h5, .footer-section h6 {
-    color: #1e3d72 !important;
-    background-color: white !important;
+    color: white !important;
+    background-color: transparent !important;
 }
 
 .footer-section p, .footer-section a {
-    color: #333 !important;
-    background-color: white !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    background-color: transparent !important;
 }
 
 /* Fix all elements with 1.00:1 contrast ratio */
 footer h5, footer h6, footer p, footer a {
-    color: #333 !important;
-    background-color: white !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    background-color: transparent !important;
 }
 
 footer .text-white {
-    color: #333 !important;
+    color: white !important;
 }
 
 /* Ensure all small text has proper contrast */
