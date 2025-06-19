@@ -55,19 +55,42 @@ class Contact(db.Model):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20))
+    subject = db.Column(db.String(200), nullable=False)
     message = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __init__(self, name, email, phone, subject, message):
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.subject = subject
+        self.message = message
 
 class ProcessConsultation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     process_number = db.Column(db.String(50), nullable=False)
     requester_name = db.Column(db.String(100), nullable=False)
     requester_cpf = db.Column(db.String(14), nullable=False)
+    ip_address = db.Column(db.String(45), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __init__(self, process_number, requester_name, requester_cpf, ip_address=None):
+        self.process_number = process_number
+        self.requester_name = requester_name
+        self.requester_cpf = requester_cpf
+        self.ip_address = ip_address
 
 class ChatMessage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     session_id = db.Column(db.String(100), nullable=False)
+    user_message = db.Column(db.Text, nullable=False)
+    bot_response = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __init__(self, user_message, bot_response, session_id=None):
+        self.user_message = user_message
+        self.bot_response = bot_response
+        self.session_id = session_id
     message = db.Column(db.Text, nullable=False)
     response = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
