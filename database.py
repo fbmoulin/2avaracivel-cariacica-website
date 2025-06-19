@@ -40,13 +40,17 @@ def configure_database(app):
         'pool_size': 10
     }
     
-    # Add PostgreSQL-specific options if using PostgreSQL
-    if database_url and database_url.startswith('postgresql'):
+    # Add PostgreSQL-specific options if using PostgreSQL (including Supabase)
+    if database_url and (database_url.startswith('postgresql') or database_url.startswith('postgres')):
         engine_options.update({
             'pool_reset_on_return': 'commit',
             'echo': False,
-            'isolation_level': 'READ_COMMITTED'
+            # Supabase-specific optimizations
+            'connect_args': {
+                'sslmode': 'require'
+            }
         })
+        logger.info("Configured for PostgreSQL/Supabase database")
     
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = engine_options
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

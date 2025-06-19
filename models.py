@@ -21,6 +21,17 @@ class Contact(db.Model):
     
     def __repr__(self):
         return f'<Contact {self.name} - {self.subject}>'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'phone': self.phone,
+            'subject': self.subject,
+            'message': self.message,
+            'created_at': self.created_at.isoformat() if self.created_at else None
+        }
 
 class NewsItem(db.Model):
     """Model for news and announcements"""
@@ -53,6 +64,16 @@ class ProcessConsultation(db.Model):
     
     def __repr__(self):
         return f'<ProcessConsultation {self.process_number}>'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'process_number': self.process_number,
+            'requester_name': self.requester_name,
+            'requester_cpf': self.requester_cpf,
+            'consulted_at': self.consulted_at.isoformat() if self.consulted_at else None,
+            'ip_address': self.ip_address
+        }
 
 class ChatMessage(db.Model):
     """Model for chatbot interactions"""
@@ -70,6 +91,15 @@ class ChatMessage(db.Model):
     
     def __repr__(self):
         return f'<ChatMessage {self.id}>'
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_message': self.user_message,
+            'bot_response': self.bot_response,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'session_id': self.session_id
+        }
 
 class AssessorMeeting(db.Model):
     """Model for advisor meeting appointments - supports both videoconference and in-person"""
