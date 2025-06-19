@@ -38,6 +38,13 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Judge Schedule Simplification (Complete)
+- Updated judge's schedule section to show only general operating hours
+- Removed detailed activity breakdown table per user request
+- Simplified "Horário de Expediente" to display: Monday to Friday, 12h to 18h
+- Enhanced visual presentation with card layout and clock icon
+- Maintained essential information while improving user experience
+
 ### June 2025 - Legacy Code Cleanup and Architecture Streamlining (Complete)
 - Eliminated 25+ outdated controller and service versions to streamline codebase
 - Removed duplicate application files: app_compiled.py, app_factory.py, app_optimized.py, app_production.py
