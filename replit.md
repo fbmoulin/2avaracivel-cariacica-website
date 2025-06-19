@@ -32,17 +32,19 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
-### June 2025 - Enhanced Chatbot Debugging and Performance System (Complete)
-- Created comprehensive chatbot debugging system with advanced error handling and performance monitoring
-- Implemented enhanced chatbot service with conversation context, metrics tracking, and health monitoring
-- Added debugging API endpoints (/api/health, /api/metrics, /api/debug/*) with comprehensive status reporting
-- Built professional debug panel interface with real-time testing, metrics visualization, and health monitoring
-- Enhanced chatbot UI with improved styling, typing indicators, retry mechanisms, and offline support
-- Added performance tracking (response times, success rates, error counting, OpenAI availability monitoring)
-- Implemented conversation context management with 10-message history for better responses
-- Created advanced debugging features including Ctrl+Shift+D toggle, export logs, and live testing interface
-- Added comprehensive health recommendations system and automatic metric calculations
-- Integrated enhanced chatbot implementation with enterprise-grade error recovery and fallback systems
+### June 2025 - Complete Chatbot Refactoring and Architecture Refinement (Complete)
+- Completely refactored chatbot system with advanced modular architecture using strategy pattern
+- Created RefinedChatbotService with 4 specialized response strategies: MeetingScheduling, Predefined, OpenAI, and Fallback
+- Implemented comprehensive conversation management with 10-message context history and session tracking
+- Built enterprise-grade analytics engine with performance metrics, daily statistics, and confidence scoring
+- Developed structured ChatMessage and ChatResponse objects with comprehensive metadata tracking
+- Enhanced API endpoints with detailed response metadata including response_type, confidence_score, suggestions
+- Created professional debug panel (chatbot_debug_refined.html) with live testing, metrics visualization, and export functionality
+- Redesigned frontend with refined UI components, typing indicators, retry mechanisms, and offline support
+- Added advanced CSS styling (chatbot-refined.css) with responsive design, animations, and accessibility features
+- Implemented backward compatibility while providing modern debugging tools and monitoring capabilities
+- Integrated refined service throughout routes.py with comprehensive error handling and health monitoring
+- Added sophisticated JavaScript interface with session management, analytics tracking, and keyboard shortcuts
 
 ### June 2025 - Duplicate Accessibility Buttons Fix (Complete)
 - Fixed duplicate accessibility buttons issue by removing legacy accessibility panel

@@ -425,7 +425,7 @@ def system_status():
         system_info = {
             'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'database_status': 'Connected',
-            'openai_status': 'Active' if chatbot_service.openai_client else 'Inactive',
+            'openai_status': 'Active' if get_refined_chatbot().openai_client else 'Inactive',
             'server_status': 'Running'
         }
         
