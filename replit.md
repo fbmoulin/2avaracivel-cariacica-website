@@ -35,6 +35,16 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Supabase Database Migration (Complete)
+- Successfully migrated from local PostgreSQL to Supabase cloud database
+- Updated database configuration for Supabase compatibility with SSL requirements
+- Fixed schema mismatches by adding missing columns to existing tables
+- Added requester_name and requester_cpf columns to process_consultation table
+- Enhanced model serialization with to_dict() methods for data migration support
+- Verified all CRUD operations working correctly with Supabase PostgreSQL 16.9
+- Preserved existing data during migration (contacts and assessor meetings)
+- Application now running on scalable cloud database infrastructure
+
 ### June 2025 - Complete Bug Analysis and Resolution (Complete)
 - Conducted comprehensive bug analysis covering all critical application components
 - Fixed missing route issue: /consulta-processual now properly redirects to services blueprint
