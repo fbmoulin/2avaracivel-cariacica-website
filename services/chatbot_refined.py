@@ -159,7 +159,7 @@ Disponível para esclarecimentos e orientações:
 
 🌐 **Agendar Online**: Acesse nossa página de agendamento
 📞 **Telefone**: (27) 3246-8200
-⏰ **Horário**: 12h às 18h (segunda a sexta)
+⏰ **Horário**: Segunda a Sexta, 12h às 18h
 
 **[AGENDAR_REUNIAO_ASSESSOR]**"""
         
@@ -176,7 +176,7 @@ Disponível para esclarecimentos e orientações:
 • Via petição de advogado
 
 🌐 **Agende online** ou ligue (27) 3246-8200
-⏰ **Horário**: 12h às 18h (segunda a sexta)
+⏰ **Horário**: Segunda a Sexta, 12h às 18h
 
 **[OPCOES_AGENDAMENTO]**"""
         
@@ -455,7 +455,7 @@ class FallbackStrategy(ResponseStrategy):
 
 📞 **Para atendimento especializado**: (27) 3246-8200
 📧 **Email**: 2varacivel.cariacica@tjes.jus.br
-⏰ **Horário**: 12h às 18h (segunda a sexta)
+⏰ **Horário**: Segunda a Sexta, 12h às 18h
 
 🤔 **Poderia reformular sua pergunta?** Isso me ajudará a fornecer informações mais precisas."""
         
