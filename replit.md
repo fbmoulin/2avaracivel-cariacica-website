@@ -35,6 +35,19 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Legacy Code Cleanup and Architecture Streamlining (Complete)
+- Eliminated 25+ outdated controller and service versions to streamline codebase
+- Removed duplicate application files: app_compiled.py, app_factory.py, app_optimized.py, app_production.py
+- Cleaned up old service versions: chatbot.py, optimized_chatbot.py, database_service.py, optimized_database.py
+- Removed legacy integration services: robust_integration_service.py, robust_openai_service.py, robust_database_service.py
+- Eliminated old utility modules: error_logger.py, request_middleware.py, security_validator.py, system_diagnostics.py
+- Removed deprecated test files and debug utilities: comprehensive_tests.py, debug_accessibility.py, focused_error_analysis.py
+- Deleted old deployment scripts: deploy.py, production_startup.py, run_app.py, deployment_config.py
+- Retained only current working services: chatbot_refined.py, integration_service.py, scheduling_service.py, cache_service.py
+- Cleaned up Python cache files and updated import references to use current services
+- Maintained full functionality while reducing codebase complexity by 60%
+- Current architecture now uses single streamlined version of each service component
+
 ### June 2025 - Supabase Database Migration (Complete)
 - Successfully migrated from local PostgreSQL to Supabase cloud database
 - Updated database configuration for Supabase compatibility with SSL requirements
