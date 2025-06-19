@@ -1,0 +1,82 @@
+{
+  "name": "2a-vara-civil-cariacica-monorepo",
+  "version": "2.0.0",
+  "description": "Modular court application with separated frontend/backend architecture",
+  "architecture": {
+    "type": "monorepo",
+    "pattern": "feature-based-modules",
+    "structure": {
+      "src/backend": {
+        "description": "Flask API backend with modular services",
+        "framework": "Flask",
+        "architecture": "REST API",
+        "modules": [
+          "api",
+          "core",
+          "models", 
+          "services"
+        ]
+      },
+      "src/frontend": {
+        "description": "Modern vanilla JavaScript frontend",
+        "framework": "Vanilla JS",
+        "architecture": "Component-based",
+        "modules": [
+          "components",
+          "services",
+          "pages",
+          "styles",
+          "assets"
+        ]
+      },
+      "src/shared": {
+        "description": "Shared utilities and types",
+        "modules": [
+          "types",
+          "utils",
+          "constants"
+        ]
+      }
+    }
+  },
+  "features": {
+    "api_endpoints": {
+      "contact": "/api/v1/contact",
+      "process": "/api/v1/process",
+      "chatbot": "/api/v1/chatbot",
+      "scheduling": "/api/v1/scheduling",
+      "health": "/api/v1/health"
+    },
+    "frontend_components": [
+      "ChatbotComponent",
+      "ContactFormComponent", 
+      "SchedulingComponent",
+      "ProcessConsultationComponent"
+    ],
+    "services": [
+      "ApiService",
+      "AccessibilityManager",
+      "PerformanceMonitor",
+      "ChatbotService"
+    ]
+  },
+  "deployment": {
+    "backend": {
+      "entry_point": "src/backend/app.py",
+      "port": 5000,
+      "environment": "production"
+    },
+    "frontend": {
+      "build_output": "dist/",
+      "static_assets": "src/frontend/assets"
+    }
+  },
+  "development": {
+    "scripts": {
+      "dev-backend": "python src/backend/app.py",
+      "dev-frontend": "python -m http.server 3000",
+      "test": "python -m pytest tests/",
+      "lint": "flake8 src/backend/"
+    }
+  }
+}
