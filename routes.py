@@ -144,6 +144,11 @@ def tutorial_zoom_accessible():
     """Enhanced accessibility version of Zoom tutorial"""
     return render_template('services/zoom_tutorial.html')
 
+@services_bp.route('/certidoes')
+def certificates():
+    """Certificates service page"""
+    return render_template('services/certificates.html')
+
 @services_bp.route('/consulta-processual', methods=['GET', 'POST'])
 def process_consultation():
     """Process consultation service with enhanced integration"""
@@ -454,8 +459,8 @@ def system_status():
         return jsonify({'error': 'Unable to load status'}), 500
 
 @main_bp.route('/consulta', methods=['GET', 'POST'])
-def process_consultation_alt():
-    """Alternative process consultation page"""
+def process_consultation():
+    """Process consultation page"""
     if request.method == 'POST':
         try:
             process_number = sanitize_input(request.form.get('numero_processo', ''))
