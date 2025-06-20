@@ -46,6 +46,9 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 - Maintained animated GIF tutorial and step-by-step visual guides
 - Added troubleshooting tips and support contact information
 - Ensured responsive design and accessibility compliance
+- Fixed forum address visibility with enhanced color contrast
+- Corrected footer text visibility for "Desenvolvido por" and "Lex Intelligentia"
+- Resolved tutorial duplication issues with streamlined routing
 
 ### June 2025 - Scheduling Service Types Update (Complete)
 - Removed "Solicitação de Certidões" box from scheduling page per user request
