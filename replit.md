@@ -38,6 +38,13 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - TJES Virtual Counter News Addition (Complete)
+- Added comprehensive news article about TJES Virtual Counter launch to latest news
+- Created detailed content covering virtual counter features, access process, and support information
+- Content includes step-by-step instructions and technical requirements for users
+- News item automatically appears on homepage through content service integration
+- Database entry includes full article content with markdown formatting for proper display
+
 ### June 2025 - Process Consultation UI Update (Complete)
 - Removed "Consulta Rápida" box from process consultation page per user request
 - Updated section title from "Outras Formas de Consulta" to "Como Fazer uma Consulta"

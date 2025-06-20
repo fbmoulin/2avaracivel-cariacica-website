@@ -1,0 +1,57 @@
+Segue uma versão aprimorada e adequada para publicação no seu site, em tom formal:
+
+---
+
+## **TJES lança Balcão Virtual para atendimento judicial acessível e eficiente**
+
+O Tribunal de Justiça do Espírito Santo (TJES) inaugura um importante avanço no atendimento à população com a implementação do **Balcão Virtual**, sistema de videoconferência disponível às Unidades Judiciárias do Estado ([tjes.jus.br][1]).
+
+### 🎯 **Características principais**
+
+* **Atendimento sem agendamento prévio**: o cidadão acessa por videoconferência via Google Meet, sem necessidade de agendamento, em horário comercial ([tjes.jus.br][2]).
+* **Atendimento individualizado em tempo real**: o usuário entra em uma fila virtual e é atendido conforme sua vez, com garantia de sigilo e qualidade ([tjes.jus.br][2]).
+* **Compatível com múltiplas sessões simultâneas**: a nova versão permite que várias audiências ocorram ao mesmo tempo, otimizando a capacidade de atendimento ([tjes.jus.br][3]).
+
+### 🧭 **Como funciona**
+
+1. Acesse **Serviços** no site do TJES e selecione **Balcão Virtual** ([sistemas.tjes.jus.br][4]).
+2. Escolha a instância desejada (1ª ou 2ª instância) e indique a unidade ou use a opção de consulta de processo ([tjes.jus.br][5]).
+3. Informe seu nome completo e clique em **Solicitar Atendimento Virtual**. Se a sala estiver ocupada, aguarde na fila até ser convidado a entrar ([tjes.jus.br][5]).
+4. No Google Meet, confirme permissões de câmera e microfone e entre para o atendimento ([tjes.jus.br][5]).
+
+### 📎 **Orientações e suporte**
+
+* Disponível manual de ajuda para o público, com instruções passo a passo, e suporte a clientes internos (servidores) para criação das salas via Google Meet ([tjes.jus.br][5]).
+* Recomendação de instalação prévia do aplicativo Google Meet em dispositivos móveis ([sistemas.tjes.jus.br][6]).
+
+---
+
+### ✅ **Conclusão**
+
+O Balcão Virtual do TJES representa uma evolução significativa no acesso à Justiça, eliminando barreiras geográficas e reduzindo desperdícios de tempo. A inovação reforça o compromisso do Tribunal com a eficiência, modernização e inclusão digital.
+
+---
+
+### 📌 **Recomendações para publicação**
+
+* **Título**: “TJES implanta Balcão Virtual: atendimento judicial online, sem agendamento”.
+* **Lead**: destaque os benefícios de acessibilidade, celeridade e sustentabilidade.
+* **Estrutura**: utilize blocos com ícones e bullets para clareza e praticidade.
+* **Chamada de encerramento**: convide o público a experimentar e divulgue o manual de acesso.
+
+---
+
+Se desejar, posso ajudar com:
+
+* Sugestões de prompts para briefing ou newsletters internas sobre o tema.
+* Configuração de fluxos automatizados via IA para monitoramento dos atendimentos.
+* Criação de GPTs para geração de relatórios de adesão e desempenho do Balcão Virtual.
+
+Fico à disposição para apoio mais aprofundado.
+
+[1]: https://www.tjes.jus.br/balcao-virtual/?utm_source=chatgpt.com "Balcão Virtual - TJES »"
+[2]: https://www.tjes.jus.br/balcao-virtual-unidades-judiciarias-realizam-atendimento-de-forma-online/?utm_source=chatgpt.com "Balcão Virtual: unidades judiciárias do Espírito Santo realizam ..."
+[3]: https://www.tjes.jus.br/nova-versao-do-balcao-virtual-do-tjes-esta-no-ar-agora-com-multiplos-atendimentos-simultaneos-de-forma-online/?utm_source=chatgpt.com "Novo Balcão Virtual do TJES está no ar! Agora com múltiplos ..."
+[4]: https://sistemas.tjes.jus.br/ediario/images/manual_balcao_virtual_acesso_publico_externo.pdf?utm_source=chatgpt.com "[PDF] Balcão Virtual - Manual de acesso - TJES »"
+[5]: https://www.tjes.jus.br/tjes-disponibiliza-manual-sobre-o-atendimento-do-balcao-virtual/?utm_source=chatgpt.com "Tribunal de Justiça do Espírito Santo disponibiliza manual sobre o ..."
+[6]: https://sistemas.tjes.jus.br/balcaovirtual-jurisdicionado/identificacao?utm_source=chatgpt.com "Balcão Virtual - TJES"
