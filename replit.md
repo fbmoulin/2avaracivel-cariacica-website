@@ -38,6 +38,13 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - SQLAlchemy Warning Resolution (Complete)
+- Fixed SQLAlchemy table redefinition warnings by adding missing `__table_args__ = {'extend_existing': True}`
+- Updated HearingSchedule and AvailableTimeSlot models with proper extend_existing parameters
+- Eliminated all SAWarning messages during model import and application startup
+- Verified all 7 database models now load cleanly without warnings
+- Application continues running with optimal performance and clean logs
+
 ### June 2025 - Zoom Audio Tutorial Fix (Complete)
 - Fixed broken Zoom audio configuration tutorials that weren't functioning
 - Created new working tutorial template with embedded CSS styling

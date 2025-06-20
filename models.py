@@ -177,6 +177,7 @@ class AssessorMeeting(db.Model):
 
 class HearingSchedule(db.Model):
     """Model for hearing scheduling"""
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     process_number = db.Column(db.String(50), nullable=False)
     hearing_type = db.Column(db.String(50), nullable=False)  # 'conciliation', 'instruction', 'judgment'
@@ -221,6 +222,7 @@ class HearingSchedule(db.Model):
 
 class AvailableTimeSlot(db.Model):
     """Model for available time slots"""
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
     start_time = db.Column(db.Time, nullable=False)
