@@ -50,32 +50,6 @@
             </section>
             
             <section class="mb-5">
-                <h2>Consulta Rápida</h2>
-                <p>Digite o número do processo para verificar informações básicas:</p>
-                
-                <form method="POST" class="needs-validation" novalidate>
-                {{ csrf_token() }}
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="mb-3">
-                                <label for="process_number" class="form-label">Número do Processo *</label>
-                                <input type="text" class="form-control form-control-lg" id="process_number" name="process_number" required 
-                                       placeholder="0000000-00.0000.0.00.0000" maxlength="25">
-                                <div class="invalid-feedback">Por favor, informe o número do processo.</div>
-                                <div class="form-text">Digite apenas os números ou use o formato completo com pontos e hífen.</div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-search me-2"></i>Consultar
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </section>
-            
-            <section class="mb-5">
                 <h2>Informações que Você Pode Consultar</h2>
                 <p>Através da consulta processual, você pode verificar:</p>
                 

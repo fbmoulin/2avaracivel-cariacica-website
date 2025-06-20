@@ -38,6 +38,12 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ## Recent Changes
 
+### June 2025 - Process Consultation UI Update (Complete)
+- Removed "Consulta Rápida" box from process consultation page per user request
+- Cleaned up template spacing and maintained proper section structure
+- Page now focuses on informational content and external TJES portal links
+- Verified consultation page loads correctly without form submission functionality
+
 ### June 2025 - SQLAlchemy Warning Resolution (Complete)
 - Fixed SQLAlchemy table redefinition warnings by adding missing `__table_args__ = {'extend_existing': True}`
 - Updated HearingSchedule and AvailableTimeSlot models with proper extend_existing parameters
