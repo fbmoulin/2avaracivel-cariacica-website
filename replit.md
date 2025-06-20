@@ -40,9 +40,11 @@ Complete digital judicial platform for the 2nd Civil Court of Cariacica. Flask-b
 
 ### June 2025 - Process Consultation UI Update (Complete)
 - Removed "Consulta Rápida" box from process consultation page per user request
-- Cleaned up template spacing and maintained proper section structure
-- Page now focuses on informational content and external TJES portal links
-- Verified consultation page loads correctly without form submission functionality
+- Updated section title from "Outras Formas de Consulta" to "Como Fazer uma Consulta"
+- Changed all TJES portal links to direct consultation portal: https://pje.tjes.jus.br/pje2g/ConsultaPublica/listView.seam
+- Renamed button text from "Acessar Portal" to "Consulta Processual" for clarity
+- Updated 3 instances of the link across the page (main section, info card, and sidebar)
+- Verified consultation page loads correctly with updated links and content
 
 ### June 2025 - SQLAlchemy Warning Resolution (Complete)
 - Fixed SQLAlchemy table redefinition warnings by adding missing `__table_args__ = {'extend_existing': True}`
