@@ -64,6 +64,10 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link href="{{ url_for('static', filename='css/modern-consolidated.css') }}" rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link href="{{ url_for('static', filename='css/accessibility-fixes.css') }}" rel="stylesheet">
+    
+    <!-- Court Loading Animations CSS -->
+    <link href="{{ url_for('static', filename='css/court-loading-animations.css') }}" rel="stylesheet">
+    
     <noscript>
         <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/modern-consolidated.css') }}" rel="stylesheet">
@@ -1820,6 +1824,13 @@
     <script src="{{ url_for('static', filename='js/voice-accessibility.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/mobile-optimization.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/form-microinteractions.js') }}" defer></script>
+    
+    <!-- Court Loading Manager -->
+    <script src="{{ url_for('static', filename='js/court-loading-manager.js') }}"></script>
+    
+    <!-- Court Loading Integrations -->
+    <script src="{{ url_for('static', filename='js/court-loading-integrations.js') }}"></script>
+    
     {% block scripts %}{% endblock %}
 </body>
 </html>

@@ -60,6 +60,11 @@ def form_demo():
     """Demo page for form micro-interactions"""
     return render_template('form-demo.html')
 
+@main_bp.route('/loading-demo')
+def loading_demo():
+    """Demo page for court-themed loading animations"""
+    return render_template('loading_demo.html')
+
 @main_bp.route('/chatbot')
 def chatbot():
     """Chatbot interface page"""
