@@ -11,14 +11,14 @@ import uuid
 
 # Initialize services with error handling
 try:
-    from services.cache_service import cache_service, CacheService
+    from services.cache_service import cache_service
     CACHE_AVAILABLE = True
 except ImportError:
     CACHE_AVAILABLE = False
     logging.warning("Cache service not available")
 
 try:
-    from services.api_service import api_service, tjes_integration
+    from services.api_service import tjes_integration
     API_SERVICE_AVAILABLE = True
 except ImportError:
     API_SERVICE_AVAILABLE = False

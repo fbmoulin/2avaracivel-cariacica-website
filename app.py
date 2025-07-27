@@ -3,7 +3,7 @@ import logging
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
-from database import db, configure_database, create_all_tables, optimize_database_performance
+from database import configure_database, create_all_tables, optimize_database_performance
 
 # Configure logging for debugging
 logging.basicConfig(level=logging.DEBUG)
