@@ -10,14 +10,14 @@
                 <div class="card-header bg-primary text-white text-center py-3">
                     <h2 class="mb-0">
                         <i class="fas fa-robot me-2"></i>
-                        Assistente Virtual
+                        Enhanced Chatbot
                     </h2>
                     <p class="mb-0 mt-2">Tire suas dúvidas sobre os serviços da 2ª Vara Cível</p>
                 </div>
                 
                 <div class="card-body p-0">
                     <!-- Chat Messages Container -->
-                    <div id="chat-messages" class="p-4" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
+                    <div id="chat-container" class="chat-container p-4" style="height: 400px; overflow-y: auto; background: #f8f9fa;">
                         <div class="message bot-message mb-3">
                             <div class="d-flex align-items-start">
                                 <img src="{{ url_for('static', filename='images/chatbot/chatbot_avatar.png') }}" 
@@ -33,11 +33,11 @@
                     <div class="border-top p-4">
                         <form id="chat-form" class="d-flex gap-2">
                             <input type="text" 
-                                   id="chat-input" 
+                                   id="user-input" 
                                    class="form-control" 
                                    placeholder="Digite sua pergunta..."
                                    required>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" id="send-message" class="btn btn-primary">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </form>
