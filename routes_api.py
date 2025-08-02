@@ -11,6 +11,7 @@ import logging
 from datetime import datetime
 from functools import wraps
 import time
+from flask import current_app
 
 logger = logging.getLogger(__name__)
 
@@ -33,22 +34,29 @@ def handle_errors(f):
     return decorated_function
 
 def rate_limit(max_requests=60, window=60):
-    """Simple rate limiting decorator"""
+    """Rate limiting decorator with memory optimization"""
     requests = {}
+    last_cleanup = {'time': time.time()}
     
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
             now = time.time()
-            # Clean old entries
-            for ip in list(requests.keys()):
-                requests[ip] = [t for t in requests[ip] if now - t < window]
-                if not requests[ip]:
-                    del requests[ip]
+            
+            # Periodic cleanup every 5 minutes
+            if now - last_cleanup['time'] > 300:
+                for ip in list(requests.keys()):
+                    requests[ip] = [t for t in requests[ip] if now - t < window]
+                    if not requests[ip]:
+                        del requests[ip]
+                last_cleanup['time'] = now
             
             # Check rate limit
             client_ip = request.remote_addr
             if client_ip in requests:
+                # Remove old entries for this IP
+                requests[client_ip] = [t for t in requests[client_ip] if now - t < window]
+                
                 if len(requests[client_ip]) >= max_requests:
                     return jsonify({'error': 'Rate limit exceeded', 'type': 'rate_limit'}), 429
             

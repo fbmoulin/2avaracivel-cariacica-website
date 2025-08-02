@@ -33,11 +33,13 @@ def configure_database(app):
     
     # Optimized engine options for PostgreSQL/SQLite compatibility
     engine_options = {
-        'pool_recycle': 1800,
+        'pool_recycle': 3600,  # Increased to 1 hour
         'pool_pre_ping': True,
         'pool_timeout': 30,
-        'max_overflow': 20,
-        'pool_size': 10
+        'max_overflow': 10,  # Reduced for better resource management
+        'pool_size': 5,  # Reduced for better resource management
+        'echo_pool': False,
+        'pool_reset_on_return': 'rollback'
     }
     
     # Add PostgreSQL-specific options if using PostgreSQL (including Supabase)

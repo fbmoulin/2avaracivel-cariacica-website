@@ -2,13 +2,18 @@ import os
 import logging
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
+from flask_compress import Compress
 from werkzeug.middleware.proxy_fix import ProxyFix
 from database import configure_database, create_all_tables, optimize_database_performance
 
-# Configure logging for debugging
-logging.basicConfig(level=logging.DEBUG)
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 
 csrf = CSRFProtect()
+compress = Compress()
 
 def create_app():
     # Create the Flask application
@@ -29,8 +34,9 @@ def create_app():
         'CACHE_TIMEOUT': 300
     })
     
-    # Initialize CSRF protection
+    # Initialize extensions
     csrf.init_app(app)
+    compress.init_app(app)
     
     # Register blueprints
     try:
