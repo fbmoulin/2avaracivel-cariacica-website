@@ -35,9 +35,11 @@ def create_app():
     # Register blueprints
     try:
         from routes import main_bp, services_bp, chatbot_bp
+        from routes_api import api_bp
         app.register_blueprint(main_bp)
         app.register_blueprint(services_bp)
         app.register_blueprint(chatbot_bp)
+        app.register_blueprint(api_bp)
         
         # Exempt chatbot endpoints from CSRF protection
         csrf.exempt(app.view_functions['main.chat'])
